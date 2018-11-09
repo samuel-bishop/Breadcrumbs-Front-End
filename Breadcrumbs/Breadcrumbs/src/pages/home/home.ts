@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 
 import { NavController } from 'ionic-angular';
+import { addeventPage } from '../addevent/addevent';
 
 @Component({
   selector: 'page-home',
@@ -14,5 +15,9 @@ export class HomePage {
   
   onLink(url: string) {
       window.open(url);
+  }
+
+  addEvent() {
+    this.navCtrl.push(addeventPage);
   }
 }

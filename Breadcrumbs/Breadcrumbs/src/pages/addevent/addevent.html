@@ -1,0 +1,68 @@
+<ion-grid>
+  <ion-list>
+    <ion-row>
+      <ion-item>
+        <ion-input placeholder="Event Name (optional)" name="eventName" type="text"></ion-input>
+      </ion-item>
+    </ion-row>
+    <ion-row>
+      <ion-item>
+        <ion-input placeholder="Destination" name="destination" type="text"></ion-input>
+      </ion-item>
+    </ion-row>
+
+    <ion-row>
+      <ion-col col-1>
+        <ion-item>
+          <ion-label color="primary">Start Date</ion-label>
+          <ion-datetime name="startDate" displayFormat="MMM/D">Start Date</ion-datetime>
+        </ion-item>
+      </ion-col>
+      <ion-col col-2>
+        <ion-item>
+          <ion-label placeholder="Start Time" color="primary">Start Time</ion-label>
+          <ion-datetime name="startTime" displayFormat="h:mm a">Start Time</ion-datetime>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col col-1>
+        <ion-item>
+          <ion-label placeholder="End Date" color="primary">End Date</ion-label>
+          <ion-datetime name="endDate" displayFormat="MMM/D">Start Date</ion-datetime>
+        </ion-item>
+      </ion-col>
+      <ion-col col-2>
+        <ion-item>
+          <ion-label placeholder="End Time" color="primary">End Time</ion-label>
+          <ion-datetime name="endTime" displayFormat="h:mm a">Start Time</ion-datetime>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-item>
+      <ion-label color="primary">Contact(s)</ion-label>
+      <ion-select multiple="true">
+        <ion-option>Joe</ion-option>
+        <ion-option>Bill</ion-option>
+        <ion-option>Bob</ion-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <button ion-button (click)="addContactClick()">Add New Contact..</button>
+    </ion-item>
+    <ion-row>
+      <ion-item>
+        <ion-input placeholder="Participants (optional)" name="participants" type="text"></ion-input>
+      </ion-item>
+    </ion-row>
+    <ion-row>
+      <ion-item>
+        <ion-input placeholder="Description (required)" name="description" type="text"></ion-input>
+      </ion-item>
+    </ion-row>
+  </ion-list>
+</ion-grid>
+
+<button ion-button (click)="cancelClick()">Cancel</button>
+<button ion-button (click)="submitClick()">Submit</button>
