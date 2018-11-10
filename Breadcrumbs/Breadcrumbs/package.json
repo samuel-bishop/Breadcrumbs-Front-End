@@ -1,7 +1,6 @@
 {
-  "name": "io.cordova.myappcc4887",
-  "author": "",
-  "homepage": "",
+  "name": "breadcrumbs",
+  "author": "BreadcrumbsJP",
   "private": true,
   "scripts": {
     "clean": "ionic-app-scripts clean",
@@ -26,7 +25,9 @@
     "ionicons": "3.0.0",
     "rxjs": "5.0.0-beta.12",
     "sw-toolbox": "3.4.0",
-    "zone.js": "0.6.26"
+    "zone.js": "0.6.26",
+    "express": "4.16.4",
+    "mssql": "4.2.3"
   },
   "devDependencies": {
     "@ionic/app-scripts": "1.1.0",

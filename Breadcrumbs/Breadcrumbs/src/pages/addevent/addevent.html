@@ -42,10 +42,8 @@
     </ion-row>
     <ion-item>
       <ion-label color="primary">Contact(s)</ion-label>
-      <ion-select multiple="true">
-        <ion-option>Joe</ion-option>
-        <ion-option>Bill</ion-option>
-        <ion-option>Bob</ion-option>
+      <ion-select [(ngModel)]="contact" multiple="true">
+        <ion-option *ngFor="let contact of contacts" [value]="contact">{{contact.ContactFirstName}} {{contact.ContactLastName}}</ion-option>
       </ion-select>
     </ion-item>
     <ion-item>
@@ -58,7 +56,7 @@
     </ion-row>
     <ion-row>
       <ion-item>
-        <ion-input placeholder="Description (required)" name="description" type="text"></ion-input>
+        <ion-input placeholder="Description0 (required)" name="description" type="text"></ion-input>
       </ion-item>
     </ion-row>
   </ion-list>

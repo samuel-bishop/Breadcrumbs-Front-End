@@ -2,6 +2,9 @@
   "name": "Ionic",
   "short_name": "Ionic",
   "start_url": "index.html",
+  "scripts": [
+    "../api/getAllContacts.js"
+  ],
   "display": "standalone",
   "icons": [{
     "src": "assets/imgs/logo.png",
