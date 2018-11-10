@@ -7,22 +7,22 @@
         "files": {}
     },
     "installed_plugins": {
-        "ionic-plugin-keyboard": {
-            "PACKAGE_NAME": "io.cordova.myappcc4887"
-        },
-        "cordova-plugin-whitelist": {
-            "PACKAGE_NAME": "io.cordova.myappcc4887"
-        },
         "cordova-plugin-console": {
-            "PACKAGE_NAME": "io.cordova.myappcc4887"
-        },
-        "cordova-plugin-statusbar": {
             "PACKAGE_NAME": "io.cordova.myappcc4887"
         },
         "cordova-plugin-device": {
             "PACKAGE_NAME": "io.cordova.myappcc4887"
         },
         "cordova-plugin-splashscreen": {
+            "PACKAGE_NAME": "io.cordova.myappcc4887"
+        },
+        "cordova-plugin-statusbar": {
+            "PACKAGE_NAME": "io.cordova.myappcc4887"
+        },
+        "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "io.cordova.myappcc4887"
+        },
+        "ionic-plugin-keyboard": {
             "PACKAGE_NAME": "io.cordova.myappcc4887"
         }
     },
