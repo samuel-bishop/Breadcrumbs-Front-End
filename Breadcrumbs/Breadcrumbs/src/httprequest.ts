@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
+import { Http, Headers, Request, RequestOptions } from '@angular/http';
 import 'rxjs/add/operator/map';
 
 /*
@@ -9,7 +9,7 @@ import 'rxjs/add/operator/map';
   for more info on providers and Angular 2 DI.
 */
 
-var aws_url = 'http://ec2-54-89-215-101.compute-1.amazonaws.com:4604'
+var aws_url = 'http://ec2-34-226-139-163.compute-1.amazonaws.com:4604'
 
 
 @Injectable()
@@ -48,7 +48,20 @@ export class httprequest {
     })
   }
 
-  RequestActiveEvent(userid) {
+  InsertEvent(userid, eventData) {
+    var header = new Headers();
+    header.append("Accept", 'application/json');
+    header.append('Content-Type', 'application/json')
+    const requestOpts = new RequestOptions({ headers: header });
+    this.http.post(aws_url + '/newevent', eventData, requestOpts)
+      .subscribe(data => {
+        console.log(data['_body']);
+      }, error => {
+        console.log(error);
+      });
+  }
+  
+  GetActive(userid) {
     if (this.data) {
       return Promise.resolve(this.data);
     }
@@ -62,3 +75,4 @@ export class httprequest {
     })
   }
 }
+
