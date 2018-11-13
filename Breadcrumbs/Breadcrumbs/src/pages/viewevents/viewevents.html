@@ -8,8 +8,5 @@
   <ion-title>Active Event</ion-title>
   <button ion-button #activeEvent id="activeEventButton"></button>
   <ion-title>Past Events</ion-title>
-  <button ion-button #inactiveEvent1 id="event1"></button>
-  <button ion-button #inactiveEvent2 id="event2"></button>
-  <button ion-button #inactiveEvent3 id="event3"></button>
-  <button ion-button #inactiveEvent4 id="event4"></button>
-</ion-content>
+  <button ion-button *ngFor="let e of inactiveEvents" value="e"> {{e.EventName}} </button>
+</ion-content> 
