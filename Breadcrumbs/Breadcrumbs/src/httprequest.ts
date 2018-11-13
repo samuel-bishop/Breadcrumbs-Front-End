@@ -34,7 +34,7 @@ export class httprequest {
     })
   }
 
-  RequestEvents(userid) {
+  RequestInactiveEvents(userid) {
     if (this.data) {
       return Promise.resolve(this.data);
     }
@@ -60,8 +60,8 @@ export class httprequest {
         console.log(error);
       });
   }
-  
-  GetActive(userid) {
+
+  RequestActiveEvent(userid) {
     if (this.data) {
       return Promise.resolve(this.data);
     }

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { addeventPage } from '../addevent/addevent';
+import { addcontactPage } from '../addcontact/addcontact';
 import { vieweventsPage } from '../viewevents/viewevents';
 import { httprequest } from '../../httprequest';
 @Component({
@@ -17,7 +18,7 @@ export class HomePage {
   }
   
   getActiveEvent() {
-    this.request.GetActive(1)
+    this.request.RequestActiveEvent(1)
       .then(data => {
         console.log(data['recordset'][0])
         this.currentEvent = data['recordset'][0];
@@ -35,5 +36,9 @@ export class HomePage {
 
   viewEvents() {
     this.navCtrl.push(vieweventsPage);
+  }
+
+  addContact() {
+    this.navCtrl.push(addcontactPage);
   }
 }
