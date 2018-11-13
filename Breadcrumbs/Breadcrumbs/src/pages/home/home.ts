@@ -17,15 +17,25 @@ export class HomePage {
   constructor(public navCtrl: NavController, public request: httprequest, public storage: Storage) {
     this.getActiveEvent();
     this.storage.get('activeEvent').then((data) => {
-      console.log(data);
+     // console.log(data);
       document.getElementById("activeEventContent").innerText = data.EventName;
     });
+
+    this.getInactiveEvent();
   } 
   
   getActiveEvent() {
     this.request.RequestActiveEvent(1)
       .then(data => {
         this.storage.set('activeEvent', data['recordset'][0]);
+      })
+  }
+
+  getInactiveEvent() {
+    this.request.RequestInactiveEvents(1)
+      .then(data => {
+        console.log(data);
+        this.storage.set('inactiveEvents', data['recordset']);
       })
   }
 
