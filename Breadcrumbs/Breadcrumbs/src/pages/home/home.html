@@ -1,3 +1,13 @@
 <!-- Put shit here -->
+<ion-card>
+  <ion-card-header>
+    Current Event
+  </ion-card-header>
+  <ion-card-content>
+    <ion-label *ngIf="currentEvent"> {{currentEvent.EventName}}  </ion-label>
+    
+  </ion-card-content>
+</ion-card>
+    
 <button ion-button (click)="addEvent()"> Add Event </button>
 <button ion-button (click)="viewEvents()"> View Events </button>
