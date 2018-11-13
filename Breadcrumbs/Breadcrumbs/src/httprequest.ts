@@ -61,12 +61,26 @@ export class httprequest {
       });
   }
   
-  GetActive(userid) {
+  RequestActiveEvent(userid) {
     if (this.data) {
       return Promise.resolve(this.data);
     }
     return new Promise(resolve => {
       this.http.get(aws_url + '/activeEvent/' + userid)
+        .map(res => res.json())
+        .subscribe(data => {
+          this.data = data;
+          resolve(this.data);
+        });
+    })
+  }
+
+  RequestInactiveEvents(userid) {
+    if (this.data) {
+      return Promise.resolve(this.data);
+    }
+    return new Promise(resolve => {
+      this.http.get(aws_url + '/inactiveEvents/' + userid)
         .map(res => res.json())
         .subscribe(data => {
           this.data = data;

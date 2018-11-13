@@ -3,6 +3,8 @@ import { NavController } from 'ionic-angular';
 import { addeventPage } from '../addevent/addevent';
 import { vieweventsPage } from '../viewevents/viewevents';
 import { httprequest } from '../../httprequest';
+import { Storage } from '@ionic/storage';
+
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html',
@@ -11,17 +13,18 @@ import { httprequest } from '../../httprequest';
 
 export class HomePage {
 
-  currentEvent: any;
-  constructor(public navCtrl: NavController, public request: httprequest) {
+  constructor(public navCtrl: NavController, public request: httprequest, public storage: Storage) {
     this.getActiveEvent();
-  }
+    this.storage.get('activeEvent').then((data) => {
+      console.log(data);
+      document.getElementById("activeEventContent").innerText = data.EventName;
+    });
+  } 
   
   getActiveEvent() {
-    this.request.GetActive(1)
+    this.request.RequestActiveEvent(1)
       .then(data => {
-        console.log(data['recordset'][0])
-        this.currentEvent = data['recordset'][0];
-
+        this.storage.set('activeEvent', data['recordset'][0]);
       })
   }
 

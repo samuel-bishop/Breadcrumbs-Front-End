@@ -5,6 +5,8 @@ import { HomePage } from '../pages/home/home';
 import { addeventPage } from '../pages/addevent/addevent';
 import { addcontactPage } from '../pages/addcontact/addcontact';
 import { vieweventsPage } from '../pages/viewevents/viewevents';
+import { Storage } from '@ionic/storage'
+
 
 @NgModule({
   declarations: [
@@ -15,7 +17,7 @@ import { vieweventsPage } from '../pages/viewevents/viewevents';
     vieweventsPage,
   ],
   imports: [
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp),
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -25,6 +27,6 @@ import { vieweventsPage } from '../pages/viewevents/viewevents';
     addcontactPage,
     vieweventsPage,
   ],
-  providers: [{ provide: ErrorHandler, useClass: IonicErrorHandler }]
+  providers: [{ provide: ErrorHandler, useClass: IonicErrorHandler}, Storage]
 })
 export class AppModule {}
