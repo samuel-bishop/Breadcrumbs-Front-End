@@ -18,7 +18,6 @@ import { getContacts } from '../../api/getAllContacts.js';
 
 export class addeventPage {
 
-
   contacts: any;
   constructor(public navCtrl: NavController, public navParams: NavParams, public request: httprequest)
   {
@@ -44,5 +43,4 @@ export class addeventPage {
   addContactClick() {
     this.navCtrl.push(addcontactPage);
   }
-
 }

@@ -12,7 +12,7 @@ export class HomePage {
   constructor(public navCtrl: NavController) {
     
   }
-  
+  userid;
   onLink(url: string) {
       window.open(url);
   }
