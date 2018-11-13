@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { addeventPage } from '../addevent/addevent';
+import { addcontactPage } from '../addcontact/addcontact';
 import { vieweventsPage } from '../viewevents/viewevents';
 import { httprequest } from '../../httprequest';
 import { Storage } from '@ionic/storage';
@@ -38,5 +39,9 @@ export class HomePage {
 
   viewEvents() {
     this.navCtrl.push(vieweventsPage);
+  }
+
+  addContact() {
+    this.navCtrl.push(addcontactPage);
   }
 }
