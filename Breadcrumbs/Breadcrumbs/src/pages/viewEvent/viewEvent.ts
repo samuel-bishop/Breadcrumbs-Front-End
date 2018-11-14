@@ -17,16 +17,24 @@ export class viewEventPage {
 
   ionViewWillEnter() {
     //get the stored viewedEvent
+    console.log("ionViewWillEnter");
     this.storage.get('viewedEvent').then((data) => {
       //set the text for the HTMLElements
+      console.log(data);
+      console.log(data.EventName);
+      console.log(data.PositionLongitude);
+      
       document.getElementById("viewEventTitle").textContent = data.EventName;
-      document.getElementById("EventStartTimeLabel").textContent = data.StartTime;
+      document.getElementById("EventStartDateLabel").textContent = data.StartDate;
       document.getElementById("EventEndDateLabel").textContent = data.EndDate;
-      document.getElementById("EventEndTimeLabel").textContent = data.EndTime;
       document.getElementById("EventPosLatLabel").textContent = data.PositionLatitude;
       document.getElementById("EventPosLonLabel").textContent = data.PositionLongitude;
-      var mapsLink: string = 'https://www.google.com/maps/' + data.PositionLatitude + ',' + data.PositionLongitude;
-      (document.getElementById("burl") as HTMLAnchorElement).href = mapsLink;
+      //var mapsLink: string = 'https://www.google.com/maps/' + data.PositionLatitude + ',' + data.PositionLongitude;
+      //(document.getElementById("burl") as HTMLAnchorElement).href = mapsLink;
     });
+  }
+
+  ionViewWillLeave() {
+    this.storage.remove('viewedEvent');
   }
 }

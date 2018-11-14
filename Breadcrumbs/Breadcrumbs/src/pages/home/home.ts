@@ -15,13 +15,8 @@ import { Storage } from '@ionic/storage';
 export class HomePage {
 
   constructor(public navCtrl: NavController, public request: httprequest, public storage: Storage) {
-    this.getActiveEvent();
-    this.storage.get('activeEvent').then((data) => {
-     // console.log(data);
-      document.getElementById("activeEventContent").innerText = data.EventName;
-    });
+    //this.storage.clear();
 
-    this.getInactiveEvent();
   } 
   
   getActiveEvent() {
@@ -39,6 +34,14 @@ export class HomePage {
       })
   }
 
+  ionViewWillEnter() {
+    this.getActiveEvent();
+    this.storage.get('activeEvent').then((data) => {
+      // console.log(data);
+      document.getElementById("activeEventContent").innerText = data.EventName;
+    });
+  }
+
   onLink(url: string) {
       window.open(url);
   }
@@ -54,4 +57,5 @@ export class HomePage {
   addContact() {
     this.navCtrl.push(addcontactPage);
   }
+
 }

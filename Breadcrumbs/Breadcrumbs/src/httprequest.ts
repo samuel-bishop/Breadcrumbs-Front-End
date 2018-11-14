@@ -9,7 +9,7 @@ import 'rxjs/add/operator/map';
   for more info on providers and Angular 2 DI.
 */
 
-var aws_url = 'http://ec2-34-226-139-163.compute-1.amazonaws.com:4604'
+var aws_url = 'http://ec2-35-174-115-108.compute-1.amazonaws.com:4604'
 
 
 @Injectable()
