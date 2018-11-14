@@ -20,12 +20,10 @@ export class viewEventPage {
     console.log("ionViewWillEnter");
     this.storage.get('viewedEvent').then((data) => {
       //set the text for the HTMLElements
-      console.log(data);
-      console.log(data.EventName);
-      console.log(data.PositionLongitude);
-      
+      console.log(data.StartDate);
+
       document.getElementById("viewEventTitle").textContent = data.EventName;
-      document.getElementById("EventStartDateLabel").textContent = data.StartDate;
+      document.getElementById("EventStartDateLabel").textContent = data.EventStartDate;
       document.getElementById("EventEndDateLabel").textContent = data.EndDate;
       document.getElementById("EventPosLatLabel").textContent = data.PositionLatitude;
       document.getElementById("EventPosLonLabel").textContent = data.PositionLongitude;
@@ -35,6 +33,6 @@ export class viewEventPage {
   }
 
   ionViewWillLeave() {
-    this.storage.remove('viewedEvent');
+    //this.storage.remove('viewedEvent');
   }
 }
