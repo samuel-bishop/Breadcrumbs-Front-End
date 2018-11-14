@@ -1,12 +1,12 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>View Events</ion-title>
+    <ion-title>Event History</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  <ion-title>Active Event</ion-title>
-  <button ion-button #activeEvent id="activeEventButton"></button>
+  <ion-title>Event in Progress</ion-title>
+  <button ion-button id="activeEventButton">No active events</button>
   <ion-title>Past Events</ion-title>
-  <button ion-button *ngFor="let e of inactiveEvents" value="e"> {{e.EventName}} </button>
+  <button ion-button *ngFor="let e of inactiveEvents" value="e" (click)="ViewEvent(e)"> {{e.EventName}} </button>
 </ion-content> 
