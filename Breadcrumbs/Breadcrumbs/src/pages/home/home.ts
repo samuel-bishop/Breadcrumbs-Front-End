@@ -14,28 +14,22 @@ import { Storage } from '@ionic/storage';
 
 export class HomePage {
 
+  userid: any;
   constructor(public navCtrl: NavController, public request: httprequest, public storage: Storage) {
     //this.storage.clear();
-
+    this.getActiveEvent();
+    storage.set('userID', 1);
+    storage.get('userID').then((data) => {this.userid = data });
   } 
   
   getActiveEvent() {
-    this.request.RequestActiveEvent(1)
+    this.request.RequestActiveEvent(this.userid)
       .then(data => {
         this.storage.set('activeEvent', data['recordset'][0]);
       })
   }
 
-  getInactiveEvent() {
-    this.request.RequestInactiveEvents(1)
-      .then(data => {
-        console.log(data);
-        this.storage.set('inactiveEvents', data['recordset']);
-      })
-  }
-
   ionViewWillEnter() {
-    this.getActiveEvent();
     this.storage.get('activeEvent').then((data) => {
       // console.log(data);
       document.getElementById("activeEventContent").innerText = data.EventName;

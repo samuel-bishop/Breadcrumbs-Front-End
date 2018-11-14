@@ -13,13 +13,14 @@ import { viewEventPage } from '../viewEvent/viewEvent';
 export class vieweventsPage {
   activeEvent: any;
   inactiveEvents: any;
-
+  userid: any;
   constructor(public navCtrl: NavController, public navParams: NavParams, public request: httprequest, public storage: Storage) {
     //Put the user's active event into local session storage
-
+    
   }
 
   ionViewWillEnter() {
+    this.storage.get('userID').then((data) => { this.userid = data });
     this.getInactiveEvent();
     this.storage.get('activeEvent').then((data) => {
       document.getElementById("activeEventButton").textContent = data.EventName;
@@ -31,7 +32,7 @@ export class vieweventsPage {
   }
 
   getInactiveEvent() {
-    this.request.RequestInactiveEvents(1)
+    this.request.RequestInactiveEvents(this.userid)
       .then(data => {
         console.log(data);
         this.storage.set('inactiveEvents', data['recordset']);
