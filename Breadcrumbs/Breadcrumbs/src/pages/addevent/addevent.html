@@ -1,2 +1,45 @@
+<form [formGroup]="event" (ngSubmit)="eventForm()">
+    <ion-list>
 
+        <ion-item>
+            <ion-input placeholder="Event Name" formControlName="name" type="text"></ion-input>
+        </ion-item>
 
+        <ion-item>
+            <ion-input placeholder="Destination" formControlName="destination" type="text"></ion-input>
+        </ion-item>
+
+        <ion-item>
+            <ion-label color="primary">Start Date/Time</ion-label>
+            <ion-datetime formControlName="startDate" [(ngModel)]="todaysDateString" pickerFormat="MMM/D/YY h:mm A" displayFormat="MM/DD/YYYY h:mm A">Start Date</ion-datetime>
+        </ion-item>
+
+        <ion-item>
+            <ion-label color="primary">End Date/Time</ion-label>
+            <ion-datetime formControlName="endDate" [min]="todaysDateString" max="2020-12-31" pickerFormat="MMM/D/YY h:mm A" displayFormat="MM/DD/YYYY h:mm A">Start Date</ion-datetime>
+        </ion-item>
+
+        <ion-item>
+            <ion-label color="primary">Contact(s)</ion-label>
+            <ion-select [(ngModel)]="contact" multiple="true" formControlName="contactsList">
+                <ion-option *ngFor="let contact of contacts" [value]="contact">{{contact.ContactFirstName}} {{contact.ContactLastName}}</ion-option>
+            </ion-select>
+        </ion-item>
+
+        <ion-item>
+            <button ion-button (click)="addContactClick()">Add New Contact..</button>
+        </ion-item>
+
+        <ion-item>
+            <ion-input placeholder="Participants (optional)" formControlName="participants" type="text"></ion-input>
+        </ion-item>
+
+        <ion-item>
+            <ion-input placeholder="Description (required)" formControlName="description" type="text"></ion-input>
+        </ion-item>
+
+    </ion-list>
+
+    <button ion-button type="button" (click)="cancelClick()">Cancel</button>
+    <button ion-button type="submit" [disabled]="!event.valid">Submit</button>
+</form>
