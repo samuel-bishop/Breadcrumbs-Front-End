@@ -11,35 +11,30 @@ import { viewEventPage } from '../viewEvent/viewEvent';
 })
 
 export class vieweventsPage {
-  activeEvent: any;
+  //activeEvent: any;
   inactiveEvents: any;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public request: httprequest, public storage: Storage) {
-    //Put the user's active event into local session storage
-
   }
 
   ionViewWillEnter() {
-    this.getInactiveEvent();
-    this.storage.get('activeEvent').then((data) => {
-      document.getElementById("activeEventButton").textContent = data.EventName;
-    });
-    //Put the user's inactive events into local session storage
+    this.getInactiveEvents();
+    //Put the user's inactive events into local storage
     this.storage.get('inactiveEvents').then((data) => {
       this.inactiveEvents = data;
     });
   }
 
-  getInactiveEvent() {
+  getInactiveEvents() {
     this.request.RequestInactiveEvents(1)
       .then(data => {
-        console.log(data);
         this.storage.set('inactiveEvents', data['recordset']);
-      })
-
+      });
   }
+
+  //When ViewEvent gets called, push viewEventPage onto stack.
   ViewEvent(e: any) {
-    this.navCtrl.push(viewEventPage, {element: e});
+    this.storage.set('viewedEvent', e);
+    this.navCtrl.push(viewEventPage);
   }
-
 }

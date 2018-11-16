@@ -4,9 +4,13 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-  <ion-title>Event in Progress</ion-title>
-  <button ion-button id="activeEventButton">No active events</button>
-  <ion-title>Past Events</ion-title>
-  <button ion-button *ngFor="let e of inactiveEvents" value="e" (click)="ViewEvent(e)"> {{e.EventName}} </button>
-</ion-content> 
+<ion-content>
+  <ion-card *ngFor="let e of inactiveEvents" (click)="ViewEvent(e)">
+    <ion-card-header>
+      {{e.EventName}}
+    </ion-card-header>
+    <ion-card-content>
+      Created on: {{e.EventCreationDate}}
+    </ion-card-content>
+  </ion-card>
+</ion-content>
