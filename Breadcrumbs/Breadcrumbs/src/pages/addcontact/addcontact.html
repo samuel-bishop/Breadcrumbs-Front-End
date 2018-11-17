@@ -1,21 +1,22 @@
-<ion-grid>
-  <ion-col>
-    <ion-row row-1>
+<ion-list>
+
+    <ion-item row-1>
       <ion-input placeholder="First Name" name="firstName" type="text"></ion-input>
-    </ion-row>
-    <ion-row row-2>
+    </ion-item>
+
+    <ion-item row-2>
       <ion-input placeholder="Last Name" name="lastName" type="text"></ion-input>
-    </ion-row>
-    <ion-row row-3>
+    </ion-item>
+
+    <ion-item row-3>
       <ion-input placeholder="Phone Number" name="phonenumber" type="text"></ion-input>
-    </ion-row>
-    <ion-row>
+    </ion-item>
+
+    <ion-item>
       <ion-input placeholder="Email Address" name="emailaddress" type="text"></ion-input>
-    </ion-row>
-    <ion-row>
-      <ion-input placeholder="Test" name="test" type="text"></ion-input>
-    </ion-row>
-  </ion-col>
-</ion-grid>
+    </ion-item>
+
+</ion-list>
+
 <button ion-button (click)="cancelClick()">Cancel</button>
 <button ion-button (click)="submitClick()">Submit</button>
