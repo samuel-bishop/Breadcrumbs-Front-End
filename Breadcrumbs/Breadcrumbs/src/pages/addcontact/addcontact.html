@@ -1,22 +1,24 @@
+<form [formGroup]="contact" (ngSubmit)="contactForm()">
 <ion-list>
 
     <ion-item row-1>
-      <ion-input placeholder="First Name" name="firstName" type="text"></ion-input>
+      <ion-input placeholder="First Name" formControlName="firstName" type="text"></ion-input>
     </ion-item>
 
     <ion-item row-2>
-      <ion-input placeholder="Last Name" name="lastName" type="text"></ion-input>
+      <ion-input placeholder="Last Name" formControlName="lastName" type="text"></ion-input>
     </ion-item>
 
     <ion-item row-3>
-      <ion-input placeholder="Phone Number" name="phonenumber" type="text"></ion-input>
+      <ion-input placeholder="Phone Number" formControlName="phoneNumber" type="text"></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-input placeholder="Email Address" name="emailaddress" type="text"></ion-input>
+      <ion-input placeholder="Email Address" formControlName="emailAddress" type="text"></ion-input>
     </ion-item>
 
 </ion-list>
 
-<button ion-button (click)="cancelClick()">Cancel</button>
-<button ion-button (click)="submitClick()">Submit</button>
+<button ion-button type="button" (click)="cancelClick()">Cancel</button>
+<button ion-button type="submit" [disabled]= "!contact.valid">Submit</button>
+</form>
