@@ -4,13 +4,11 @@ import 'rxjs/add/operator/map';
 
 /*
   Generated class for the httprequest provider.
-
   See https://angular.io/docs/ts/latest/guide/dependency-injection.html
   for more info on providers and Angular 2 DI.
 */
 
 var aws_url = 'http://ec2-35-174-115-108.compute-1.amazonaws.com:4604'
-
 
 @Injectable()
 export class httprequest {
@@ -60,6 +58,7 @@ export class httprequest {
         console.log(error);
       });
   }
+  
   
   RequestActiveEvent(userid) {
     if (this.data) {
