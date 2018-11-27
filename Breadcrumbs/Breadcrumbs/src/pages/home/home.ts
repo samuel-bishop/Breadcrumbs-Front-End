@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, LoadingController } from 'ionic-angular';
+import { NavController, LoadingController, AlertController } from 'ionic-angular';
 import { addeventPage } from '../addevent/addevent';
 import { addcontactPage } from '../addcontact/addcontact';
 import { vieweventsPage } from '../viewevents/viewevents';
@@ -18,51 +18,50 @@ export class HomePage {
 
   userid: any;
   newEventSubmit: boolean;
-
-  constructor(public loadingCtrl: LoadingController, public navCtrl: NavController, public request: httprequest, public storage: Storage) {
-    //this.storage.clear();
-    this.storage.set('newEventSubmit', true);
-    this.storage.set('userID', 1);
-    this.storage.get('userID').then((data) => { this.userid = data; });
+  CurrentEventExists: boolean = false;
+  constructor(public alertCtrl: AlertController, public loadingCtrl: LoadingController, public navCtrl: NavController, public request: httprequest, public storage: Storage) {
+    var userid = 1;
+    this.storage.set('userID', userid);
+    
   }
 
-  presentLoadingEvent() {
+  getActiveEvent() {
     let loading = this.loadingCtrl.create({
       content: 'Loading Event...'
     });
 
-    loading.present();
-   
-    setTimeout(() => {
-      loading.dismiss();
-    }, 1000);
-  }
-
-  getActiveEvent() {
-    this.request.RequestActiveEvent(this.userid)
-      .then(data => {
-        console.log("getActiveEvent()");
-        console.log(data);
-        this.storage.set('activeEvent', data['recordset'][0]);
-      })
+    loading.present()
+      .then(() => {
+        this.request.RequestActiveEvent()
+          .then(data =>
+          {
+              this.storage.set('activeEvent', data['recordset'][0])
+          }).then(() =>
+          {
+             this.storage.set('newEventSubmit', false)
+               .then(() =>
+               {
+                this.storage.get('activeEvent')
+                  .then((data) =>
+                  {
+                    //Nothing is true, everything is permitted.
+                    //var alert = this.alertCtrl.create({ title: 'activeEventName', subTitle: data.EventName, buttons: ['ok'] });
+                    //alert.present();
+                    document.getElementById("activeEventContent").innerText = data.EventName;
+                   
+                  });
+              });
+          })
+      });
+    loading.dismiss();
   }
 
   ionViewWillEnter() {
     var newEvent;
     this.storage.get('newEventSubmit').then((data) => {
       newEvent = data;
-      console.log("newEventBool: " + newEvent);
       if (newEvent === true || document.getElementById("activeEventContent").innerText === "") {
         this.getActiveEvent();
-        this.getActiveEvent();
-        this.getActiveEvent();
-        this.storage.set('newEventSubmit', false);
-        this.storage.get('activeEvent').then((data) => {
-          console.log("activeEvent");
-          console.log(data);
-          console.log("EventName: " + data.EventName);
-          document.getElementById("activeEventContent").innerText = data.EventName;
-        });
       }
     });
   }
@@ -82,6 +81,14 @@ export class HomePage {
   addContact() {
     this.navCtrl.push(addcontactPage);
   }
+  
+  checkIn() {
+    this.storage.get('activeEvent').then((data) => {
+      this.request.DisableEvent(data.EventID);
+    });
+    console.log("disableEvent");
+  }
+  
 
   editEvent() {
     this.navCtrl.push(editeventPage);

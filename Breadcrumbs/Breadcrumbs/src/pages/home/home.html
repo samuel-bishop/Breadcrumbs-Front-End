@@ -5,7 +5,7 @@
   </ion-card-header>
   <ion-card-content>
     <ion-label id="activeEventContent"> </ion-label>
-    
+   <button ion-button name="CurrentEventCheckIn" *ngIf="!CurrentEventExists" (click)="checkIn()"> Check In </button>
   </ion-card-content>
 </ion-card>
     
