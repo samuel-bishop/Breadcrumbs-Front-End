@@ -33,36 +33,29 @@ export class vieweventsPage {
   inactiveEvents: any;
 
   constructor(public loadingCtrl: LoadingController, public navCtrl: NavController, public navParams: NavParams, public request: httprequest, public storage: Storage) {
-    this.presentLoadingDefault();
   }
 
   ionViewWillEnter() {
     this.getInactiveEvents();
     //Put the user's inactive events into local storage
-    this.storage.get('inactiveEvents').then((data) => {
-      this.inactiveEvents = data;
-    });
+
   }
 
   getInactiveEvents() {
-    this.request.RequestInactiveEvents(1)
-      .then(data => {
-        this.storage.set('inactiveEvents', data['recordset']);
-      });
-  }
-
-  presentLoadingDefault() {
     let loading = this.loadingCtrl.create({
-      content: 'Please wait...'
+      content: 'Loading Events...'
     });
-
-    loading.present();
-
-    setTimeout(() => {
-      loading.dismiss();
-    }, 1000);
+    loading.present().then(() => {
+      this.request.RequestInactiveEvents().then((data) => {
+        this.storage.set('inactiveEvents', data['recordset']).then(() => {
+          this.storage.get('inactiveEvents').then((data) => {
+            this.inactiveEvents = data;
+            loading.dismiss();
+          });
+        });
+      }, () => {loading.dismiss(); });
+    });
   }
-
 
   //When ViewEvent gets called, push viewEventPage onto stack.
   ViewEvent(e: any) {
