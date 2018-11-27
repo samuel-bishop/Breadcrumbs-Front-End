@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, List, DateTime, LoadingController } from 'ionic-angular';
+import { NavController, NavParams, List, DateTime, LoadingController, AlertController, Alert } from 'ionic-angular';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { addcontactPage } from '../addcontact/addcontact';
 import { httprequest } from '../../httprequest';
@@ -57,7 +57,7 @@ import { reflector } from '@angular/core/src/reflection/reflection';
         </ion-item>
 
         <ion-item>
-            <button ion-button (click)="addContactClick()">Add New Contact..</button>
+            <button ion-button type="button" (click)="addContactClick()">Add New Contact..</button>
         </ion-item>
 
         <ion-item>
@@ -82,12 +82,11 @@ export class addeventPage {
   todaysDate = new Date();
   todaysDateString: String = new Date(this.todaysDate.getTime() - this.todaysDate.getTimezoneOffset() * 60000).toISOString();
   private event: FormGroup;
-  constructor(public loadingCtrl: LoadingController, public navCtrl: NavController, public navParams: NavParams, public request: httprequest, public formBuilder: FormBuilder, public storage: Storage) {
+  constructor(public alertCtrl: AlertController, public loadingCtrl: LoadingController, public navCtrl: NavController, public navParams: NavParams, public request: httprequest, public formBuilder: FormBuilder, public storage: Storage) {
 
     storage.get('userID').then((data) => { this.userid = data; console.log(this.userid); });
     
     this.loadContacts();
-
     this.event = this.formBuilder.group({
       name: ['', Validators.required],
       description: ['', Validators.required],
@@ -100,75 +99,65 @@ export class addeventPage {
       contactsList: [''],
       participants: ['']
     });
-
-    this.presentLoadingContacts();
-
-    //console.log(this.contacts);
+    
   }
 
   eventForm() {
-    this.storage.set('newEventSubmit', true);
-    console.log("Set eventSubmit to true");
-    var contactsListString = "";
-    for (var i = 0; i < this.event.value.contactsList.length; i++) {
-      if (i != 0) {
-        contactsListString += ",";
-      }
-      if (this.event.value.contactsList[i] != "") {
-        contactsListString += this.event.value.contactsList[i].EmergencyContactID;
-      }
-    }
- 
-    console.log(contactsListString);
-
-    let eventData = {
-      "userid": this.userid,
-      "name": this.event.value.name,
-      "description": this.event.value.description,
-      "startLat": this.event.value.startLat,
-      "startLong": this.event.value.startLong,
-      "endLat": this.event.value.endLat,
-      "endLong": this.event.value.endLong,
-      "startDate": this.event.value.startDate,
-      "endDate": this.event.value.endDate,
-      "contactsList": contactsListString,
-      "participants": this.event.value.participants
-    }
-    this.request.InsertEvent(this.storage.get('userID'), eventData);
-    this.presentLoadingEvent();
-    this.navCtrl.pop();
-  }
-
-  presentLoadingContacts() {
-    let loading = this.loadingCtrl.create({
-      content: 'Loading contacts...'
-    });
-
-    loading.present();
-
-    setTimeout(() => {
-      loading.dismiss();
-    }, 250);
-  }
-
-  presentLoadingEvent() {
     let loading = this.loadingCtrl.create({
       content: 'Loading Event...'
     });
 
-    loading.present();
-
-    setTimeout(() => {
-      loading.dismiss();
-    }, 1000);
+    loading.present()
+      .then(() => {
+        this.storage.set('newEventSubmit', true)
+          .then(() => {
+            var contactsListString = "";
+            for (var i = 0; i < this.event.value.contactsList.length; i++) {
+              if (i != 0) {
+                contactsListString += ",";
+              }
+              if (this.event.value.contactsList[i] != "") {
+                contactsListString += this.event.value.contactsList[i].EmergencyContactID;
+              }
+            }
+            return contactsListString;
+          })
+          .then((contactsListString) => {
+            let eventData = {
+              "userid": this.userid,
+              "name": this.event.value.name,
+              "description": this.event.value.description,
+              "startLat": this.event.value.startLat,
+              "startLong": this.event.value.startLong,
+              "endLat": this.event.value.endLat,
+              "endLong": this.event.value.endLong,
+              "startDate": this.event.value.startDate,
+              "endDate": this.event.value.endDate,
+              "contactsList": contactsListString,
+              "participants": this.event.value.participants
+            }
+            return eventData;
+          })
+          .then((eventData) => {
+            this.request.InsertEvent(eventData);
+          })
+      }).then(() => { loading.dismiss(); this.navCtrl.pop();})
   }
 
   loadContacts() {
-    this.request.RequestContacts(1)
-      .then(data => {
+    let loading = this.loadingCtrl.create({
+      content: 'Loading Contacts...'
+    });
+    loading.present().then(() => {
+      this.request.RequestContacts(loading).then((data) => {
         this.contacts = data['recordset'];
-      })
-  }
+        loading.dismiss();
+      },
+        () => {
+          loading.dismiss();
+      });
+    });
+  } 
 
   cancelClick() {
     this.navCtrl.pop();
