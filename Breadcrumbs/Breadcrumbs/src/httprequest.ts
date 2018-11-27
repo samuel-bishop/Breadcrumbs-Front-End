@@ -103,4 +103,22 @@ export class httprequest {
         });
     })
   }
+
+  DisableEvent(eventID)
+  {
+    if (this.data)
+    {
+      return Promise.resolve(this.data);
+    }
+    return new Promise(resolve =>
+    {
+      this.http.get(aws_url + '/disableEvent/' + eventID)
+        .map(res => res.json())
+        .subscribe(data => {
+          this.data = data;
+          resolve(this.data);
+        });
+
+    })
+  }
 }

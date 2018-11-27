@@ -80,5 +80,12 @@ export class HomePage {
   addContact() {
     this.navCtrl.push(addcontactPage);
   }
-
+  
+  checkIn() {
+    this.storage.get('activeEvent').then((data) => {
+      this.request.DisableEvent(data.EventID);
+    });
+    console.log("disableEvent");
+  }
+  
 }
