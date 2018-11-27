@@ -10,8 +10,8 @@ import { AlertController, NavController } from 'ionic-angular';
   for more info on providers and Angular 2 DI.
 */
 
-//var aws_url = 'http://ec2-35-174-115-108.compute-1.amazonaws.com:4604' // original
-var aws_url = 'http://ec2-34-228-70-109.compute-1.amazonaws.com:4604' // copy
+var aws_url = 'http://ec2-35-174-115-108.compute-1.amazonaws.com:4604' // original
+//var aws_url = 'http://ec2-34-228-70-109.compute-1.amazonaws.com:4604' // copy
 
 @Injectable()
 export class httprequest {
@@ -124,19 +124,17 @@ export class httprequest {
 
   DisableEvent(eventID)
   {
-    if (this.data)
-    {
-      return Promise.resolve(this.data);
-    }
+    //console.log("HTTP-DisableEvent");
+    //if (this.data)
+    //{
+      //console.log("this");
+      //return Promise.resolve(this.data);
+    //}
     return new Promise(resolve =>
     {
-      this.http.get(aws_url + '/disableEvent/' + eventID)
-        .map(res => res.json())
-        .subscribe(data => {
-          this.data = data;
-          resolve(this.data);
-        });
-
+      var body = { 'eventID': eventID }
+      console.log(body.eventID);
+      this.http.post(aws_url + '/disableEvent/', body)
     })
   }
 }
