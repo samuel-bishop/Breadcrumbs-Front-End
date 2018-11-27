@@ -64,7 +64,7 @@ export class editeventPage {
   //}
 
   getActiveEvent() {
-    this.request.RequestActiveEvent(this.userid)
+    this.request.RequestActiveEvent()
       .then(data => {
         console.log("getActiveEvent()");
         console.log(data);
@@ -155,7 +155,7 @@ export class editeventPage {
       "contactsList": contactsListString,
       "participants": this.event.value.participants
     }
-    this.request.InsertEvent(this.storage.get('userID'), eventData);
+    this.request.InsertEvent(eventData);
     this.presentLoadingEvent();
     this.navCtrl.pop();
   }

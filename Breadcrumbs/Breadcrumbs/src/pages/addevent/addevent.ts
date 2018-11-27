@@ -99,7 +99,6 @@ export class addeventPage {
       contactsList: [''],
       participants: ['']
     });
-    
   }
 
   eventForm() {

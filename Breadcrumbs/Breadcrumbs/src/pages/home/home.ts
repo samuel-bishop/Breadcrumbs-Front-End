@@ -6,6 +6,7 @@ import { vieweventsPage } from '../viewevents/viewevents';
 import { httprequest } from '../../httprequest';
 import { Storage } from '@ionic/storage';
 import { Response, Request } from '@angular/http';
+import { editeventPage } from '../editevent/editevent';
 
 @Component({
   selector: 'page-home',
@@ -84,6 +85,10 @@ export class HomePage {
 
   addContact() {
     this.navCtrl.push(addcontactPage);
+  }
+
+  editEvent() {
+    this.navCtrl.push(editeventPage);
   }
   
   checkIn() {

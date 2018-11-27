@@ -65,7 +65,6 @@ export class vieweventsPage {
               let result: string = weekday + ', ' + month + ' ' + date + ', ' + year;
               return result;
             }
-
           });
         });
       });

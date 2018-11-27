@@ -107,6 +107,19 @@ export class httprequest {
     })
   }
 
+  InsertContact(userid, contactData) {
+    var header = new Headers();
+    header.append("Accept", 'application/json');
+    header.append('Content-Type', 'application/json');
+    const requestOpts = new RequestOptions({ headers: header });
+    this.http.post(aws_url + '/newContact', contactData, requestOpts)
+      .subscribe(data => {
+        console.log(data['_body']);
+      }, error => {
+        console.log(error);
+      });
+  }
+
   RequestEventContacts(eventID) {
     if (this.data) {
       return Promise.resolve(this.data);

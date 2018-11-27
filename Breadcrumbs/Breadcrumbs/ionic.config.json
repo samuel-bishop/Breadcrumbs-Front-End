@@ -1,10 +1,5 @@
 {
   "name": "Breadcrumbs",
-  "proxies": [
-    {
-      "proxyUrl":  "http://localhost:8101"
-    }
-  ],
   "integrations": {},
   "v2": true,
   "typescript": true

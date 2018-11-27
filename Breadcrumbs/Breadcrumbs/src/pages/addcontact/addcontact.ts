@@ -20,7 +20,6 @@ export class addcontactPage {
   private contact: FormGroup;
   constructor(public navCtrl: NavController, public navParams: NavParams, public request: httprequest, public formBuilder: FormBuilder, public storage: Storage)
   {
-    storage.get('userID').then((data) => { this.userid = data });
     this.contact = this.formBuilder.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
@@ -30,6 +29,7 @@ export class addcontactPage {
   }
 
   contactForm() {
+    this.storage.get('userID').then((data) => { this.userid = data 
     let contactData = {
       "userid": this.userid,
       "firstName": this.contact.value.firstName,
@@ -37,8 +37,10 @@ export class addcontactPage {
       "phoneNumber": this.contact.value.phoneNumber,
       "emailAddress": this.contact.value.emailAddress
     }
-    //this.request.InsertContact(this.storage.get('userID'), this.event.value);
-  }
+      this.request.InsertContact(this.storage.get('userID'), contactData);
+      this.navCtrl.pop();
+    });
+   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad addcontactPage');
