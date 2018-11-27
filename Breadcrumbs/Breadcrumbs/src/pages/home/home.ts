@@ -6,6 +6,7 @@ import { vieweventsPage } from '../viewevents/viewevents';
 import { httprequest } from '../../httprequest';
 import { Storage } from '@ionic/storage';
 import { Response, Request } from '@angular/http';
+import { editeventPage } from '../editevent/editevent';
 
 @Component({
   selector: 'page-home',
@@ -17,6 +18,7 @@ export class HomePage {
 
   userid: any;
   newEventSubmit: boolean;
+
   constructor(public loadingCtrl: LoadingController, public navCtrl: NavController, public request: httprequest, public storage: Storage) {
     //this.storage.clear();
     this.storage.set('newEventSubmit', true);
@@ -79,6 +81,10 @@ export class HomePage {
 
   addContact() {
     this.navCtrl.push(addcontactPage);
+  }
+
+  editEvent() {
+    this.navCtrl.push(editeventPage);
   }
 
 }
