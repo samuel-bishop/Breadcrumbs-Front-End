@@ -107,8 +107,6 @@ export class addeventPage {
       content: 'Loading Event...'
     });
 
-    loading.present()
-      .then(() => {
         this.storage.set('newEventSubmit', true)
           .then(() => {
             var contactsListString = "";
@@ -139,9 +137,12 @@ export class addeventPage {
             return eventData;
           })
           .then((eventData) => {
-            this.request.InsertEvent(eventData);
+            this.storage.set('lastState', 'addeventsubmit')
+              .then(() => {
+                this.request.InsertEvent(eventData);
+                this.navCtrl.pop();
+              });
           })
-      }).then(() => { loading.dismiss(); this.navCtrl.pop();})
   }
 
   loadContacts() {

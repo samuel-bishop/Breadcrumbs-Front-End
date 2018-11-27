@@ -30,18 +30,18 @@ export class httprequest {
     //Return a new promise
     return new Promise(resolve => { //Get the userid from storage
       this.storage.get('userID').then(userid => { //Create a GET call to the API servers contacts page
-        this.http.get(aws_url + '/contacts/' + userid) 
+        this.http.get(aws_url + '/contacts/' + userid)
           .map(res => res.json()) //Map the response as a JSON object
           .subscribe(data => { //Handle the returned value from .map
             this.data = data;
             resolve(this.data);
           },
-          //On error
-          (error) => {
-            var alert = this.alertCtrl.create({ title: 'Error', subTitle: error, buttons: ['ok'] });  //Display an error alert
-            alert.present();
-            loading.dismiss(); //Dismiss the loading screen
-          });
+            //On error
+            (error) => {
+              var alert = this.alertCtrl.create({ title: 'Error', subTitle: error, buttons: ['ok'] });  //Display an error alert
+              alert.present();
+              loading.dismiss(); //Dismiss the loading screen
+            });
       });
     })
   }
@@ -74,7 +74,7 @@ export class httprequest {
         console.log(error);
       });
   }
-  
+
   RequestActiveEvent() {
     if (this.data) {
       return Promise.resolve(this.data);
@@ -111,7 +111,7 @@ export class httprequest {
     if (this.data) {
       return Promise.resolve(this.data);
     }
-   
+
     return new Promise(resolve => {
       this.http.get(aws_url + '/eventContacts/' + eventID)
         .map(res => res.json())
@@ -122,19 +122,17 @@ export class httprequest {
     })
   }
 
-  DisableEvent(eventID)
-  {
-    //console.log("HTTP-DisableEvent");
-    //if (this.data)
-    //{
-      //console.log("this");
-      //return Promise.resolve(this.data);
-    //}
-    return new Promise(resolve =>
-    {
-      var body = { 'eventID': eventID }
-      console.log(body.eventID);
-      this.http.post(aws_url + '/disableEvent/', body)
-    })
+  DisableEvent(eventID) {
+    const requestOpts = new RequestOptions({ headers: header });
+    var header = new Headers();
+    header.append("Accept", 'application/json');
+    header.append('Content-Type', 'application/json')
+    var body = { 'eventID': eventID }
+    this.http.post(aws_url + '/disableEvent/', body)
+      .subscribe(data => {
+        console.log(data['_body']);
+      }, error => {
+        console.log(error);
+      });
   }
 }

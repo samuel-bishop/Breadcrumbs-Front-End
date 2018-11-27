@@ -1,14 +1,15 @@
 <!-- Put shit here -->
-<ion-card>
-  <ion-card-header>
-    Current Event
-  </ion-card-header>
-  <ion-card-content>
-    <ion-label id="activeEventContent"> </ion-label>
-   <button ion-button name="CurrentEventCheckIn" *ngIf="!CurrentEventExists" (click)="checkIn()"> Check In </button>
-  </ion-card-content>
-</ion-card>
-    
-<button ion-button (click)="addEvent()"> Add New Event </button>
-<button ion-button (click)="viewEvents()"> View Past Events </button>
-<button ion-button (click)="addContact()"> Add New Contact</button>
+
+  <ion-card>
+    <ion-card-header>
+      Current Event
+    </ion-card-header>
+    <ion-card-content>
+      <ion-label id="activeEventContent"> </ion-label>
+      <button ion-button name="CurrentEventCheckIn" *ngIf="CurrentEventExists" (click)="checkIn()"> Check In </button>
+    </ion-card-content>
+  </ion-card>
+
+  <button ion-button (click)="addEvent()"> Add New Event </button>
+  <button ion-button (click)="viewEvents()"> View Past Events </button>
+  <button ion-button (click)="addContact()"> Add New Contact</button>
