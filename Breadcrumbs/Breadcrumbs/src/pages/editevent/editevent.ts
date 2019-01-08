@@ -31,8 +31,16 @@ export class editeventPage {
     this.storage.set('userID', 1);
     this.storage.get('userID').then((data) => { this.userid = data; });
     storage.get('userID').then((data) => { this.userid = data; console.log(this.userid); });
-    //this.ionViewWillEnter();
-    this.loadContacts();
+    let loading = this.loadingCtrl.create({
+      content: 'Loading Contacts...'
+    });
+    loading.present().then(() => {
+      this.request.RequestContacts()
+        .then(data => {
+          this.contacts = data['recordset'];
+          loading.dismiss();
+        })
+    });
 
 
 
@@ -63,15 +71,6 @@ export class editeventPage {
   //  console.log('ionViewDidLoad editeventPage');
   //}
 
-  getActiveEvent() {
-    this.request.RequestActiveEvent()
-      .then(data => {
-        console.log("getActiveEvent()");
-        console.log(data);
-        this.storage.set('activeEvent', data['recordset'][0]);
-      })
-  }
-
   getCurrent() {
     var newEvent;
     //create enums for names of months and days
@@ -101,9 +100,6 @@ export class editeventPage {
       newEvent = data;
       console.log("newEventBool: " + newEvent);
       if (newEvent === true || document.getElementById("activeEventContent").innerText === "") {
-        this.getActiveEvent();
-        this.getActiveEvent();
-        this.getActiveEvent();
         this.storage.set('newEventSubmit', false);
         this.storage.get('activeEvent').then((data) => {
           console.log("activeEvent");
@@ -182,13 +178,6 @@ export class editeventPage {
     setTimeout(() => {
       loading.dismiss();
     }, 1000);
-  }
-
-  loadContacts() {
-    this.request.RequestContacts(1)
-      .then(data => {
-        this.contacts = data['recordset'];
-      })
   }
 
   cancelClick() {

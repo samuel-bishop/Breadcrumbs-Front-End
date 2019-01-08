@@ -13,7 +13,7 @@ export class viewEventPage {
 
   eventContacts: any;
   viewedEvent: any;
-
+  EventName: any;
   constructor(public loadingCtrl: LoadingController, public navCtrl: NavController, public navParams: NavParams, public request: httprequest, public storage: Storage) {
   }
 
@@ -66,6 +66,7 @@ export class viewEventPage {
                 return result;
               }
 
+            //this.EventName = data.EventName;
             //set the values for the elements in viewEvent
             document.getElementById("viewEventTitle").textContent = data.EventName;
             document.getElementById("EventStartDateLabel").textContent = formatTime(data.EventStartDate);
