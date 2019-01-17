@@ -15,7 +15,7 @@ import { editeventPage } from '../editevent/editevent';
 })
 
 export class HomePage {
-
+  inactiveEvents: any;
   userid: any;
   newEventSubmit: boolean;
   CurrentEventExists: boolean = false;
@@ -24,50 +24,50 @@ export class HomePage {
     this.storage.set('userID', userid);
   }
 
-  getActiveEvent() {
-    let loading = this.loadingCtrl.create({
-      content: 'Loading Event...'
-    });
-
-    loading.present()
-      .then(() => {
-        this.request.RequestActiveEvent()
-          .then(data => {
-            this.storage.set('activeEvent', data['recordset'][0])
-          }).then(() => {
-            this.storage.set('newEventSubmit', false)
-              .then(() => {
-                this.storage.get('activeEvent')
-                  .then((data) => {
-                    //Nothing is true, everything is permitted.
-                    //var alert = this.alertCtrl.create({ title: 'activeEventName', subTitle: data.EventName, buttons: ['ok'] });
-                    //alert.present();
-                    document.getElementById("activeEventContent").innerText = data.EventName;
-                    this.CurrentEventExists = true;
-                    loading.dismiss();
-                  }).catch(() => { document.getElementById("activeEventContent").innerText = "No Active Events"; loading.dismiss(); this.CurrentEventExists = false; } );
-              });
-          });
-      });
-  }
-
   ionViewWillEnter() {
     var newEvent;
     this.storage.get('lastState').then((data) => {
-      if (data === 'addeventsubmit')
-      {
+      if (data === 'addeventsubmit') {
         this.storage.set('lastState', 'homepageenter').then(() => {
           location.reload();
         });
       }
-
     }).then(() => {
       this.storage.get('newEventSubmit').then((data) => {
         newEvent = data;
         if (newEvent === true || document.getElementById("activeEventContent").innerText === "") {
           this.getActiveEvent();
+          this.getInactiveEvents();
         }
       });
+    });
+  }
+
+  getActiveEvent() {
+    let loading = this.loadingCtrl.create({
+      content: 'Loading Event...'
+    });
+    loading.present().then(() => {
+        this.request.RequestActiveEvent().then((data) => {
+          this.storage.set('activeEvent', data['recordset'][0]);
+          document.getElementById("activeEventContent").innerText = data['recordset'][0].EventName;
+          this.CurrentEventExists = true;
+          this.storage.set('newEventSubmit', false);
+        }).catch(() => { document.getElementById("activeEventContent").innerText = "No Active Events"; this.CurrentEventExists = false; });
+        loading.dismiss();
+    });
+  }
+
+  getInactiveEvents() {
+    this.request.RequestInactiveEvents().then((data) => {
+      this.storage.set('inactiveEvents', data['recordset']);
+      this.storage.set('newEventSubmit', false);
+     });
+  }
+
+  LoadContacts(EventID) {
+    this.request.RequestEventContacts(EventID).then((data) => {
+      return data;
     });
   }
 
@@ -94,8 +94,8 @@ export class HomePage {
   checkIn() {
     this.storage.get('activeEvent').then((data) => {
       this.request.DisableEvent(data.EventID);
-      this.CurrentEventExists = false;
     }).then(() => {
+      this.CurrentEventExists = false;
       this.storage.set('newEventSubmit', true)
         .then(() => {
           location.reload();

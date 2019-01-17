@@ -10,7 +10,7 @@
     </ion-card-content>
   </ion-card>
 
-  <button ion-button (click)="addEvent()"> Add New Event </button>
-  <button ion-button (click)="editEvent()"> Edit Active Event</button>
-  <button ion-button (click)="viewEvents()"> View Past Events </button>
-  <button ion-button (click)="addContact()"> Add New Contact</button>
+  <button ion-button type="button" (click)="addEvent()"> Add New Event </button>
+  <button ion-button type="button" *ngIf="CurrentEventExists" (click)="editEvent()"> Edit Active Event</button>
+  <button ion-button type="button" (click)="viewEvents()"> View Past Events </button>
+  <button ion-button type="button" (click)="addContact()"> Add New Contact</button>

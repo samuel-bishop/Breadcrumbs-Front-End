@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http, Headers, Request, RequestOptions } from '@angular/http';
 import { Storage } from '@ionic/storage';
 import 'rxjs/add/operator/map';
-import { AlertController, NavController } from 'ionic-angular';
+import { AlertController, LoadingController, NavController } from 'ionic-angular';
 
 /*
   Generated class for the httprequest provider.
@@ -17,12 +17,54 @@ var aws_url = 'http://ec2-35-174-115-108.compute-1.amazonaws.com:4604' // origin
 export class httprequest {
 
   data: Object;
-  constructor(public alertCtrl: AlertController, public http: Http, public navCtrl: NavController, public storage: Storage) {
+  constructor(public alertCtrl: AlertController, public loadingCtrl: LoadingController, public http: Http, public navCtrl: NavController, public storage: Storage) {
     console.log('Hello httprequest Provider');
   }
 
+  //Load Active Event 
+  RequestActiveEvent() {
+    if (this.data) {
+      return Promise.resolve(this.data);
+    }
+    return new Promise(resolve => {
+      this.storage.get('userID').then((userid) => {
+
+        this.http.get(aws_url + '/activeEvent/' + userid)
+          .map(res => res.json())
+          .subscribe(data => {
+            this.data = data; 
+            resolve(this.data);
+          },
+            //On Error
+          (error) => {
+            var alert = this.alertCtrl.create({ title: 'Error: Connection Issue', subTitle: 'Cannot establish connection to  Breadcrumbs server', buttons: ['ok'] });
+            alert.present();
+            });
+      });
+    })
+  }
+
+  RequestInactiveEvents() {
+    let data;
+    if (data) {
+      return Promise.resolve(this.data);
+    }
+    return new Promise(resolve => {
+      this.storage.get('userID').then((userid) => {
+        this.http.get(aws_url + '/inactiveEvents/' + userid)
+          .subscribe(data => {
+            data = data.json();
+            resolve(data);
+          }, (error) => {
+            var alert = this.alertCtrl.create({ title: 'Error: Connection Issue', subTitle: 'Cannot establish connection to Breadcrumbs server', buttons: ['ok'] });
+            alert.present();
+          });
+      });
+    })
+  }
+
   //Load contacts
-  RequestContacts(loading) {
+  RequestContacts() {
     //Check if the data has already be created
     if (this.data) {
       return Promise.resolve(this.data);
@@ -38,9 +80,8 @@ export class httprequest {
           },
             //On error
             (error) => {
-              var alert = this.alertCtrl.create({ title: 'Error', subTitle: error, buttons: ['ok'] });  //Display an error alert
+              var alert = this.alertCtrl.create({ title: 'Error: Connection Issue', subTitle: 'Cannot establish connection to  Breadcrumbs server', buttons: ['ok'] });  //Display an error alert
               alert.present();
-              loading.dismiss(); //Dismiss the loading screen
             });
       });
     })
@@ -75,37 +116,7 @@ export class httprequest {
       });
   }
 
-  RequestActiveEvent() {
-    if (this.data) {
-      return Promise.resolve(this.data);
-    }
-    return new Promise(resolve => {
-      this.storage.get('userID').then((userid) => {
-        this.http.get(aws_url + '/activeEvent/' + userid)
-          .map(res => res.json())
-          .subscribe(data => {
-            this.data = data;
-            resolve(this.data);
-          });
-      });
-    })
-  }
 
-  RequestInactiveEvents() {
-    if (this.data) {
-      return Promise.resolve(this.data);
-    }
-    return new Promise(resolve => {
-      this.storage.get('userID').then((userid) => {
-        this.http.get(aws_url + '/inactiveEvents/' + userid)
-          .map(res => res.json())
-          .subscribe(data => {
-            this.data = data;
-            resolve(this.data);
-          });
-      });
-    })
-  }
 
   InsertContact(userid, contactData) {
     var header = new Headers();
