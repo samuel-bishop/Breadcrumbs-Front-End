@@ -159,4 +159,19 @@ export class httprequest {
         console.log(error);
       });
   }
+
+  //Create User Account
+  CreateUser(userData) {
+    var headers = new Headers();
+    headers.append("Accept", 'application/json');
+    headers.append('Content-Type', 'application/json');
+    const requestOptions = new RequestOptions({ headers: headers });
+
+    this.http.post(aws_url + '/createUser/', userData, requestOptions)
+      .subscribe(data => {
+        console.log(data['_body']);
+      }, error => {
+        console.log(error);
+      });
+  }
 }
