@@ -10,7 +10,8 @@ import { AlertController, LoadingController, NavController } from 'ionic-angular
   for more info on providers and Angular 2 DI.
 */
 
-var aws_url = 'http://ec2-35-174-115-108.compute-1.amazonaws.com:4604' // original
+var aws_url = 'http://ec2-54-205-115-83.compute-1.amazonaws.com:4604' //1-20-19
+//var aws_url = 'http://ec2-35-174-115-108.compute-1.amazonaws.com:4604' // original
 //var aws_url = 'http://ec2-34-228-70-109.compute-1.amazonaws.com:4604' // copy
 
 @Injectable()
@@ -161,13 +162,13 @@ export class httprequest {
   }
 
   //Create User Account
-  CreateUser(userData) {
+  CreateUser(data) {
     var headers = new Headers();
     headers.append("Accept", 'application/json');
     headers.append('Content-Type', 'application/json');
     const requestOptions = new RequestOptions({ headers: headers });
-
-    this.http.post(aws_url + '/createUser/', userData, requestOptions)
+ 
+    this.http.post(aws_url + '/createUser/', data)
       .subscribe(data => {
         console.log(data['_body']);
       }, error => {
