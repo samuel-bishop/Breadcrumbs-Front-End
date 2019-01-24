@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
     "declaration": false,
     "emitDecoratorMetadata": true,
@@ -23,4 +24,6 @@
   "atom": {
     "rewriteTsconfig": false
   }
+
 }
+
