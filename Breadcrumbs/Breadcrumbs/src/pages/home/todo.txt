@@ -1,0 +1,2 @@
+Current Location on AddEventPage
+Current Location on EditEventPage

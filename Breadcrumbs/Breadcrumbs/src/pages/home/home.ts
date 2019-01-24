@@ -1,12 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { NavController, LoadingController, AlertController } from 'ionic-angular';
 import { addeventPage } from '../addevent/addevent';
 import { addcontactPage } from '../addcontact/addcontact';
 import { vieweventsPage } from '../viewevents/viewevents';
 import { httprequest } from '../../httprequest';
 import { Storage } from '@ionic/storage';
-import { Response, Request } from '@angular/http';
 import { editeventPage } from '../editevent/editevent';
+import { GoogleMap, GoogleMaps, GoogleMapOptions } from "@ionic-native/google-maps";
+import { Geolocation } from "@ionic-native/geolocation";
+import { mapPage } from '../map/map';
+
+declare var google;
 
 @Component({
   selector: 'page-home',
@@ -15,10 +19,13 @@ import { editeventPage } from '../editevent/editevent';
 })
 
 export class HomePage {
+  @ViewChild('map') mapElement: ElementRef;
   inactiveEvents: any;
   userid: any;
   newEventSubmit: boolean;
   CurrentEventExists: boolean = false;
+  map: any;
+  location: any;
   constructor(public alertCtrl: AlertController, public loadingCtrl: LoadingController, public navCtrl: NavController, public request: httprequest, public storage: Storage) {
     var userid = 1;
     this.storage.set('userID', userid);
@@ -40,7 +47,7 @@ export class HomePage {
           this.getInactiveEvents();
         }
       });
-    });
+      });
   }
 
   getActiveEvent() {
@@ -69,6 +76,10 @@ export class HomePage {
     this.request.RequestEventContacts(EventID).then((data) => {
       return data;
     });
+  }
+
+   viewMap() {
+    this.navCtrl.push(mapPage);
   }
 
   onLink(url: string) {

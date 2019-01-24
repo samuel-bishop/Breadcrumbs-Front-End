@@ -1,183 +1,238 @@
-import { Component } from '@angular/core';
-import { NavController, NavParams, List, DateTime, LoadingController } from 'ionic-angular';
-import { Storage } from '@ionic/storage';
+import { Component, ElementRef, ViewChild } from '@angular/core';
+import { NavController, NavParams, DateTime, LoadingController, AlertController, Alert } from 'ionic-angular';
+import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { addcontactPage } from '../addcontact/addcontact';
 import { httprequest } from '../../httprequest';
-import { Validators, FormBuilder, FormGroup, NgControl, NgModel } from '@angular/forms';
+import { Storage } from '@ionic/storage';
+import { reflector } from '@angular/core/src/reflection/reflection';
+import { Geolocation } from '@ionic-native/geolocation';
+import {
+  GoogleMaps,
+  GoogleMap,
+  GoogleMapsEvent,
+  GoogleMapOptions,
+  CameraPosition,
+  MarkerOptions,
+  Marker,
+  Environment,
+  LatLng
+} from '@ionic-native/google-maps';
+import { getTypeNameForDebugging } from '@angular/core/src/facade/lang';
 
-/*
-  Generated class for the editevent page.
 
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
+declare var google;
+var EditEventMap;
+var startLocMarker; //Marker Object for Start Location on Google Map
+var endLocMarker; //Marker Object for End Location on Google Map
+var isStartOrEndDestination; //Map marker toggle between Start and End Position
+var autocomplete;
+var places;
 @Component({
   selector: 'page-editevent',
   templateUrl: 'editevent.html',
-  providers: [httprequest],
-  //selector: NgModel
+  providers: [httprequest]
 })
-export class editeventPage {
-  userid: any;
-  contacts: any;
-  todaysDate = new Date();
-  currentEvent: any;
-  evName: any;
-  todaysDateString: String = new Date(this.todaysDate.getTime() - this.todaysDate.getTimezoneOffset() * 60000).toISOString();
-  private event: FormGroup;
 
-  constructor(public loadingCtrl: LoadingController, public navCtrl: NavController, public request: httprequest, public storage: Storage, public formBuilder: FormBuilder/*, private model: NgControl*/) {
-    this.storage.set('newEventSubmit', true);
-    this.storage.set('userID', 1);
-    this.storage.get('userID').then((data) => { this.userid = data; });
+export class editeventPage {
+  //Variables
+  contacts: any;
+  userid: any;
+  todaysDate = new Date();
+  todaysDateString: String = new Date(this.todaysDate.getTime() - this.todaysDate.getTimezoneOffset() * 60000).toISOString(); //Stringified Event Start Date
+  endDateString: String = new Date(this.todaysDate.getTime() - this.todaysDate.getTimezoneOffset() * 58750).toISOString();  //Stringified Event End Date
+  eventName: any;
+  eventDescription: any;
+  eventParticipants: any;
+  eventStartDate: any;
+  eventEndDate: any;
+  eventContactsList: any;
+
+  private event: FormGroup;
+  @ViewChild('EditEventMap') EditEventMapEl: ElementRef;
+  constructor(public alertCtrl: AlertController, public loadingCtrl: LoadingController, public navCtrl: NavController, public navParams: NavParams, public request: httprequest, public formBuilder: FormBuilder, public storage: Storage) {
+    //Initialize google EditEventMap and markers
+    this.loadContacts();
+    isStartOrEndDestination = false;
+    //Creating Forms
     storage.get('userID').then((data) => { this.userid = data; console.log(this.userid); });
+    this.event = this.formBuilder.group({
+      name: ['', Validators.required],
+      description: ['', Validators.required],
+      startLat: [''],
+      startLong: [''],
+      endLat: [''],
+      endLong: [''],
+      startDate: ['', Validators.required],
+      endDate: ['', Validators.required],
+      contactsList: ['', Validators.required],
+      participants: ['']
+    });
+  }
+
+  ionViewWillLoad() {
+    
+    //CurrentEvent stores the last submitted event's data
+    this.storage.get('CurrentEvent').then((event) => {
+      this.eventName = event.name;
+      this.eventContactsList = event.contactsList;
+      this.eventDescription = event.description;
+      this.eventEndDate = event.endDate;
+      this.eventStartDate = event.startDate;
+      this.eventParticipants = event.participants;
+
+      /* TODO */
+      //Need to populate the contacts list with previously selected items
+      //for(var contact in event.contactsList) {
+      //  for (var oldcontact in this.contacts) {
+      //    if (contact == oldcontact) {
+
+      //    }
+      //  }
+      //}
+    })
+  }
+
+  ionViewDidLoad() {
+    this.initMap();
+    
+  }
+
+  initMap() {
+    //CurrentEvent stores the last submitted event's data
+    this.storage.get('CurrentEvent').then((event) => {
+      //var alert = this.alertCtrl.create({ title: 'Error: Connection Issue', subTitle: `${event}`, buttons: ['ok'] });
+      //alert.present();
+      let element = this.EditEventMapEl.nativeElement;
+      EditEventMap = new google.maps.Map(element, {
+        zoom: 7,
+        center: { lat: event.startLat, lng: event.startLong },
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      });
+
+      //Create location markers for start and end point of currently active event
+      startLocMarker = new google.maps.Marker({ position: new LatLng(event.startLat, event.startLong), map: EditEventMap, label: 'S' });
+      endLocMarker = new google.maps.Marker({ position: new LatLng(event.endLat, event.endLong), map: EditEventMap, label: 'E' });
+    }).then(() => {
+      /* Listeners */
+
+      // OnClick Listener
+      EditEventMap.addListener('click', function (event) {
+        if (isStartOrEndDestination == true) {
+          if (startLocMarker != null) {
+            startLocMarker.setMap(null);
+          }
+          startLocMarker = new google.maps.Marker({ position: event.latLng, map: EditEventMap, label: 'S' });
+        }
+        else {
+          if (endLocMarker != null) {
+            endLocMarker.setMap(null);
+          }
+          endLocMarker = new google.maps.Marker({ position: event.latLng, map: EditEventMap, label: 'E' });
+        }
+      }); 
+    });
+  }
+
+  search() {
+    var search = {
+      bounds: EditEventMap.getBounds(),
+      types: ['lodging']
+    };
+  }
+
+  //Toggle between dropping "Start" or "End" location markers
+  togglePosition() {
+    if (isStartOrEndDestination == true) {
+      isStartOrEndDestination = false;
+      document.getElementById('togglePosition').textContent = "End";
+    }
+    else {
+      isStartOrEndDestination = true;
+      document.getElementById('togglePosition').textContent = "Start";
+    }
+  }
+
+  addMarker(pos: LatLng, title: string) {
+    let markerOptions: MarkerOptions = {
+      position: pos,
+      title: title
+    }
+    return EditEventMap.addMarker(markerOptions);
+  }
+
+  eventForm() {
+    let endDate = new Date(this.event.value.endDate);
+    if (this.event.value.contactsList == null) {
+      var alert = this.alertCtrl.create({ title: 'Error: No Contacts Selected', subTitle: 'Please select at least one contact', buttons: ['ok'] });
+      alert.present();
+    }
+    if (this.event.value.endDate < this.event.value.startDate) {
+      var alert = this.alertCtrl.create({ title: 'Error: Time Conflict', subTitle: 'Please check that your dates are not conflicting (End Date should not be before Start Date)', buttons: ['ok'] });
+      alert.present();
+    }
+    else if (endLocMarker.getMap() === null) {
+      var alert = this.alertCtrl.create({ title: 'Error: Input Error', subTitle: 'Please select an end point on the EditEventMap', buttons: ['ok'] });
+      alert.present();
+    }
+    else {
+      let loading = this.loadingCtrl.create({
+        content: 'Loading Event...'
+      });
+
+      this.storage.set('newEventSubmit', true)
+        .then(() => {
+          var contactsListString = "";
+          for (let i = 0; i < this.event.value.contactsList.length; i++) {
+            if (i != 0) {
+              contactsListString += ",";
+            }
+            if (this.event.value.contactsList[i] != "") {
+              contactsListString += this.event.value.contactsList[i].EmergencyContactID;
+            }
+          }
+          return contactsListString;
+        })
+        .then((contactsListString) => {
+          console.log(`startLocPos- lat: ${startLocMarker.getPosition().lat()} lng: ${startLocMarker.getPosition().lng()}`);
+          let eventData = {
+            "userid": this.userid,
+            "name": this.event.value.name,
+            "description": this.event.value.description,
+            "startLat": startLocMarker.getPosition().lat(),
+            "startLong": startLocMarker.getPosition().lng(),
+            "endLat": endLocMarker.getPosition().lat(),
+            "endLong": endLocMarker.getPosition().lng(),
+            "startDate": this.event.value.startDate,
+            "endDate": this.event.value.endDate,
+            "contactsList": contactsListString,
+            "participants": this.event.value.participants
+          }
+          this.storage.set('CurrentEvent', eventData);
+          return eventData;
+        })
+        .then((eventData) => {
+          this.storage.set('lastState', 'addeventsubmit')
+            .then(() => {
+              this.request.InsertEvent(eventData);
+              this.navCtrl.pop();
+            });
+        })
+    }
+  }
+
+
+
+  loadContacts() {
     let loading = this.loadingCtrl.create({
       content: 'Loading Contacts...'
     });
+
     loading.present().then(() => {
-      this.request.RequestContacts()
-        .then(data => {
-          this.contacts = data['recordset'];
-          loading.dismiss();
-        })
-    });
-
-
-
-    //this.storage.set('data', this.ionViewWillEnter());
-
-
-    this.getCurrent();
-
-    
-
-    this.event = this.formBuilder.group({
-     name: ['', Validators.required],
-      description: ['', Validators.required],
-      startLat: ['', Validators.required],
-      startLong: ['', Validators.required],
-      endLat: ['', Validators.required],
-      endLong: ['', Validators.required],
-      startDate: ['', Validators.required],
-      endDate: ['', Validators.required],
-      contactsList: [''],
-      participants: ['']
-    });
-
-    this.presentLoadingContacts();
-  }
-
-  //ionViewDidLoad() {
-  //  console.log('ionViewDidLoad editeventPage');
-  //}
-
-  getCurrent() {
-    var newEvent;
-    //create enums for names of months and days
-    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
-    //function to convert SQL Server smalldatetime to a more human readable string - need to move this outside ionViewWillEnter and make global.
-    function formatTime(datetime: string): string {
-      let year: string = (new Date(datetime).getFullYear()).toString();
-      let month: string = monthNames[(new Date(datetime).getMonth())];
-      let weekday: string = dayNames[(new Date(datetime).getDay())];
-      let date: string = (new Date(datetime).getDate()).toString();
-      let time: string = new Date(datetime).toISOString().slice(11, 16);
-      let hourInt: number = parseInt(time.slice(0, 2));
-      if (hourInt > 12) {
-        hourInt -= 12;
-        time = hourInt.toString() + time.slice(2) + ' PM';
-      }
-      else time = time + ' AM';
-      if (time.startsWith('0')) time = time.slice(1);
-
-      let result: string = weekday + ', ' + month + ' ' + date + ', ' + year + ' at ' + time;
-      return result;
-    }
-
-    this.storage.get('newEventSubmit').then((data) => {
-      newEvent = data;
-      console.log("newEventBool: " + newEvent);
-      if (newEvent === true || document.getElementById("activeEventContent").innerText === "") {
-        this.storage.set('newEventSubmit', false);
-        this.storage.get('activeEvent').then((data) => {
-          console.log("activeEvent");
-          console.log(data);
-          console.log("EventName: " + data.EventName);
-          document.getElementById("viewEventTitle").textContent = data.EventName;
-          document.getElementById("EventStartDateLabel").textContent = formatTime(data.EventStartDate);
-          document.getElementById("EventEndDateLabel").textContent = formatTime(data.EndDate);
-          document.getElementById("EventPosLatLabel").textContent = data.PositionLatitude;
-          document.getElementById("EventPosLonLabel").textContent = data.PositionLongitude;
-          document.getElementById("EventParticipantsLabel").textContent = data.EventParticipants ? data.EventParticipants : '(blank)';
-          document.getElementById("EventDescriptionLabel").textContent = data.EventDescription ? data.EventDescription : '(blank)';
-          this.evName = data.EventName;
-        });
-
-      }
-
-    });
-  }
-
-
-
-
-  eventForm() {
-    this.storage.set('newEventSubmit', true);
-    console.log("Set eventSubmit to true");
-    var contactsListString = "";
-    for (var i = 0; i < this.event.value.contactsList.length; i++) {
-      if (i != 0) {
-        contactsListString += ",";
-      }
-      if (this.event.value.contactsList[i] != "") {
-        contactsListString += this.event.value.contactsList[i].EmergencyContactID;
-      }
-    }
-
-    console.log(contactsListString);
-
-    let eventData = {
-      "userid": this.userid,
-      "name": this.event.value.name,
-      "description": this.event.value.description,
-      "startLat": this.event.value.startLat,
-      "startLong": this.event.value.startLong,
-      "endLat": this.event.value.endLat,
-      "endLong": this.event.value.endLong,
-      "startDate": this.event.value.startDate,
-      "endDate": this.event.value.endDate,
-      "contactsList": contactsListString,
-      "participants": this.event.value.participants
-    }
-    this.request.InsertEvent(eventData);
-    this.presentLoadingEvent();
-    this.navCtrl.pop();
-  }
-
-  presentLoadingContacts() {
-    let loading = this.loadingCtrl.create({
-      content: 'Loading contacts...'
-    });
-
-    loading.present();
-
-    setTimeout(() => {
+      this.request.RequestContacts().then((data) => {
+        this.contacts = data['recordset'];
+      });
       loading.dismiss();
-    }, 250);
-  }
-
-  presentLoadingEvent() {
-    let loading = this.loadingCtrl.create({
-      content: 'Loading Event...'
     });
-
-    loading.present();
-
-    setTimeout(() => {
-      loading.dismiss();
-    }, 1000);
   }
 
   cancelClick() {

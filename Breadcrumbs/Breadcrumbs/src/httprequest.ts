@@ -10,7 +10,7 @@ import { AlertController, LoadingController, NavController } from 'ionic-angular
   for more info on providers and Angular 2 DI.
 */
 
-var aws_url = 'http://ec2-35-174-115-108.compute-1.amazonaws.com:4604' // original
+var aws_url = 'http://ec2-3-83-139-162.compute-1.amazonaws.com:4604' // original
 //var aws_url = 'http://ec2-34-228-70-109.compute-1.amazonaws.com:4604' // copy
 
 @Injectable()
@@ -39,6 +39,28 @@ export class httprequest {
           (error) => {
             var alert = this.alertCtrl.create({ title: 'Error: Connection Issue', subTitle: 'Cannot establish connection to  Breadcrumbs server', buttons: ['ok'] });
             alert.present();
+            });
+      });
+    })
+  }
+
+  RequestActiveEventEndLoc() {
+    if (this.data) {
+      return Promise.resolve(this.data);
+    }
+    return new Promise(resolve => {
+      this.storage.get('userID').then((userid) => {
+
+        this.http.get(aws_url + '/activeEventEndLoc/' + userid)
+          .map(res => res.json())
+          .subscribe(data => {
+            this.data = data;
+            resolve(this.data);
+          },
+            //On Error
+            (error) => {
+              var alert = this.alertCtrl.create({ title: 'Error: Connection Issue', subTitle: 'Cannot establish connection to  Breadcrumbs server', buttons: ['ok'] });
+              alert.present();
             });
       });
     })
