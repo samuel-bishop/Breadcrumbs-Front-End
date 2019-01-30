@@ -1,0 +1,30 @@
+<form [formGroup]="editcontact" (ngSubmit)="editcontactForm()">
+
+  <ion-list>
+
+    <ion-item>
+      <ion-input placeholder="Contact ID" formControlName="contactID" type="text"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-input placeholder="First Name" formControlName="firstName" type="text"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-input placeholder="Last Name" formControlName="lastName" type="text"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-input placeholder="Phone Number" formControlName="phoneNumber" type="text"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-input placeholder="Email Address" formControlName="emailAddress" type="text"></ion-input>
+    </ion-item>
+
+  </ion-list>
+
+  <button ion-button type="button" (click)="findIDClick()">Find</button>
+  <button ion-button type="button" (click)="cancelClick()">Cancel</button>
+  <button ion-button type="submit" [disabled]="!editcontact.valid">Submit</button>
+</form>

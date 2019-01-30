@@ -116,8 +116,6 @@ export class httprequest {
       });
   }
 
-
-
   InsertContact(userid, contactData) {
     var header = new Headers();
     header.append("Accept", 'application/json');

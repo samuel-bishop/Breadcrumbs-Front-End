@@ -7,6 +7,7 @@ import { httprequest } from '../../httprequest';
 import { Storage } from '@ionic/storage';
 import { Response, Request } from '@angular/http';
 import { editeventPage } from '../editevent/editevent';
+import { editcontactPage } from '../editcontact/editcontact';
 
 @Component({
   selector: 'page-home',
@@ -85,6 +86,10 @@ export class HomePage {
 
   addContact() {
     this.navCtrl.push(addcontactPage);
+  }
+
+  editContact() {
+    this.navCtrl.push(editcontactPage);
   }
 
   editEvent() {
