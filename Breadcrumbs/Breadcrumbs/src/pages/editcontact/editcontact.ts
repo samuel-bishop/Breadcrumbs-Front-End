@@ -52,6 +52,6 @@ export class editcontactPage {
   }
 
   findcontactIDClick() {
-    contactID: 'Test';
+//    contactID: 'Test';
   }
 }
