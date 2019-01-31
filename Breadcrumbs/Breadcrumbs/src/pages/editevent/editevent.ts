@@ -46,7 +46,10 @@ export class editeventPage {
   eventStartDate: any;
   eventEndDate: any;
   eventContactsList: any;
-
+  eventStartLat: any;
+  eventStartLng: any;
+  eventEndLat: any;
+  eventEndLng: any;
   private event: FormGroup;
   @ViewChild('EditEventMap') EditEventMapEl: ElementRef;
   constructor(public alertCtrl: AlertController, public loadingCtrl: LoadingController, public navCtrl: NavController, public navParams: NavParams, public request: httprequest, public formBuilder: FormBuilder, public storage: Storage) {
@@ -72,14 +75,16 @@ export class editeventPage {
   ionViewWillLoad() {
     
     //CurrentEvent stores the last submitted event's data
-    this.storage.get('CurrentEvent').then((event) => {
-      this.eventName = event.name;
-      this.eventContactsList = event.contactsList;
-      this.eventDescription = event.description;
-      this.eventEndDate = event.endDate;
-      this.eventStartDate = event.startDate;
-      this.eventParticipants = event.participants;
-
+    this.storage.get('activeEvent').then((event) => {
+      this.eventName = event.EventName;
+      this.eventDescription = event.EventDescription;
+      this.eventEndDate = event.EndDate;
+      this.eventStartDate = event.EventCreationDate;
+      this.eventParticipants = event.EventParticipants;
+      this.eventStartLat = event.StartLat;
+      this.eventStartLng = event.StartLon;
+      this.eventEndLat = event.EndLat;
+      this.eventEndLng = event.EndLon;
       /* TODO */
       //Need to populate the contacts list with previously selected items
       //for(var contact in event.contactsList) {
@@ -99,19 +104,19 @@ export class editeventPage {
 
   initMap() {
     //CurrentEvent stores the last submitted event's data
-    this.storage.get('CurrentEvent').then((event) => {
+    this.storage.get('activeEvent').then((event) => {
       //var alert = this.alertCtrl.create({ title: 'Error: Connection Issue', subTitle: `${event}`, buttons: ['ok'] });
       //alert.present();
       let element = this.EditEventMapEl.nativeElement;
       EditEventMap = new google.maps.Map(element, {
         zoom: 7,
-        center: { lat: event.startLat, lng: event.startLong },
+        center: { lat: event.StartLat, lng: event.StartLon},
         mapTypeId: google.maps.MapTypeId.ROADMAP
       });
 
       //Create location markers for start and end point of currently active event
-      startLocMarker = new google.maps.Marker({ position: new LatLng(event.startLat, event.startLong), map: EditEventMap, label: 'S' });
-      endLocMarker = new google.maps.Marker({ position: new LatLng(event.endLat, event.endLong), map: EditEventMap, label: 'E' });
+      startLocMarker = new google.maps.Marker({ position: new LatLng(event.StartLat, event.StartLon), map: EditEventMap, label: 'S' });
+      endLocMarker = new google.maps.Marker({ position: new LatLng(event.EndLat, event.EndLon), map: EditEventMap, label: 'E' });
     }).then(() => {
       /* Listeners */
 

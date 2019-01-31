@@ -64,12 +64,14 @@ export class addeventPage {
 
   initMap() {
     //Init Google Maps API objects
-    this.currentLat = 0.0;
-    this.currentLng = 0.0;
+    this.currentLat = 42.2587;
+    this.currentLng = 121.7836;
     let geo = new Geolocation();
     geo.getCurrentPosition().then((loc) => {
-      this.currentLat = loc.coords.latitude;
-      this.currentLng = loc.coords.longitude;
+      if (loc != null) {
+        this.currentLat = loc.coords.latitude;
+        this.currentLng = loc.coords.longitude;
+      }
       console.log(`geo - Lat: ${loc.coords.latitude}, Lng: ${loc.coords.longitude}`);
     }).then(() => {
       let element = this.AddEventMapEl.nativeElement;
