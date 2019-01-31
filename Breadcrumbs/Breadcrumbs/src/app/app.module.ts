@@ -23,7 +23,7 @@ import { editcontactPage } from '../pages/editcontact/editcontact';
     viewEventPage,
     editeventPage,
     eventEditPage,
-    editcontactPage
+    editcontactPage,
     eventEditPage,
     LoginPagePage,
     RegisterPage
@@ -42,7 +42,7 @@ import { editcontactPage } from '../pages/editcontact/editcontact';
     editeventPage,
     eventEditPage,
     LoginPagePage,
-    RegisterPage
+    RegisterPage,
     eventEditPage,
     editcontactPage
   ],
