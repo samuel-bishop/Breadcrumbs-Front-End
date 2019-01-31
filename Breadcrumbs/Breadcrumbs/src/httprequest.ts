@@ -10,7 +10,7 @@ import { AlertController, LoadingController, NavController } from 'ionic-angular
   for more info on providers and Angular 2 DI.
 */
 
-var aws_url = 'http://ec2-3-83-139-162.compute-1.amazonaws.com:4604' // original
+var aws_url = 'http://ec2-3-89-98-89.compute-1.amazonaws.com:4604' // original
 //var aws_url = 'http://ec2-34-228-70-109.compute-1.amazonaws.com:4604' // copy
 
 @Injectable()
@@ -37,8 +37,8 @@ export class httprequest {
           },
             //On Error
           (error) => {
-            var alert = this.alertCtrl.create({ title: 'Error: Connection Issue', subTitle: 'Cannot establish connection to  Breadcrumbs server', buttons: ['ok'] });
-            alert.present();
+            //var alert = this.alertCtrl.create({ title: 'Error: Connection Issue', subTitle: 'Cannot establish connection to  Breadcrumbs server', buttons: ['ok'] });
+            //alert.present();
             });
       });
     })
@@ -59,8 +59,8 @@ export class httprequest {
           },
             //On Error
             (error) => {
-              var alert = this.alertCtrl.create({ title: 'Error: Connection Issue', subTitle: 'Cannot establish connection to  Breadcrumbs server', buttons: ['ok'] });
-              alert.present();
+              //var alert = this.alertCtrl.create({ title: 'Error: Connection Issue', subTitle: 'Cannot establish connection to  Breadcrumbs server', buttons: ['ok'] });
+              //alert.present();
             });
       });
     })
@@ -78,8 +78,8 @@ export class httprequest {
             data = data.json();
             resolve(data);
           }, (error) => {
-            var alert = this.alertCtrl.create({ title: 'Error: Connection Issue', subTitle: 'Cannot establish connection to Breadcrumbs server', buttons: ['ok'] });
-            alert.present();
+            //var alert = this.alertCtrl.create({ title: 'Error: Connection Issue', subTitle: 'Cannot establish connection to Breadcrumbs server', buttons: ['ok'] });
+            //alert.present();
           });
       });
     })
@@ -102,8 +102,8 @@ export class httprequest {
           },
             //On error
             (error) => {
-              var alert = this.alertCtrl.create({ title: 'Error: Connection Issue', subTitle: 'Cannot establish connection to  Breadcrumbs server', buttons: ['ok'] });  //Display an error alert
-              alert.present();
+              //var alert = this.alertCtrl.create({ title: 'Error: Connection Issue', subTitle: 'Cannot establish connection to  Breadcrumbs server', buttons: ['ok'] });  //Display an error alert
+              //alert.present();
             });
       });
     })
