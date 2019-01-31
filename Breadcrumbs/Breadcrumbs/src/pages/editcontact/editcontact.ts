@@ -17,6 +17,7 @@ import { Storage } from '@ionic/storage';
 })
 export class editcontactPage {
   userid: any;
+  contactFirstName: any;
   private editcontact: FormGroup;
   constructor(public navCtrl: NavController, public navParams: NavParams, public request: httprequest, public formBuilder: FormBuilder, public storage: Storage) {
     this.editcontact = this.formBuilder.group({
@@ -52,6 +53,6 @@ export class editcontactPage {
   }
 
   findcontactIDClick() {
-//    contactID: 'Test';
+    //this.contactFirstName;
   }
 }
