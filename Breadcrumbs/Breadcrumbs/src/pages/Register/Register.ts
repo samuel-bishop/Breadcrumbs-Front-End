@@ -1,7 +1,8 @@
 import { Component, ViewChild } from '@angular/core';
 import { NavController, NavParams, AlertController } from 'ionic-angular';
 import { httprequest } from '../../httprequest';
-
+import { Storage } from '@ionic/storage';
+import { HomePage } from '../home/home';
 /*
   Generated class for the Register page.
 
@@ -20,14 +21,17 @@ export class RegisterPage {
   @ViewChild("mobile") phonenumber;
   @ViewChild("username") username;
   @ViewChild("password") password;
-    constructor(public navCtrl: NavController, public navParams: NavParams, public alertCtrl: AlertController, public request: httprequest) { }
+  data: Object;
+  userID: any;
+  
+    constructor(public navCtrl: NavController, public navParams: NavParams, public alertCtrl: AlertController, public request: httprequest, public storage: Storage) { }
 
     ionViewDidLoad() {
         console.log('ionViewDidLoad RegisterPage');
     }
 
   Register() {
-      //check fields to see if they are valid
+    //check fields to see if they are valid
     if (this.firstName.value == "") {
       let alert = this.alertCtrl.create({
         title: "Attention", subTitle: "First Name field is empty", buttons: ["Ok"]
@@ -66,13 +70,26 @@ export class RegisterPage {
               } else
               //submit data if all feilds are valid
               {
-                let data = {
+                let data2 = {
                   username: this.username.value,
                   password: this.password.value,
+                  userID: -1
                 }
-                this.request.CreateUser(data);
+                this.request.CreateUser(data2);
+                this.GetUserID(data2);
               }
+  }
+ 
       
+  GetUserID(data2) {
+    this.request.GetUserID(data2.username)
+      .then(data => {
+        this.storage.set('userID', data['recordset']);
+      })
+
+    if (this.userID != -1) {
+      this.navCtrl.push(HomePage);
+    }
   }
 
   Cancel() {

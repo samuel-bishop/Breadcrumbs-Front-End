@@ -4,12 +4,141 @@ webpackJsonp([0],{
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return HomePage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__addevent_addevent__ = __webpack_require__(478);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__addcontact_addcontact__ = __webpack_require__(214);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__viewevents_viewevents__ = __webpack_require__(479);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__httprequest__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__ionic_storage__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__editevent_editevent__ = __webpack_require__(481);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+
+
+
+var HomePage = /** @class */ (function () {
+    function HomePage(alertCtrl, loadingCtrl, navCtrl, request, storage) {
+        this.alertCtrl = alertCtrl;
+        this.loadingCtrl = loadingCtrl;
+        this.navCtrl = navCtrl;
+        this.request = request;
+        this.storage = storage;
+        this.CurrentEventExists = false;
+        var userid = 1;
+        this.storage.set('userID', userid);
+    }
+    HomePage.prototype.ionViewWillEnter = function () {
+        var _this = this;
+        var newEvent;
+        this.storage.get('lastState').then(function (data) {
+            if (data === 'addeventsubmit') {
+                _this.storage.set('lastState', 'homepageenter').then(function () {
+                    location.reload();
+                });
+            }
+        }).then(function () {
+            _this.storage.get('newEventSubmit').then(function (data) {
+                newEvent = data;
+                if (newEvent === true || document.getElementById("activeEventContent").innerText === "") {
+                    _this.getActiveEvent();
+                    _this.getInactiveEvents();
+                }
+            });
+        });
+    };
+    HomePage.prototype.getActiveEvent = function () {
+        var _this = this;
+        var loading = this.loadingCtrl.create({
+            content: 'Loading Event...'
+        });
+        loading.present().then(function () {
+            _this.request.RequestActiveEvent().then(function (data) {
+                _this.storage.set('activeEvent', data['recordset'][0]);
+                document.getElementById("activeEventContent").innerText = data['recordset'][0].EventName;
+                _this.CurrentEventExists = true;
+                _this.storage.set('newEventSubmit', false);
+            }).catch(function () { document.getElementById("activeEventContent").innerText = "No Active Events"; _this.CurrentEventExists = false; });
+            loading.dismiss();
+        });
+    };
+    HomePage.prototype.getInactiveEvents = function () {
+        var _this = this;
+        this.request.RequestInactiveEvents().then(function (data) {
+            _this.storage.set('inactiveEvents', data['recordset']);
+            _this.storage.set('newEventSubmit', false);
+        });
+    };
+    HomePage.prototype.LoadContacts = function (EventID) {
+        this.request.RequestEventContacts(EventID).then(function (data) {
+            return data;
+        });
+    };
+    HomePage.prototype.onLink = function (url) {
+        window.open(url);
+    };
+    HomePage.prototype.addEvent = function () {
+        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_2__addevent_addevent__["a" /* addeventPage */]);
+    };
+    HomePage.prototype.viewEvents = function () {
+        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_4__viewevents_viewevents__["a" /* vieweventsPage */]);
+    };
+    HomePage.prototype.addContact = function () {
+        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_3__addcontact_addcontact__["a" /* addcontactPage */]);
+    };
+    HomePage.prototype.editEvent = function () {
+        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_7__editevent_editevent__["a" /* editeventPage */]);
+    };
+    HomePage.prototype.checkIn = function () {
+        var _this = this;
+        this.storage.get('activeEvent').then(function (data) {
+            _this.request.DisableEvent(data.EventID);
+        }).then(function () {
+            _this.CurrentEventExists = false;
+            _this.storage.set('newEventSubmit', true)
+                .then(function () {
+                location.reload();
+            });
+        });
+        console.log("disableEvent");
+    };
+    HomePage = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* Component */])({
+            selector: 'page-home',template:/*ion-inline-start:"C:\Users\Whitney\repos\breadcrumbs\Breadcrumbs\Breadcrumbs\src\pages\home\home.html"*/'<!-- Put shit here -->\n\n\n\n  <ion-card>\n\n    <ion-card-header>\n\n      Current Event\n\n    </ion-card-header>\n\n    <ion-card-content>\n\n      <ion-label id="activeEventContent"> </ion-label>\n\n      <button ion-button name="CurrentEventCheckIn" *ngIf="CurrentEventExists" (click)="checkIn()"> Check In </button>\n\n    </ion-card-content>\n\n  </ion-card>\n\n\n\n  <button ion-button type="button" (click)="addEvent()"> Add New Event </button>\n\n  <button ion-button type="button" *ngIf="CurrentEventExists" (click)="editEvent()"> Edit Active Event</button>\n\n  <button ion-button type="button" (click)="viewEvents()"> View Past Events </button>\n\n  <button ion-button type="button" (click)="addContact()"> Add New Contact</button>\n\n'/*ion-inline-end:"C:\Users\Whitney\repos\breadcrumbs\Breadcrumbs\Breadcrumbs\src\pages\home\home.html"*/,
+            providers: [__WEBPACK_IMPORTED_MODULE_5__httprequest__["a" /* httprequest */]]
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* LoadingController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */], __WEBPACK_IMPORTED_MODULE_5__httprequest__["a" /* httprequest */], __WEBPACK_IMPORTED_MODULE_6__ionic_storage__["a" /* Storage */]])
+    ], HomePage);
+    return HomePage;
+}());
+
+//# sourceMappingURL=home.js.map
+
+/***/ }),
+
+/***/ 214:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return addcontactPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(23);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_forms__ = __webpack_require__(20);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__httprequest__ = __webpack_require__(40);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ionic_storage__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__httprequest__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ionic_storage__ = __webpack_require__(28);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -79,7 +208,7 @@ var addcontactPage = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 230:
+/***/ 231:
 /***/ (function(module, exports) {
 
 function webpackEmptyAsyncContext(req) {
@@ -92,19 +221,19 @@ function webpackEmptyAsyncContext(req) {
 webpackEmptyAsyncContext.keys = function() { return []; };
 webpackEmptyAsyncContext.resolve = webpackEmptyAsyncContext;
 module.exports = webpackEmptyAsyncContext;
-webpackEmptyAsyncContext.id = 230;
+webpackEmptyAsyncContext.id = 231;
 
 /***/ }),
 
-/***/ 40:
+/***/ 41:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return httprequest; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__(291);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_storage__ = __webpack_require__(41);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(631);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__(292);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_storage__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(632);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_ionic_angular__ = __webpack_require__(23);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -126,7 +255,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
   See https://angular.io/docs/ts/latest/guide/dependency-injection.html
   for more info on providers and Angular 2 DI.
 */
-var aws_url = 'http://ec2-54-205-115-83.compute-1.amazonaws.com:4604'; //1-20-19
+var aws_url = 'http://ec2-3-89-98-89.compute-1.amazonaws.com:4604';
+//var aws_url = 'http://ec2-54-162-107-119.compute-1.amazonaws.com:4604' //1-29-19
+//var aws_url = 'http://ec2-54-205-115-83.compute-1.amazonaws.com:4604' //1-20-19
 //var aws_url = 'http://ec2-35-174-115-108.compute-1.amazonaws.com:4604' // original
 //var aws_url = 'http://ec2-34-228-70-109.compute-1.amazonaws.com:4604' // copy
 var httprequest = /** @class */ (function () {
@@ -272,6 +403,7 @@ var httprequest = /** @class */ (function () {
     };
     //Create User Account
     httprequest.prototype.CreateUser = function (data) {
+        var _this = this;
         var headers = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["a" /* Headers */]();
         headers.append("Accept", 'application/json');
         headers.append('Content-Type', 'application/json');
@@ -280,7 +412,48 @@ var httprequest = /** @class */ (function () {
             .subscribe(function (data) {
             console.log(data['_body']);
         }, function (error) {
-            console.log(error);
+            var alert = _this.alertCtrl.create({ title: 'Error: NOPE', subTitle: 'There was an error submitting data', buttons: ['ok'] });
+            alert.present();
+        });
+    };
+    httprequest.prototype.GetUserID = function (username) {
+        var _this = this;
+        if (this.data) {
+            return Promise.resolve(this.data);
+        }
+        return new Promise(function (resolve) {
+            _this.http.get(aws_url + '/getUserID/' + username)
+                .map(function (res) { return res.json(); }).subscribe(function (data) {
+                _this.data = data;
+                resolve(_this.data);
+            }, function (error) {
+                var alert = _this.alertCtrl.create({ title: 'Error: Connection Issue', subTitle: 'Cannot establish connection to  Breadcrumbs server', buttons: ['ok'] });
+                alert.present();
+            });
+        });
+    };
+    httprequest.prototype.SignIn = function (user) {
+        var _this = this;
+        var data;
+        var validUser;
+        //var headers = new Headers();
+        //headers.append("Accept", 'application/json');
+        //headers.append('Content-Type', 'application/json');
+        //const requestOptions = new RequestOptions({ headers: headers });
+        if (this.data) {
+            return Promise.resolve(this.data);
+        }
+        return new Promise(function (resolve) {
+            _this.http.get(aws_url + '/confirmUser/' + user.username + '/' + user.password)
+                .map(function (res) { return res.json(); })
+                .subscribe(function (data) {
+                _this.data = data;
+                validUser = data;
+                resolve(data);
+                console.log(data['_body'], "this is correct ");
+            });
+        }).then(function () {
+            console.log(validUser);
         });
     };
     httprequest = __decorate([
@@ -322,15 +495,17 @@ module.exports = g;
 
 /***/ }),
 
-/***/ 476:
+/***/ 477:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LoginPagePage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(23);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Register_Register__ = __webpack_require__(477);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__httprequest__ = __webpack_require__(40);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__home_home__ = __webpack_require__(213);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Register_Register__ = __webpack_require__(483);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__httprequest__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__ionic_storage__ = __webpack_require__(28);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -344,6 +519,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
+
+//import { User } from '../../datastructs';
 /*
   Generated class for the LoginPage page.
 
@@ -351,10 +529,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
   Ionic pages and navigation.
 */
 var LoginPagePage = /** @class */ (function () {
-    function LoginPagePage(navCtrl, navParams, alertCtrl) {
+    function LoginPagePage(navCtrl, navParams, alertCtrl, request, storage) {
         this.navCtrl = navCtrl;
         this.navParams = navParams;
         this.alertCtrl = alertCtrl;
+        this.request = request;
+        this.storage = storage;
     }
     LoginPagePage.prototype.ionViewDidLoad = function () {
         console.log('ionViewDidLoad LoginPagePage');
@@ -373,10 +553,25 @@ var LoginPagePage = /** @class */ (function () {
             });
             alert_2.present();
         }
+        //this.request.SignIn(user)
     };
     LoginPagePage.prototype.signUp = function () {
-        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_2__Register_Register__["a" /* RegisterPage */]);
+        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_3__Register_Register__["a" /* RegisterPage */]);
     };
+    LoginPagePage.prototype.initialClick = function () {
+        this.signIn();
+        this.validateUser();
+        console.log(this.validUser, "its true");
+    };
+    LoginPagePage.prototype.validateUser = function () {
+        var user = {
+            username: this.username.value,
+            password: this.password.value
+        };
+        if (this.request.SignIn(user))
+            this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_2__home_home__["a" /* HomePage */]);
+    };
+    ;
     __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_15" /* ViewChild */])("username"),
         __metadata("design:type", Object)
@@ -387,140 +582,15 @@ var LoginPagePage = /** @class */ (function () {
     ], LoginPagePage.prototype, "password", void 0);
     LoginPagePage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* Component */])({
-            selector: 'page-LoginPage',template:/*ion-inline-start:"C:\Users\Whitney\repos\breadcrumbs\Breadcrumbs\Breadcrumbs\src\pages\LoginPage\LoginPage.html"*/'<!--\n\n  Generated template for the NewPage page.\n\n\n\n  See http://ionicframework.com/docs/v2/components/#navigation for more info on\n\n  Ionic pages and navigation.\n\n-->\n\n<ion-header>\n\n\n\n  <ion-navbar>\n\n    <ion-title>Login</ion-title>\n\n  </ion-navbar>\n\n\n\n</ion-header>\n\n\n\n\n\n<ion-content padding>\n\n  <ion-list>\n\n\n\n    <ion-item>\n\n\n\n      <ion-input round type="text" placeholder="Username" name="username" #username></ion-input>\n\n\n\n    </ion-item>\n\n\n\n    <ion-item>\n\n\n\n      <ion-input type="password" placeholder="Password" name="password" #password></ion-input>\n\n\n\n    </ion-item>\n\n\n\n\n\n    <button ion-button round block (click)="signIn()">Sign In</button>\n\n\n\n    <button ion-button round block (click)="signUp()">Register</button>\n\n  </ion-list>\n\n\n\n</ion-content>\n\n\n'/*ion-inline-end:"C:\Users\Whitney\repos\breadcrumbs\Breadcrumbs\Breadcrumbs\src\pages\LoginPage\LoginPage.html"*/,
-            providers: [__WEBPACK_IMPORTED_MODULE_3__httprequest__["a" /* httprequest */]]
+            selector: 'page-LoginPage',template:/*ion-inline-start:"C:\Users\Whitney\repos\breadcrumbs\Breadcrumbs\Breadcrumbs\src\pages\LoginPage\LoginPage.html"*/'<!--\n\n  Generated template for the NewPage page.\n\n\n\n  See http://ionicframework.com/docs/v2/components/#navigation for more info on\n\n  Ionic pages and navigation.\n\n-->\n\n<ion-header>\n\n\n\n  <ion-navbar>\n\n    <ion-title>Login</ion-title>\n\n  </ion-navbar>\n\n\n\n</ion-header>\n\n\n\n\n\n<ion-content padding>\n\n  <ion-list>\n\n\n\n    <ion-item>\n\n\n\n      <ion-input round type="text" placeholder="Username" name="username" #username></ion-input>\n\n\n\n    </ion-item>\n\n\n\n    <ion-item>\n\n\n\n      <ion-input type="password" placeholder="Password" name="password" #password></ion-input>\n\n\n\n    </ion-item>\n\n\n\n\n\n    <button ion-button round block (click)="initialClick()">Sign In</button>\n\n\n\n    <button ion-button round block (click)="signUp()">Register</button>\n\n  </ion-list>\n\n\n\n</ion-content>\n\n\n'/*ion-inline-end:"C:\Users\Whitney\repos\breadcrumbs\Breadcrumbs\Breadcrumbs\src\pages\LoginPage\LoginPage.html"*/,
+            providers: [__WEBPACK_IMPORTED_MODULE_4__httprequest__["a" /* httprequest */]]
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */], __WEBPACK_IMPORTED_MODULE_4__httprequest__["a" /* httprequest */], __WEBPACK_IMPORTED_MODULE_5__ionic_storage__["a" /* Storage */]])
     ], LoginPagePage);
     return LoginPagePage;
 }());
 
 //# sourceMappingURL=LoginPage.js.map
-
-/***/ }),
-
-/***/ 477:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return RegisterPage; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(23);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__httprequest__ = __webpack_require__(40);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-
-/*
-  Generated class for the Register page.
-
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
-var RegisterPage = /** @class */ (function () {
-    function RegisterPage(navCtrl, navParams, alertCtrl, request) {
-        this.navCtrl = navCtrl;
-        this.navParams = navParams;
-        this.alertCtrl = alertCtrl;
-        this.request = request;
-    }
-    RegisterPage.prototype.ionViewDidLoad = function () {
-        console.log('ionViewDidLoad RegisterPage');
-    };
-    RegisterPage.prototype.Register = function () {
-        //check fields to see if they are valid
-        if (this.firstName.value == "") {
-            var alert_1 = this.alertCtrl.create({
-                title: "Attention", subTitle: "First Name field is empty", buttons: ["Ok"]
-            });
-            alert_1.present();
-        }
-        else if (this.lastName.value == "") {
-            var alert_2 = this.alertCtrl.create({
-                title: "Attention", subTitle: "Last Name field is empty", buttons: ["Ok"]
-            });
-            alert_2.present();
-        }
-        else if (this.email.value == "") {
-            var alert_3 = this.alertCtrl.create({
-                title: "Attention", subTitle: "Email field is empty", buttons: ["Ok"]
-            });
-            alert_3.present();
-        }
-        else if (this.phonenumber.value == "") {
-            var alert_4 = this.alertCtrl.create({
-                title: "Attention", subTitle: "Phone number field is empty", buttons: ["Ok"]
-            });
-            alert_4.present();
-        }
-        else if (this.username.value == "") {
-            var alert_5 = this.alertCtrl.create({
-                title: "Attention", subTitle: "Username field is empty", buttons: ["Ok"]
-            });
-            alert_5.present();
-        }
-        else if (this.password.value == "") {
-            var alert_6 = this.alertCtrl.create({
-                title: "Attention", subTitle: "Password field is empty", buttons: ["Ok"]
-            });
-            alert_6.present();
-        }
-        else 
-        //submit data if all feilds are valid
-        {
-            var data = {
-                username: this.username.value,
-                password: this.password.value,
-            };
-            this.request.CreateUser(data);
-        }
-    };
-    RegisterPage.prototype.Cancel = function () {
-        this.navCtrl.pop();
-    };
-    __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_15" /* ViewChild */])("firstName"),
-        __metadata("design:type", Object)
-    ], RegisterPage.prototype, "firstName", void 0);
-    __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_15" /* ViewChild */])("lastName"),
-        __metadata("design:type", Object)
-    ], RegisterPage.prototype, "lastName", void 0);
-    __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_15" /* ViewChild */])("email"),
-        __metadata("design:type", Object)
-    ], RegisterPage.prototype, "email", void 0);
-    __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_15" /* ViewChild */])("mobile"),
-        __metadata("design:type", Object)
-    ], RegisterPage.prototype, "phonenumber", void 0);
-    __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_15" /* ViewChild */])("username"),
-        __metadata("design:type", Object)
-    ], RegisterPage.prototype, "username", void 0);
-    __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_15" /* ViewChild */])("password"),
-        __metadata("design:type", Object)
-    ], RegisterPage.prototype, "password", void 0);
-    RegisterPage = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* Component */])({
-            selector: 'page-Register',template:/*ion-inline-start:"C:\Users\Whitney\repos\breadcrumbs\Breadcrumbs\Breadcrumbs\src\pages\Register\Register.html"*/'<!--\n\n  Generated template for the NewPage page.\n\n\n\n  See http://ionicframework.com/docs/v2/components/#navigation for more info on\n\n  Ionic pages and navigation.\n\n-->\n\n<ion-header>\n\n\n\n  <ion-navbar>\n\n    <ion-title>Register</ion-title>\n\n  </ion-navbar>\n\n\n\n</ion-header>\n\n\n\n\n\n<ion-content padding>\n\n  <ion-list no-line>\n\n    <ion-item>\n\n\n\n      <ion-input type="text" placeholder="First Name" name="firstName" #firstName></ion-input>\n\n\n\n    </ion-item>\n\n    <ion-item>\n\n\n\n      <ion-input type="text" placeholder="Last Name" name="lastName" #lastName></ion-input>\n\n\n\n    </ion-item>\n\n\n\n    <ion-item>\n\n\n\n      <ion-input type="email" placeholder="Email" name="email" #email></ion-input>\n\n\n\n    </ion-item>\n\n\n\n    <ion-item>\n\n\n\n      <ion-input type="number" placeholder="Phone Number" name="phonenumber" #mobile></ion-input>\n\n\n\n    </ion-item>\n\n    <ion-item>\n\n\n\n      <ion-input type="text" placeholder="Username" name="username" #username></ion-input>\n\n\n\n    </ion-item>\n\n\n\n    <ion-item>\n\n\n\n      <ion-input type="password" placeholder="Password" name="password" #password></ion-input>\n\n\n\n    </ion-item>\n\n\n\n  </ion-list>\n\n\n\n  <div padding>\n\n\n\n    <button ion-button round outline block (click)="Register()">Register</button>\n\n    <button ion-button round outline block (click)="Cancel()">Cancel</button>\n\n  </div>\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Users\Whitney\repos\breadcrumbs\Breadcrumbs\Breadcrumbs\src\pages\Register\Register.html"*/,
-            providers: [__WEBPACK_IMPORTED_MODULE_2__httprequest__["a" /* httprequest */]]
-        }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */], __WEBPACK_IMPORTED_MODULE_2__httprequest__["a" /* httprequest */]])
-    ], RegisterPage);
-    return RegisterPage;
-}());
-
-//# sourceMappingURL=Register.js.map
 
 /***/ }),
 
@@ -532,9 +602,9 @@ var RegisterPage = /** @class */ (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(23);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_forms__ = __webpack_require__(20);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__addcontact_addcontact__ = __webpack_require__(213);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__httprequest__ = __webpack_require__(40);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__ionic_storage__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__addcontact_addcontact__ = __webpack_require__(214);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__httprequest__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__ionic_storage__ = __webpack_require__(28);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -672,8 +742,8 @@ var addeventPage = /** @class */ (function () {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return vieweventsPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_ionic_angular__ = __webpack_require__(23);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__httprequest__ = __webpack_require__(40);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_storage__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__httprequest__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_storage__ = __webpack_require__(28);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__viewEvent_viewEvent__ = __webpack_require__(480);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -745,8 +815,8 @@ var vieweventsPage = /** @class */ (function () {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return viewEventPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(23);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_storage__ = __webpack_require__(41);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__httprequest__ = __webpack_require__(40);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_storage__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__httprequest__ = __webpack_require__(41);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -850,9 +920,9 @@ var viewEventPage = /** @class */ (function () {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return editeventPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(23);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_storage__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_storage__ = __webpack_require__(28);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__eventEdit_eventEdit__ = __webpack_require__(482);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__httprequest__ = __webpack_require__(40);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__httprequest__ = __webpack_require__(41);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -937,8 +1007,8 @@ var editeventPage = /** @class */ (function () {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return eventEditPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(23);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_storage__ = __webpack_require__(41);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__httprequest__ = __webpack_require__(40);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_storage__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__httprequest__ = __webpack_require__(41);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1032,9 +1102,151 @@ var eventEditPage = /** @class */ (function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return RegisterPage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__httprequest__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_storage__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__home_home__ = __webpack_require__(213);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+/*
+  Generated class for the Register page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+*/
+var RegisterPage = /** @class */ (function () {
+    function RegisterPage(navCtrl, navParams, alertCtrl, request, storage) {
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
+        this.alertCtrl = alertCtrl;
+        this.request = request;
+        this.storage = storage;
+    }
+    RegisterPage.prototype.ionViewDidLoad = function () {
+        console.log('ionViewDidLoad RegisterPage');
+    };
+    RegisterPage.prototype.Register = function () {
+        //check fields to see if they are valid
+        if (this.firstName.value == "") {
+            var alert_1 = this.alertCtrl.create({
+                title: "Attention", subTitle: "First Name field is empty", buttons: ["Ok"]
+            });
+            alert_1.present();
+        }
+        else if (this.lastName.value == "") {
+            var alert_2 = this.alertCtrl.create({
+                title: "Attention", subTitle: "Last Name field is empty", buttons: ["Ok"]
+            });
+            alert_2.present();
+        }
+        else if (this.email.value == "") {
+            var alert_3 = this.alertCtrl.create({
+                title: "Attention", subTitle: "Email field is empty", buttons: ["Ok"]
+            });
+            alert_3.present();
+        }
+        else if (this.phonenumber.value == "") {
+            var alert_4 = this.alertCtrl.create({
+                title: "Attention", subTitle: "Phone number field is empty", buttons: ["Ok"]
+            });
+            alert_4.present();
+        }
+        else if (this.username.value == "") {
+            var alert_5 = this.alertCtrl.create({
+                title: "Attention", subTitle: "Username field is empty", buttons: ["Ok"]
+            });
+            alert_5.present();
+        }
+        else if (this.password.value == "") {
+            var alert_6 = this.alertCtrl.create({
+                title: "Attention", subTitle: "Password field is empty", buttons: ["Ok"]
+            });
+            alert_6.present();
+        }
+        else 
+        //submit data if all feilds are valid
+        {
+            var data2 = {
+                username: this.username.value,
+                password: this.password.value,
+                userID: -1
+            };
+            this.request.CreateUser(data2);
+            this.GetUserID(data2);
+        }
+    };
+    RegisterPage.prototype.GetUserID = function (data2) {
+        var _this = this;
+        this.request.GetUserID(data2.username)
+            .then(function (data) {
+            _this.storage.set('userID', data['recordset']);
+        });
+        if (this.userID != -1) {
+            this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_4__home_home__["a" /* HomePage */]);
+        }
+    };
+    RegisterPage.prototype.Cancel = function () {
+        this.navCtrl.pop();
+    };
+    __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_15" /* ViewChild */])("firstName"),
+        __metadata("design:type", Object)
+    ], RegisterPage.prototype, "firstName", void 0);
+    __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_15" /* ViewChild */])("lastName"),
+        __metadata("design:type", Object)
+    ], RegisterPage.prototype, "lastName", void 0);
+    __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_15" /* ViewChild */])("email"),
+        __metadata("design:type", Object)
+    ], RegisterPage.prototype, "email", void 0);
+    __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_15" /* ViewChild */])("mobile"),
+        __metadata("design:type", Object)
+    ], RegisterPage.prototype, "phonenumber", void 0);
+    __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_15" /* ViewChild */])("username"),
+        __metadata("design:type", Object)
+    ], RegisterPage.prototype, "username", void 0);
+    __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_15" /* ViewChild */])("password"),
+        __metadata("design:type", Object)
+    ], RegisterPage.prototype, "password", void 0);
+    RegisterPage = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* Component */])({
+            selector: 'page-Register',template:/*ion-inline-start:"C:\Users\Whitney\repos\breadcrumbs\Breadcrumbs\Breadcrumbs\src\pages\Register\Register.html"*/'<!--\n\n  Generated template for the NewPage page.\n\n\n\n  See http://ionicframework.com/docs/v2/components/#navigation for more info on\n\n  Ionic pages and navigation.\n\n-->\n\n<ion-header>\n\n\n\n  <ion-navbar>\n\n    <ion-title>Register</ion-title>\n\n  </ion-navbar>\n\n\n\n</ion-header>\n\n\n\n\n\n<ion-content padding>\n\n  <ion-list no-line>\n\n    <ion-item>\n\n\n\n      <ion-input type="text" placeholder="First Name" name="firstName" #firstName></ion-input>\n\n\n\n    </ion-item>\n\n    <ion-item>\n\n\n\n      <ion-input type="text" placeholder="Last Name" name="lastName" #lastName></ion-input>\n\n\n\n    </ion-item>\n\n\n\n    <ion-item>\n\n\n\n      <ion-input type="email" placeholder="Email" name="email" #email></ion-input>\n\n\n\n    </ion-item>\n\n\n\n    <ion-item>\n\n\n\n      <ion-input type="number" placeholder="Phone Number" name="phonenumber" #mobile></ion-input>\n\n\n\n    </ion-item>\n\n    <ion-item>\n\n\n\n      <ion-input type="text" placeholder="Username" name="username" #username></ion-input>\n\n\n\n    </ion-item>\n\n\n\n    <ion-item>\n\n\n\n      <ion-input type="password" placeholder="Password" name="password" #password></ion-input>\n\n\n\n    </ion-item>\n\n\n\n  </ion-list>\n\n\n\n  <div padding>\n\n\n\n    <button ion-button round outline block (click)="Register()">Register</button>\n\n    <button ion-button round outline block (click)="Cancel()">Cancel</button>\n\n  </div>\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Users\Whitney\repos\breadcrumbs\Breadcrumbs\Breadcrumbs\src\pages\Register\Register.html"*/,
+            providers: [__WEBPACK_IMPORTED_MODULE_2__httprequest__["a" /* httprequest */]]
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */], __WEBPACK_IMPORTED_MODULE_2__httprequest__["a" /* httprequest */], __WEBPACK_IMPORTED_MODULE_3__ionic_storage__["a" /* Storage */]])
+    ], RegisterPage);
+    return RegisterPage;
+}());
+
+//# sourceMappingURL=Register.js.map
+
+/***/ }),
+
+/***/ 484:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__ = __webpack_require__(484);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__app_module__ = __webpack_require__(582);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__ = __webpack_require__(485);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__app_module__ = __webpack_require__(583);
 
 
 Object(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* platformBrowserDynamic */])().bootstrapModule(__WEBPACK_IMPORTED_MODULE_1__app_module__["a" /* AppModule */]);
@@ -1042,24 +1254,24 @@ Object(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* pl
 
 /***/ }),
 
-/***/ 582:
+/***/ 583:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppModule; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(23);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__app_component__ = __webpack_require__(624);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__pages_home_home__ = __webpack_require__(633);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__app_component__ = __webpack_require__(625);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__pages_home_home__ = __webpack_require__(213);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_addevent_addevent__ = __webpack_require__(478);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_addcontact_addcontact__ = __webpack_require__(213);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_addcontact_addcontact__ = __webpack_require__(214);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pages_viewevents_viewevents__ = __webpack_require__(479);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__ionic_storage__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__ionic_storage__ = __webpack_require__(28);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_viewEvent_viewEvent__ = __webpack_require__(480);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_editevent_editevent__ = __webpack_require__(481);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_eventEdit_eventEdit__ = __webpack_require__(482);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__pages_LoginPage_LoginPage__ = __webpack_require__(476);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__pages_Register_Register__ = __webpack_require__(477);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__pages_LoginPage_LoginPage__ = __webpack_require__(477);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__pages_Register_Register__ = __webpack_require__(483);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1124,15 +1336,15 @@ var AppModule = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 624:
+/***/ 625:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MyApp; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(23);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_native__ = __webpack_require__(625);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__pages_LoginPage_LoginPage__ = __webpack_require__(476);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_native__ = __webpack_require__(626);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__pages_LoginPage_LoginPage__ = __webpack_require__(477);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1166,136 +1378,7 @@ var MyApp = /** @class */ (function () {
 
 //# sourceMappingURL=app.component.js.map
 
-/***/ }),
-
-/***/ 633:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return HomePage; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(23);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__addevent_addevent__ = __webpack_require__(478);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__addcontact_addcontact__ = __webpack_require__(213);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__viewevents_viewevents__ = __webpack_require__(479);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__httprequest__ = __webpack_require__(40);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__ionic_storage__ = __webpack_require__(41);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__editevent_editevent__ = __webpack_require__(481);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-
-
-
-
-
-
-var HomePage = /** @class */ (function () {
-    function HomePage(alertCtrl, loadingCtrl, navCtrl, request, storage) {
-        this.alertCtrl = alertCtrl;
-        this.loadingCtrl = loadingCtrl;
-        this.navCtrl = navCtrl;
-        this.request = request;
-        this.storage = storage;
-        this.CurrentEventExists = false;
-        var userid = 1;
-        this.storage.set('userID', userid);
-    }
-    HomePage.prototype.ionViewWillEnter = function () {
-        var _this = this;
-        var newEvent;
-        this.storage.get('lastState').then(function (data) {
-            if (data === 'addeventsubmit') {
-                _this.storage.set('lastState', 'homepageenter').then(function () {
-                    location.reload();
-                });
-            }
-        }).then(function () {
-            _this.storage.get('newEventSubmit').then(function (data) {
-                newEvent = data;
-                if (newEvent === true || document.getElementById("activeEventContent").innerText === "") {
-                    _this.getActiveEvent();
-                    _this.getInactiveEvents();
-                }
-            });
-        });
-    };
-    HomePage.prototype.getActiveEvent = function () {
-        var _this = this;
-        var loading = this.loadingCtrl.create({
-            content: 'Loading Event...'
-        });
-        loading.present().then(function () {
-            _this.request.RequestActiveEvent().then(function (data) {
-                _this.storage.set('activeEvent', data['recordset'][0]);
-                document.getElementById("activeEventContent").innerText = data['recordset'][0].EventName;
-                _this.CurrentEventExists = true;
-                _this.storage.set('newEventSubmit', false);
-            }).catch(function () { document.getElementById("activeEventContent").innerText = "No Active Events"; _this.CurrentEventExists = false; });
-            loading.dismiss();
-        });
-    };
-    HomePage.prototype.getInactiveEvents = function () {
-        var _this = this;
-        this.request.RequestInactiveEvents().then(function (data) {
-            _this.storage.set('inactiveEvents', data['recordset']);
-            _this.storage.set('newEventSubmit', false);
-        });
-    };
-    HomePage.prototype.LoadContacts = function (EventID) {
-        this.request.RequestEventContacts(EventID).then(function (data) {
-            return data;
-        });
-    };
-    HomePage.prototype.onLink = function (url) {
-        window.open(url);
-    };
-    HomePage.prototype.addEvent = function () {
-        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_2__addevent_addevent__["a" /* addeventPage */]);
-    };
-    HomePage.prototype.viewEvents = function () {
-        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_4__viewevents_viewevents__["a" /* vieweventsPage */]);
-    };
-    HomePage.prototype.addContact = function () {
-        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_3__addcontact_addcontact__["a" /* addcontactPage */]);
-    };
-    HomePage.prototype.editEvent = function () {
-        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_7__editevent_editevent__["a" /* editeventPage */]);
-    };
-    HomePage.prototype.checkIn = function () {
-        var _this = this;
-        this.storage.get('activeEvent').then(function (data) {
-            _this.request.DisableEvent(data.EventID);
-        }).then(function () {
-            _this.CurrentEventExists = false;
-            _this.storage.set('newEventSubmit', true)
-                .then(function () {
-                location.reload();
-            });
-        });
-        console.log("disableEvent");
-    };
-    HomePage = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* Component */])({
-            selector: 'page-home',template:/*ion-inline-start:"C:\Users\Whitney\repos\breadcrumbs\Breadcrumbs\Breadcrumbs\src\pages\home\home.html"*/'<!-- Put shit here -->\n\n\n\n  <ion-card>\n\n    <ion-card-header>\n\n      Current Event\n\n    </ion-card-header>\n\n    <ion-card-content>\n\n      <ion-label id="activeEventContent"> </ion-label>\n\n      <button ion-button name="CurrentEventCheckIn" *ngIf="CurrentEventExists" (click)="checkIn()"> Check In </button>\n\n    </ion-card-content>\n\n  </ion-card>\n\n\n\n  <button ion-button type="button" (click)="addEvent()"> Add New Event </button>\n\n  <button ion-button type="button" *ngIf="CurrentEventExists" (click)="editEvent()"> Edit Active Event</button>\n\n  <button ion-button type="button" (click)="viewEvents()"> View Past Events </button>\n\n  <button ion-button type="button" (click)="addContact()"> Add New Contact</button>\n\n'/*ion-inline-end:"C:\Users\Whitney\repos\breadcrumbs\Breadcrumbs\Breadcrumbs\src\pages\home\home.html"*/,
-            providers: [__WEBPACK_IMPORTED_MODULE_5__httprequest__["a" /* httprequest */]]
-        }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* LoadingController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */], __WEBPACK_IMPORTED_MODULE_5__httprequest__["a" /* httprequest */], __WEBPACK_IMPORTED_MODULE_6__ionic_storage__["a" /* Storage */]])
-    ], HomePage);
-    return HomePage;
-}());
-
-//# sourceMappingURL=home.js.map
-
 /***/ })
 
-},[483]);
+},[484]);
 //# sourceMappingURL=main.js.map

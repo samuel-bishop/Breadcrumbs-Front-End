@@ -1,23 +1,28 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Component } from '@angular/core';
 import { Http, Headers, Request, RequestOptions } from '@angular/http';
 import { Storage } from '@ionic/storage';
 import 'rxjs/add/operator/map';
 import { AlertController, LoadingController, NavController } from 'ionic-angular';
-
+import { UserService } from '../service/user.service';
+import { appGlobals } from './app/file';
 /*
   Generated class for the httprequest provider.
   See https://angular.io/docs/ts/latest/guide/dependency-injection.html
   for more info on providers and Angular 2 DI.
 */
 
-var aws_url = 'http://ec2-54-205-115-83.compute-1.amazonaws.com:4604' //1-20-19
+var aws_url = 'http://ec2-3-89-98-89.compute-1.amazonaws.com:4604'
+//var aws_url = 'http://ec2-54-162-107-119.compute-1.amazonaws.com:4604' //1-29-19
+//var aws_url = 'http://ec2-54-205-115-83.compute-1.amazonaws.com:4604' //1-20-19
 //var aws_url = 'http://ec2-35-174-115-108.compute-1.amazonaws.com:4604' // original
 //var aws_url = 'http://ec2-34-228-70-109.compute-1.amazonaws.com:4604' // copy
-
 @Injectable()
+  
 export class httprequest {
 
   data: Object;
+  
+
   constructor(public alertCtrl: AlertController, public loadingCtrl: LoadingController, public http: Http, public navCtrl: NavController, public storage: Storage) {
     console.log('Hello httprequest Provider');
   }
@@ -33,13 +38,13 @@ export class httprequest {
         this.http.get(aws_url + '/activeEvent/' + userid)
           .map(res => res.json())
           .subscribe(data => {
-            this.data = data; 
+            this.data = data;
             resolve(this.data);
           },
             //On Error
-          (error) => {
-            var alert = this.alertCtrl.create({ title: 'Error: Connection Issue', subTitle: 'Cannot establish connection to  Breadcrumbs server', buttons: ['ok'] });
-            alert.present();
+            (error) => {
+              var alert = this.alertCtrl.create({ title: 'Error: Connection Issue', subTitle: 'Cannot establish connection to  Breadcrumbs server', buttons: ['ok'] });
+              alert.present();
             });
       });
     })
@@ -117,8 +122,6 @@ export class httprequest {
       });
   }
 
-
-
   InsertContact(userid, contactData) {
     var header = new Headers();
     header.append("Accept", 'application/json');
@@ -167,12 +170,62 @@ export class httprequest {
     headers.append("Accept", 'application/json');
     headers.append('Content-Type', 'application/json');
     const requestOptions = new RequestOptions({ headers: headers });
- 
+
+
     this.http.post(aws_url + '/createUser/', data)
       .subscribe(data => {
         console.log(data['_body']);
-      }, error => {
-        console.log(error);
+      }, (error) => {
+        var alert = this.alertCtrl.create({ title: 'Error: NOPE', subTitle: 'There was an error submitting data', buttons: ['ok'] });
+        alert.present();
       });
+
+  
+    }
+
+  GetUserID(username) {
+    if (this.data) {
+      return Promise.resolve(this.data);
+    }
+    return new Promise(resolve => {
+      this.http.get(aws_url + '/getUserID/' + username)
+        .map(res => res.json()).subscribe(data => {
+          this.data = data;
+          resolve(this.data);
+        },
+          (error) => {
+            var alert = this.alertCtrl.create({ title: 'Error: Connection Issue', subTitle: 'Cannot establish connection to  Breadcrumbs server', buttons: ['ok'] });
+            alert.present();
+          });
+    });
+
   }
+
+  SignIn(user) {
+    let data;
+    let validUser;
+    //var headers = new Headers();
+    //headers.append("Accept", 'application/json');
+    //headers.append('Content-Type', 'application/json');
+    //const requestOptions = new RequestOptions({ headers: headers });
+    if (this.data) {
+      return Promise.resolve(this.data);
+    }
+
+    return new Promise(resolve => {
+      this.http.get(aws_url + '/confirmUser/' + user.username + '/' + user.password)
+        .map(res => res.json())
+        .subscribe(data => {
+          this.data = data;
+          validUser = data;
+          resolve(data);
+          console.log(data['_body'], "this is correct ");
+        });
+    }).then(() => {
+      console.log(validUser);
+      });
+
+   
+  } 
+  
 }
