@@ -12,6 +12,7 @@ import { AlertController, LoadingController, NavController } from 'ionic-angular
 
 var aws_url = 'http://ec2-3-89-98-89.compute-1.amazonaws.com:4604' // original
 //var aws_url = 'http://ec2-34-228-70-109.compute-1.amazonaws.com:4604' // copy
+//var aws_tts_url = 'http://ec2-18-205-150-196.compute-1.amazonaws.com:4604' //time-tracking server
 
 @Injectable()
 export class httprequest {
@@ -32,13 +33,13 @@ export class httprequest {
         this.http.get(aws_url + '/activeEvent/' + userid)
           .map(res => res.json())
           .subscribe(data => {
-            this.data = data; 
+            this.data = data;
             resolve(this.data);
           },
             //On Error
-          (error) => {
-            //var alert = this.alertCtrl.create({ title: 'Error: Connection Issue', subTitle: 'Cannot establish connection to  Breadcrumbs server', buttons: ['ok'] });
-            //alert.present();
+            (error) => {
+              var alert = this.alertCtrl.create({ title: 'Error: Connection Issue', subTitle: 'Cannot establish connection to  Breadcrumbs server', buttons: ['ok'] });
+              alert.present();
             });
       });
     })
@@ -59,8 +60,8 @@ export class httprequest {
           },
             //On Error
             (error) => {
-              //var alert = this.alertCtrl.create({ title: 'Error: Connection Issue', subTitle: 'Cannot establish connection to  Breadcrumbs server', buttons: ['ok'] });
-              //alert.present();
+              var alert = this.alertCtrl.create({ title: 'Error: Connection Issue', subTitle: 'Cannot establish connection to  Breadcrumbs server', buttons: ['ok'] });
+              alert.present();
             });
       });
     })
@@ -78,8 +79,8 @@ export class httprequest {
             data = data.json();
             resolve(data);
           }, (error) => {
-            //var alert = this.alertCtrl.create({ title: 'Error: Connection Issue', subTitle: 'Cannot establish connection to Breadcrumbs server', buttons: ['ok'] });
-            //alert.present();
+            var alert = this.alertCtrl.create({ title: 'Error: Connection Issue', subTitle: 'Cannot establish connection to Breadcrumbs server', buttons: ['ok'] });
+            alert.present();
           });
       });
     })
@@ -102,8 +103,8 @@ export class httprequest {
           },
             //On error
             (error) => {
-              //var alert = this.alertCtrl.create({ title: 'Error: Connection Issue', subTitle: 'Cannot establish connection to  Breadcrumbs server', buttons: ['ok'] });  //Display an error alert
-              //alert.present();
+              var alert = this.alertCtrl.create({ title: 'Error: Connection Issue', subTitle: 'Cannot establish connection to  Breadcrumbs server', buttons: ['ok'] });  //Display an error alert
+              alert.present();
             });
       });
     })
@@ -179,4 +180,19 @@ export class httprequest {
         console.log(error);
       });
   }
+
+
+  /*StartWatchTest(eventID, endTime) {
+    var header = new Headers();
+    header.append("Accept", 'application/json');
+    header.append('Content-Type', 'application/json')
+    var body = {
+      'eventID': eventID, 'endTime': endTime, 'c1FName': "TestFName1", 'c1LName': "TestLName1", 'c1Email': "testEmail1@gmail.com", 'c1Phone': "111-111-1111", 'c2FName': "TestFName2", 'c2LName': "TestLName1", 'c2Email': "testEmail2@gmail.com", 'c2Phone': "222-222-2222", 'c3FName': "TestFName3", 'c3LName': "TestLName1", 'c3Email': "testEmail3@gmail.com", 'c3Phone': "333-333-3333"}
+    this.http.post(aws_tts_url + '/startwatch/', body)
+      .subscribe(data => {
+        console.log(data['_body']);
+      }, error => {
+        console.log(error);
+      });
+  }*/
 }
