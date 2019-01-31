@@ -9,6 +9,8 @@ import { Storage } from '@ionic/storage'
 import { viewEventPage } from '../pages/viewEvent/viewEvent';
 import { editeventPage } from '../pages/editevent/editevent';
 import { eventEditPage } from '../pages/eventEdit/eventEdit';
+import { LoginPagePage } from '../pages/LoginPage/LoginPage';
+import { RegisterPage } from '../pages/Register/Register';
 import { editcontactPage } from '../pages/editcontact/editcontact';
 
 @NgModule({
@@ -22,6 +24,9 @@ import { editcontactPage } from '../pages/editcontact/editcontact';
     editeventPage,
     eventEditPage,
     editcontactPage
+    eventEditPage,
+    LoginPagePage,
+    RegisterPage
   ],
   imports: [
     IonicModule.forRoot(MyApp),
@@ -35,6 +40,9 @@ import { editcontactPage } from '../pages/editcontact/editcontact';
     vieweventsPage,
     viewEventPage,
     editeventPage,
+    eventEditPage,
+    LoginPagePage,
+    RegisterPage
     eventEditPage,
     editcontactPage
   ],
