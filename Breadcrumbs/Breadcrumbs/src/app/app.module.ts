@@ -21,7 +21,9 @@ import { editcontactPage } from '../pages/editcontact/editcontact';
     vieweventsPage,
     viewEventPage,
     editeventPage,
-    editcontactPage,
+    eventEditPage,
+    editcontactPage
+    eventEditPage,
     LoginPagePage,
     RegisterPage
   ],
@@ -38,7 +40,8 @@ import { editcontactPage } from '../pages/editcontact/editcontact';
     viewEventPage,
     editeventPage,
     LoginPagePage,
-    RegisterPage,
+    RegisterPage
+    eventEditPage,
     editcontactPage
   ],
   providers: [{ provide: ErrorHandler, useClass: IonicErrorHandler}, Storage]
