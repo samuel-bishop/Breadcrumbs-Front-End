@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, DateTime, LoadingController, AlertController, Alert } from 'ionic-angular';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { httprequest } from '../../httprequest';
 import { Storage } from '@ionic/storage';
+
+//TODO: Get select options to update on edit and delete.
 
 /*
   Generated class for the editcontact page.
@@ -16,9 +18,16 @@ import { Storage } from '@ionic/storage';
   providers: [httprequest]
 })
 export class editcontactPage {
+  contacts: any;
   userid: any;
+  contactFirstName: any;
+  contactLastName: any;
+  contactPhoneNumber: any;
+  contactEmailAddress: any;
+  contactID: any;
   private editcontact: FormGroup;
-  constructor(public navCtrl: NavController, public navParams: NavParams, public request: httprequest, public formBuilder: FormBuilder, public storage: Storage) {
+  constructor(public alertCtrl: AlertController, public navCtrl: NavController, public loadingCtrl: LoadingController, public navParams: NavParams, public request: httprequest, public formBuilder: FormBuilder, public storage: Storage) {
+    this.loadContacts();
     this.editcontact = this.formBuilder.group({
       contactID: [''],
       firstName: ['', Validators.required],
@@ -28,30 +37,88 @@ export class editcontactPage {
     });
   }
 
-  editcontactForm() {
-    this.storage.get('userID').then((data) => {
-    this.userid = data
-      let editcontactData = {
-        "userid": this.userid,
-        "firstName": this.editcontact.value.firstName,
-        "lastName": this.editcontact.value.lastName,
-        "phoneNumber": this.editcontact.value.phoneNumber,
-        "emailAddress": this.editcontact.value.emailAddress
-      }
-      this.request.InsertContact(this.storage.get('userID'), editcontactData);
-      this.navCtrl.pop();
+  loadContacts() {
+    let loading = this.loadingCtrl.create({
+      content: 'Loading Contacts...'
+    });
+
+    loading.present();
+    this.request.RequestContacts().then((data) => {
+      this.contacts = data['recordset'];
+      this.contactID = data['recordset'][0].EmergencyContactID;
+      this.contactFirstName = data['recordset'][0].ContactFirstName;
+      this.contactLastName = data['recordset'][0].ContactLastName;
+      this.contactPhoneNumber = data['recordset'][0].ContactPhoneNumber;
+      this.contactEmailAddress = data['recordset'][0].ContactEmailAddress;
+    }).then(() => {
+      loading.dismiss();
     });
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad editcontactPage');
+  onSelectChange(selectedValue: any) {
+    this.contactID = selectedValue.EmergencyContactID;
+    this.contactFirstName = selectedValue.ContactFirstName;
+    this.contactLastName = selectedValue.ContactLastName;
+    this.contactPhoneNumber = selectedValue.ContactPhoneNumber;
+    this.contactEmailAddress = selectedValue.ContactEmailAddress;
+  }
+
+  editcontactForm() {
+    var alert = this.alertCtrl.create({
+      title: 'Confirm Changes', subTitle: 'Are you sure you want to change this emergency contact?',
+      buttons:
+        [{
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {
+          }
+        },
+        {
+          text: 'Confirm',
+          handler: () => {
+              let editcontactData = {
+                "contactid": this.contactID,
+                "firstName": this.editcontact.value.firstName,
+                "lastName": this.editcontact.value.lastName,
+                "phoneNumber": this.editcontact.value.phoneNumber,
+                "emailAddress": this.editcontact.value.emailAddress
+              }
+            this.request.UpdateContact(editcontactData);
+            //can't get the select list to update :(
+            //for (let contact of this.contacts) {
+            //  if (contact.contactID == this.contactID) {
+            //    delete this.contacts['contact'];
+            //  }
+            //}
+            }
+        }]
+    });
+    alert.present();
+
   }
 
   cancelClick() {
     this.navCtrl.pop();
   }
 
-  findcontactIDClick() {
-//    contactID: 'Test';
+  deleteContact() {
+    var alert = this.alertCtrl.create({
+      title: 'Confirm Delete', subTitle: 'Are you sure you want to permanently delete this emergency contact?',
+      buttons:
+        [{
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {
+          }
+        },
+        {
+          text: 'Confirm',
+          handler: () => {
+            this.request.DeleteContact(this.contactID);
+            
+          }
+        }]
+    });
+    alert.present();
   }
 }

@@ -33,7 +33,7 @@
 
     <ion-item>
       <ion-label color="primary">Contact(s)</ion-label>
-      <ion-select name="contactsList" [(ngModel)]="contact" multiple="true" formControlName="contactsList">
+      <ion-select name="contactsList" [(ngModel)]="contact" multiple="true">
         <ion-option *ngFor="let contact of contacts" [value]="contact">{{contact.ContactFirstName}} {{contact.ContactLastName}}</ion-option>
       </ion-select>
     </ion-item>

@@ -23,7 +23,8 @@ export class HomePage {
   constructor(public alertCtrl: AlertController, public loadingCtrl: LoadingController, public navCtrl: NavController, public request: httprequest, public storage: Storage) {
     var userid = 1;
     this.storage.set('userID', userid);
-    //request.StartWatchTest(1, Date.now() + 15000);
+    //request.StartWatchTest(1, Date.now());
+    //setTimeout(request.CancelWatch(1), 2000);
   }
 
   ionViewWillEnter() {

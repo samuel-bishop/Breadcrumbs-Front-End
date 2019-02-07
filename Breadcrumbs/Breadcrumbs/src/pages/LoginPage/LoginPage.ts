@@ -65,9 +65,11 @@ export class LoginPagePage {
       username: this.username.value,
       password: this.password.value
     }
-    if (this.request.SignIn(user))
-      this.navCtrl.push(HomePage);
-  };
-  
-
+    this.request.SignIn(user).then((data) => {
+      console.log("Data %s", data);
+      this.storage.set('validUser', data);
+      //console.log(this.storage.get('validUser'));
+    });
+    this.navCtrl.push(HomePage);
+  }
 }

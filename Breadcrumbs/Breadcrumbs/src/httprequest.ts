@@ -11,11 +11,9 @@ import { appGlobals } from './app/file';
   for more info on providers and Angular 2 DI.
 */
 
-var aws_url = 'http://ec2-3-89-98-89.compute-1.amazonaws.com:4604'
-//var aws_url = 'http://ec2-54-162-107-119.compute-1.amazonaws.com:4604' //1-29-19
-//var aws_url = 'http://ec2-54-205-115-83.compute-1.amazonaws.com:4604' //1-20-19
-//var aws_url = 'http://ec2-35-174-115-108.compute-1.amazonaws.com:4604' // original
-//var aws_url = 'http://ec2-34-228-70-109.compute-1.amazonaws.com:4604' // copy
+var aws_url = 'http://ec2-18-235-156-238.compute-1.amazonaws.com:4604'
+var aws_tts_url = 'http://ec2-18-205-150-196.compute-1.amazonaws.com:4605'
+
 @Injectable()
   
 export class httprequest {
@@ -135,6 +133,36 @@ export class httprequest {
       });
   }
 
+  UpdateContact(contactData) {
+    var alert = this.alertCtrl.create({ title: 'contactData', subTitle: contactData.firstName, buttons: ['OK'] });
+    alert.present();
+
+    var header = new Headers();
+    header.append("Accept", 'application/json');
+    header.append('Content-Type', 'application/json');
+    const requestOpts = new RequestOptions({ headers: header });
+    this.http.post(aws_url + '/updatecontact', contactData, requestOpts)
+      .subscribe(data => {
+        console.log(data['_body']);
+      }, error => {
+        console.log(error);
+      });
+  }
+
+  DeleteContact(contactid) {
+    var header = new Headers();
+    header.append("Accept", 'application/json');
+    header.append('Content-Type', 'application/json');
+    const requestOpts = new RequestOptions({ headers: header });
+    let contact = { id: contactid }
+    this.http.post(aws_url + '/deletecontact', contact, requestOpts)
+      .subscribe(data => {
+        console.log(data['_body']);
+      }, error => {
+        console.log(error);
+      });
+  }
+
   RequestEventContacts(eventID) {
     if (this.data) {
       return Promise.resolve(this.data);
@@ -203,11 +231,7 @@ export class httprequest {
 
   SignIn(user) {
     let data;
-    let validUser;
-    //var headers = new Headers();
-    //headers.append("Accept", 'application/json');
-    //headers.append('Content-Type', 'application/json');
-    //const requestOptions = new RequestOptions({ headers: headers });
+
     if (this.data) {
       return Promise.resolve(this.data);
     }
@@ -217,15 +241,31 @@ export class httprequest {
         .map(res => res.json())
         .subscribe(data => {
           this.data = data;
-          validUser = data;
           resolve(data);
           console.log(data['_body'], "this is correct ");
         });
-    }).then(() => {
-      console.log(validUser);
-      });
+    });
+  }
 
-   
-  } 
-  
+  StartWatchTest(eventID, endTime) {
+    var body = {
+      'eventID': eventID, 'endTime': endTime, 'c1FName': "TestFName1", 'c1LName': "TestLName1"
+    }//, 'c1Email': "testEmail1@gmail.com", 'c1Phone': "111-111-1111", 'c2FName': "TestFName2", 'c2LName': "TestLName1", 'c2Email': "testEmail2@gmail.com", 'c2Phone': "222-222-2222", 'c3FName': "TestFName3", 'c3LName': "TestLName1", 'c3Email': "testEmail3@gmail.com", 'c3Phone': "333-333-3333"}
+    this.http.post(aws_tts_url + '/startwatch/', body)
+      .subscribe(data => {
+        console.log(data['_body']);
+      }, error => {
+        console.log(error);
+      });
+  }
+
+  CancelWatch(eventID) {
+    var body = { 'eventID': eventID }
+    this.http.post(aws_tts_url + '/cancelwatch/', body)
+      .subscribe(data => {
+        console.log(data['_body']);
+      }, error => {
+        console.log(error);
+      });
+  }
 }
