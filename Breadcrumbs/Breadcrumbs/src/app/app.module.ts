@@ -8,7 +8,6 @@ import { vieweventsPage } from '../pages/viewevents/viewevents';
 import { Storage } from '@ionic/storage'
 import { viewEventPage } from '../pages/viewEvent/viewEvent';
 import { editeventPage } from '../pages/editevent/editevent';
-import { eventEditPage } from '../pages/eventEdit/eventEdit';
 import { LoginPagePage } from '../pages/LoginPage/LoginPage';
 import { RegisterPage } from '../pages/Register/Register';
 import { editcontactPage } from '../pages/editcontact/editcontact';
@@ -23,7 +22,7 @@ import { editcontactPage } from '../pages/editcontact/editcontact';
     viewEventPage,
     editeventPage,
     eventEditPage,
-    editcontactPage,
+    editcontactPage
     eventEditPage,
     LoginPagePage,
     RegisterPage
@@ -40,9 +39,8 @@ import { editcontactPage } from '../pages/editcontact/editcontact';
     vieweventsPage,
     viewEventPage,
     editeventPage,
-    eventEditPage,
     LoginPagePage,
-    RegisterPage,
+    RegisterPage
     eventEditPage,
     editcontactPage
   ],

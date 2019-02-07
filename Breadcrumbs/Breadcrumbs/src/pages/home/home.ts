@@ -21,6 +21,7 @@ export class HomePage {
   newEventSubmit: boolean;
   CurrentEventExists: boolean = false;
   constructor(public alertCtrl: AlertController, public loadingCtrl: LoadingController, public navCtrl: NavController, public request: httprequest, public storage: Storage) {
+    this.storage.set('lastState', 'newEventSubmit') 
     var userid = 1;
     this.storage.set('userID', userid);
     //request.StartWatchTest(1, Date.now());
@@ -30,7 +31,7 @@ export class HomePage {
   ionViewWillEnter() {
     var newEvent;
     this.storage.get('lastState').then((data) => {
-      if (data === 'addeventsubmit') {
+      if (data == 'addeventsubmit') {
         this.storage.set('lastState', 'homepageenter').then(() => {
           location.reload();
         });
@@ -38,7 +39,7 @@ export class HomePage {
     }).then(() => {
       this.storage.get('newEventSubmit').then((data) => {
         newEvent = data;
-        if (newEvent === true || document.getElementById("activeEventContent").innerText === "") {
+        if (newEvent == true || document.getElementById("activeEventContent").innerText == "") {
           this.getActiveEvent();
           this.getInactiveEvents();
         }

@@ -41,8 +41,7 @@ export class httprequest {
           },
             //On Error
             (error) => {
-              var alert = this.alertCtrl.create({ title: 'Error: Connection Issue', subTitle: 'Cannot establish connection to  Breadcrumbs server', buttons: ['ok'] });
-              alert.present();
+
             });
       });
     })
@@ -60,8 +59,7 @@ export class httprequest {
             data = data.json();
             resolve(data);
           }, (error) => {
-            var alert = this.alertCtrl.create({ title: 'Error: Connection Issue', subTitle: 'Cannot establish connection to Breadcrumbs server', buttons: ['ok'] });
-            alert.present();
+
           });
       });
     })
@@ -84,8 +82,7 @@ export class httprequest {
           },
             //On error
             (error) => {
-              var alert = this.alertCtrl.create({ title: 'Error: Connection Issue', subTitle: 'Cannot establish connection to  Breadcrumbs server', buttons: ['ok'] });  //Display an error alert
-              alert.present();
+
             });
       });
     })
@@ -204,8 +201,7 @@ export class httprequest {
       .subscribe(data => {
         console.log(data['_body']);
       }, (error) => {
-        var alert = this.alertCtrl.create({ title: 'Error: NOPE', subTitle: 'There was an error submitting data', buttons: ['ok'] });
-        alert.present();
+
       });
 
   
@@ -222,8 +218,7 @@ export class httprequest {
           resolve(this.data);
         },
           (error) => {
-            var alert = this.alertCtrl.create({ title: 'Error: Connection Issue', subTitle: 'Cannot establish connection to  Breadcrumbs server', buttons: ['ok'] });
-            alert.present();
+
           });
     });
 
