@@ -3,6 +3,19 @@ page-home {
     text-align: center;
   }
 
+  .forest {
+    background-image: linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.4)),url(../../assets/forest.jpg);
+    background-size: cover;
+  }
+
+  .jeep {
+    background-image: linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.7)),url(../../assets/jeep.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+
+
+
   .ionic-logo {
     display: inline-flex;
     position: relative;
@@ -63,6 +76,98 @@ page-home {
     100% {
       -moz-transform: rotate(360deg);
     }
+  }
+
+  .profile {
+    font-family: 'Lucida Sans';
+    color: white;
+    text-align: left;
+    font-size: 20px;
+  }
+
+  .add-event-button {
+    width: 100%;
+    height: 70px;
+    text-align: center;
+    font-size: 26px;
+    /*background-color: lightgrey;
+    color: black;*/
+    font-family: 'Lucida Sans';
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    /*border: solid medium grey;*/
+  }
+
+  .past-event-card {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border: solid medium black;
+  }
+
+  .banner {
+    background: rgba(57, 58, 61, 0.50);
+    text-align: center;
+    height: 40px;
+    color: white
+  }
+
+  .end-event-button {
+    background-color: red;
+    font-size: 16px;
+    font-family: 'Lucida Sans';
+    box-shadow: inherit;
+    text-shadow: initial;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    border: solid medium grey;
+  }
+
+  .share-event-button {
+    background-color: rgb(79, 139, 221);
+    font-size: 16px;
+    font-family: 'Lucida Sans';
+    box-shadow: inherit;
+    text-shadow: initial;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    border: solid medium grey;
+  }
+
+  .breadcrumbs-banner {
+    text-align: center;
+    font-family: 'Razer Regular';
+    font-size: 24px;
+    height: 7%;
+    background-color: lightblue;
+  }
+
+  .breadcrumbs-sidebar-button {
+    background-color: transparent;
+    height: inherit;
+    width: 40px;
+    left: 5px;
+    top: -3px;
+    position: absolute;
+    color: black;
+    text-align: center;
+    font-size: larger;
+  }
+
+  .side-button {
+    font-family: 'Lucida Sans';
+    font-size: larger;
   }
 
   #map {

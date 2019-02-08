@@ -1,74 +1,38 @@
-class Node {
-  data: Object;
-  next: Node;
-  prev: Node;
+import { LatLng } from "@ionic-native/google-maps";
+import { httprequest } from "./httprequest";
+import { Storage } from "@ionic/storage";
+import { Injectable } from '@angular/core';
 
-  constructor(data: Object) {
-    this.data = data;
+
+@Injectable()
+
+export class Event {
+  public EventID: any;
+  public EventName: any;
+  public EventDesc: any;
+  public EventParticipants: any;
+  public EventStartDate: any;
+  public EventEndDate: any;
+  public EventStartLatLng: LatLng;
+  public EventEndLatLng: LatLng;
+  public EventContacts: any;
+  public IsActive: boolean;
+
+  constructor(id, name, desc, part, startdate, enddate, startlatlng, endlatlng, isActive) {
+    this.EventID = id;
+    this.EventName = name;
+    this.EventDesc = desc;
+    this.EventParticipants = part;
+    this.EventStartDate = startdate;
+    this.EventEndDate = enddate;
+    this.EventStartLatLng = startlatlng;
+    this.EventEndLatLng = endlatlng;
+    this.IsActive = isActive;
+  }
+
+  AddContacts(contacts) {
+    this.EventContacts = contacts;
   }
 }
-
-export class List {
-  head: Node;
-  tail: Node;
-
-  constructor() {
-    this.head = null;
-    this.tail = null;
-  }
-
-  append(data: Object) {
-    if (this.head === null) {
-      this.head = new Node(data);
-      this.tail = this.head;
-    }
-
-    else {
-      let newNode = new Node(data);
-      this.tail.next = newNode;
-      newNode.prev = this.tail;
-      this.tail = newNode;
-    }
-  }
-
-  prepend(data: Object) {
-    if (this.head === null) {
-      this.head = new Node(data);
-      this.tail = this.head;
-    }
-
-    else {
-      let newNode = new Node(data);
-      this.head.prev = newNode;
-      newNode.next = this.head;
-      this.head = newNode;
-    }
-  }
-
-  isEmpty() {
-    if (this.head === null) {
-      return true;
-    }
-    else return false;
-  }
-
-  at(index: number) {
-    let travel = this.head;
-    for (let i = 0; i < index + 1; i++) {
-      travel = travel.next;
-    }
-    return travel;
-  }
-
-  purge(data: Object) {
-    let travel;
-    while (this.head != null) {
-      travel = this.head;
-      this.head = this.head.next;
-      travel = null;
-    }
-  }
-}
-
 
 

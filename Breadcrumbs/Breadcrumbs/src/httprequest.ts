@@ -11,19 +11,16 @@ import { appGlobals } from './app/file';
   for more info on providers and Angular 2 DI.
 */
 
-var aws_url = 'http://ec2-3-89-98-89.compute-1.amazonaws.com:4604'
-//var aws_url = 'http://ec2-54-162-107-119.compute-1.amazonaws.com:4604' //1-29-19
-//var aws_url = 'http://ec2-54-205-115-83.compute-1.amazonaws.com:4604' //1-20-19
-//var aws_url = 'http://ec2-35-174-115-108.compute-1.amazonaws.com:4604' // original
-//var aws_url = 'http://ec2-34-228-70-109.compute-1.amazonaws.com:4604' // copy
+
+var aws_url = 'http://3.90.157.20:4604'
+
 @Injectable()
   
 export class httprequest {
 
   data: Object;
-  
 
-  constructor(public alertCtrl: AlertController, public loadingCtrl: LoadingController, public http: Http, public navCtrl: NavController, public storage: Storage) {
+  constructor(public alertCtrl: AlertController, public loadingCtrl: LoadingController, public http: Http, public storage: Storage) {
     console.log('Hello httprequest Provider');
   }
 
@@ -35,7 +32,7 @@ export class httprequest {
     return new Promise(resolve => {
       this.storage.get('userID').then((userid) => {
 
-        this.http.get(aws_url + '/activeEvent/' + userid)
+        this.http.get(aws_url + '/api/activeEvent/' + userid)
           .map(res => res.json())
           .subscribe(data => {
             this.data = data;
@@ -56,7 +53,7 @@ export class httprequest {
     }
     return new Promise(resolve => {
       this.storage.get('userID').then((userid) => {
-        this.http.get(aws_url + '/inactiveEvents/' + userid)
+        this.http.get(aws_url + '/api/inactiveEvents/' + userid)
           .subscribe(data => {
             data = data.json();
             resolve(data);
@@ -76,7 +73,7 @@ export class httprequest {
     //Return a new promise
     return new Promise(resolve => { //Get the userid from storage
       this.storage.get('userID').then(userid => { //Create a GET call to the API servers contacts page
-        this.http.get(aws_url + '/contacts/' + userid)
+        this.http.get(aws_url + '/api/contacts/' + userid)
           .map(res => res.json()) //Map the response as a JSON object
           .subscribe(data => { //Handle the returned value from .map
             this.data = data;
@@ -96,7 +93,7 @@ export class httprequest {
     }
     return new Promise(resolve => {
       this.storage.get('userID').then((userid) => {
-        this.http.get(aws_url + '/events/' + userid)
+        this.http.get(aws_url + '/api/events/' + userid)
           .map(res => res.json())
           .subscribe(data => {
             this.data = data;
@@ -107,16 +104,19 @@ export class httprequest {
   }
 
   InsertEvent(eventData) {
-    var header = new Headers();
-    header.append("Accept", 'application/json');
-    header.append('Content-Type', 'application/json')
-    const requestOpts = new RequestOptions({ headers: header });
-    this.http.post(aws_url + '/newevent', eventData, requestOpts)
-      .subscribe(data => {
-        console.log(data['_body']);
-      }, error => {
-        console.log(error);
-      });
+    return new Promise(resolve => {
+      var header = new Headers();
+      header.append("Accept", 'application/json');
+      header.append('Content-Type', 'application/json')
+      const requestOpts = new RequestOptions({ headers: header });
+      this.http.post(aws_url + '/api/newevent/', eventData, requestOpts)
+        .subscribe(data => {
+          console.log(data['_body']);
+        }, error => {
+          console.log(error);
+        });
+      resolve('Success');
+    });
   }
 
   InsertContact(userid, contactData) {
@@ -124,7 +124,7 @@ export class httprequest {
     header.append("Accept", 'application/json');
     header.append('Content-Type', 'application/json');
     const requestOpts = new RequestOptions({ headers: header });
-    this.http.post(aws_url + '/newContact', contactData, requestOpts)
+    this.http.post(aws_url + '/api/newContact/', contactData, requestOpts)
       .subscribe(data => {
         console.log(data['_body']);
       }, error => {
@@ -138,7 +138,7 @@ export class httprequest {
     }
 
     return new Promise(resolve => {
-      this.http.get(aws_url + '/eventContacts/' + eventID)
+      this.http.get(aws_url + '/api/eventContacts/' + eventID)
         .map(res => res.json())
         .subscribe(data => {
           this.data = data;
@@ -148,17 +148,20 @@ export class httprequest {
   }
 
   DisableEvent(eventID) {
-    const requestOpts = new RequestOptions({ headers: header });
-    var header = new Headers();
-    header.append("Accept", 'application/json');
-    header.append('Content-Type', 'application/json')
-    var body = { 'eventID': eventID }
-    this.http.post(aws_url + '/disableEvent/', body)
-      .subscribe(data => {
-        console.log(data['_body']);
-      }, error => {
-        console.log(error);
-      });
+    return new Promise(resolve => {
+      const requestOpts = new RequestOptions({ headers: header });
+      var header = new Headers();
+      header.append("Accept", 'application/json');
+      header.append('Content-Type', 'application/json')
+      var body = { 'eventID': eventID }
+      this.http.post(aws_url + '/api/disableEvent/', body)
+        .subscribe(data => {
+          console.log(data['_body']);
+        }, error => {
+          console.log(error);
+        });
+      resolve("Success");
+    })
   }
 
   //Create User Account
@@ -169,7 +172,7 @@ export class httprequest {
     const requestOptions = new RequestOptions({ headers: headers });
 
 
-    this.http.post(aws_url + '/createUser/', data)
+    this.http.post(aws_url + '/api/createUser/', data)
       .subscribe(data => {
         console.log(data['_body']);
       }, (error) => {
@@ -184,7 +187,7 @@ export class httprequest {
       return Promise.resolve(this.data);
     }
     return new Promise(resolve => {
-      this.http.get(aws_url + '/getUserID/' + username)
+      this.http.get(aws_url + '/api/getUserID/' + username)
         .map(res => res.json()).subscribe(data => {
           this.data = data;
           resolve(this.data);
@@ -208,7 +211,7 @@ export class httprequest {
     }
 
     return new Promise(resolve => {
-      this.http.get(aws_url + '/confirmUser/' + user.username + '/' + user.password)
+      this.http.get(aws_url + '/api/confirmUser/' + user.username + '/' + user.password)
         .map(res => res.json())
         .subscribe(data => {
           this.data = data;

@@ -109,8 +109,8 @@ export class editeventPage {
       //alert.present();
       let element = this.EditEventMapEl.nativeElement;
       EditEventMap = new google.maps.Map(element, {
-        zoom: 7,
-        center: { lat: event.StartLat, lng: event.StartLon},
+        zoom: 10,
+        center: { lat: (event.StartLat + event.EndLat)/2, lng: (event.StartLon + event.EndLon)/2},
         mapTypeId: google.maps.MapTypeId.ROADMAP
       });
 
@@ -212,11 +212,11 @@ export class editeventPage {
             "contactsList": contactsListString,
             "participants": this.event.value.participants
           }
-          this.storage.set('CurrentEvent', eventData);
+          this.storage.set('activeEvent', eventData);
           return eventData;
         })
         .then((eventData) => {
-          this.storage.set('lastState', 'addeventsubmit')
+          this.storage.set('newEventSubmit', true)
             .then(() => {
               this.request.InsertEvent(eventData);
               this.navCtrl.pop();

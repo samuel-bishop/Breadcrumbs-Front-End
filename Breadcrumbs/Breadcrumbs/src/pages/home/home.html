@@ -1,17 +1,140 @@
 <!-- Put shit here -->
+<!-- Banner -->
+<!-- Active Event Division -->
 
-  <ion-card>
-    <ion-card-header>
-      Current Event
-    </ion-card-header>
-    <ion-card-content>
-      <ion-label id="activeEventContent"> </ion-label>
-      <button ion-button name="CurrentEventCheckIn" *ngIf="CurrentEventExists" (click)="checkIn()"> Check In </button>
-    </ion-card-content>
-  </ion-card>
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title style="font-family:'Lucida Sans'">Breadcrumbs</ion-title>
+  </ion-navbar>
+</ion-header>
 
-  <button ion-button type="button" (click)="addEvent()"> Add New Event </button>
-  <button ion-button type="button" *ngIf="CurrentEventExists" (click)="editEvent()"> Edit Active Event</button>
-  <button ion-button type="button" (click)="viewEvents()"> View Past Events </button>
-  <button ion-button type="button" (click)="addContact()"> Add New Contact </button>
-  <button ion-button type="button" (click)="editContact()"> Edit Contact </button>
+<ion-menu [content]="sidebar">
+  <ion-content style="margin-top:10px">
+
+    <ion-card color="primary" style=" text-align:center; margin-bottom: 20px">
+      <ion-row>
+        <ion-col>
+          <ion-icon name="happy" style="font-size:40px; color:white"></ion-icon>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col style="color:white; font-family: 'Lucida Sans'; font-size:medium">
+          <ion-label>{{username}}</ion-label>
+          <ion-label> Bob Belcher </ion-label>
+          <ion-label> bobsburgers@gmail.com </ion-label>
+        </ion-col>
+      </ion-row>
+    </ion-card>
+
+    <ion-list>
+      <button ion-item menuClose class="side-button">
+        <ion-icon name="build"></ion-icon>
+        Edit Profile
+      </button>
+      <button ion-item menuClose (click)="addContact()" class="side-button">
+        <ion-icon name="person-add"></ion-icon>
+        Add Contact
+      </button>
+      <button ion-item menuClose (click)="editContacts()" class="side-button">
+        <ion-icon name="contacts"></ion-icon>
+        Edit Contact
+      </button>
+      <button ion-item menuClose (click)="viewPastEvents()" class="side-button">
+        <ion-icon name="eye"></ion-icon>
+        Past Events
+      </button>
+      <button ion-item menuClose (click)="logout()" class="side-button" style="color:red">Logout</button>
+    </ion-list>
+  </ion-content>
+
+</ion-menu>
+<ion-nav #sidebar></ion-nav>
+<ion-content class="forest">
+  <!-- Active Event Info -->
+  <ion-row>
+    <ion-col>
+    </ion-col>
+    <ion-col>
+      <ion-item *ngIf="CurrentEventExists">
+        <ion-item>
+          <button ion-button (click)="editEvent()" type="button" style="width:auto; height:auto; background-color:white; color:black">
+            <ion-grid style="font-family:'Lucida Sans'; color:black">
+              <ion-row><p>{{EventName}}</p></ion-row>
+              <ion-row><p>{{EventDescription}}</p></ion-row>
+              <ion-row><p>{{EventParticipants}}</p></ion-row>
+              <ion-row><p></p><br /><br /><br />Event Ends At:</ion-row>
+              <ion-row><p>{{EventEndDate}}</p></ion-row>
+            </ion-grid>
+          </button>
+        </ion-item>
+
+        <ion-item>
+          <ion-row>
+            <ion-col>
+              <button ion-button class="end-event-button" (click)="checkIn()" type="button">End Event</button>
+            </ion-col>
+            <ion-col>
+              <button ion-button class="share-event-button" type="button" style="font-size:16px; font-family:'Lucida Sans'; "><ion-icon name="share" style="font-size:20px"></ion-icon></button>
+            </ion-col>
+            <ion-col></ion-col>
+            <ion-col></ion-col>
+            <ion-col></ion-col>
+            <ion-col></ion-col>
+          </ion-row>
+        </ion-item>
+      </ion-item>
+    </ion-col>
+    <ion-col>
+    </ion-col>
+  </ion-row>
+ 
+
+
+  <!-- No Active Event (Add Event) -->
+  <ion-row style="margin-top:40px">
+    <ion-col width-10></ion-col>
+    <ion-col width-80>
+      <button *ngIf="!CurrentEventExists" ion-button class="add-event-button" (click)="addEvent()">+ Event   <ion-icon name="bicycle"></ion-icon> </button>
+    </ion-col>
+    <ion-col width-10></ion-col>
+  </ion-row>
+
+  <ion-list *ngIf="!CurrentEventExists">
+    <ion-row style="text-align:center; font-family:'Lucida Sans'; font-size:20px">
+      <ion-col></ion-col>
+      <ion-col width-50>
+        <ion-card class="past-event-card" (click)="SelectTemplate()">
+          <ion-label style="font-size: 20px; font-family:'Lucida Sans'"> Last Event </ion-label>
+          <ion-label style="font-size: 16px; font-family:'Lucida Sans'">
+            Event: {{PastEventName}}
+          </ion-label>
+          <ion-label style="font-size: 16px; font-family:'Lucida Sans'">
+            Description: {{PastEventDescription}}
+          </ion-label>
+          <ion-label style="font-size: 16px; font-family:'Lucida Sans'">
+            Participants: {{PastEventParticipants}}
+          </ion-label>
+        </ion-card>
+      </ion-col>
+      <ion-col></ion-col>
+    </ion-row>
+  </ion-list>
+</ion-content>
+  
+
+
+<!-- TODO: Add map to active event display -->
+<!--<div #HomePageMap id="HomePageMap"></div>-->
+<!--
+  <ion-content>
+    <button ion-button type="button" (click)="addEvent()"> Add New Event </button>
+    <button ion-button type="button" *ngIf="CurrentEventExists" (click)="editEvent()"> Edit Active Event</button>
+    <button ion-button type="button" (click)="viewEvents()"> View Past Events </button>
+    <button ion-button type="button" (click)="addContact()"> Add New Contact </button>
+    <button ion-button type="button" (click)="editContact()"> Edit Contact </button>
+    <button ion-button type="button" (click)="logout()"> Logout </button>
+  </ion-content>
+</ion-content>-->

@@ -23,9 +23,9 @@
       </ion-select>
     </ion-item>
 
-    <ion-item>
-      <button ion-button type="button" (click)="addContactClick()">Add New Contact..</button>
-    </ion-item>
+   
+      <button ion-button class="addcontact-button" type="button" (click)="addContactClick()">+<ion-icon name="contacts"></ion-icon></button>
+   
 
     <ion-item>
       <ion-input placeholder="Participants (optional)" [(ngModel)]="eventParticipants" formControlName="participants" type="text"></ion-input>

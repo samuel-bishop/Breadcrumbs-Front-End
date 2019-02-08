@@ -1,38 +1,89 @@
-<!--
-  Generated template for the NewPage page.
-
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
--->
-<ion-header>
-
-  <ion-navbar>
-    <ion-title>Login</ion-title>
-  </ion-navbar>
-
+<ion-header class="banner">
+  <ion-title > <label style="color:white"> Breadcrumbs </label>  </ion-title>
 </ion-header>
 
+  <ion-content padding>
+    <!-- Row 1 -->
+    <ion-row>
+      <ion-col>
+        <!--1x1-->
+      </ion-col>
+      <ion-col>
+        <!--1x2-->
+        <ion-input class="login-forms" type="text" placeholder="Username" name="username" #username></ion-input>
+        <ion-input class="login-forms" type="password" placeholder="Password" name="password" #password></ion-input>
+        <ion-input *ngIf="isRegister" class="login-forms" typeof="password" placeholder="Confirm Password" name="passwordConfirm"></ion-input>
+      </ion-col>
+      <ion-col>
+        <!--1x3-->
+      </ion-col>
+    </ion-row>
 
-<ion-content padding>
-  <ion-list>
+    <!-- Row 2 -->
+    <ion-row>
+      <ion-col>
+        <!--3x1-->
+      </ion-col>
+      <ion-col>
+        <!--3x2-->
+        <ion-input *ngIf="isRegister" class="login-forms" type="text" placeholder="First Name" name="firstName" #firstName></ion-input>
+        <ion-input *ngIf="isRegister" class="login-forms" type="text" placeholder="Last Name" name="lastName" #lastName></ion-input>
 
-    <ion-item>
+      </ion-col>
+      <ion-col>
+        <!--3x3-->
+      </ion-col>
+    </ion-row>
 
-      <ion-input round type="text" placeholder="Username" name="username" #username></ion-input>
+    <!-- Row 3 -->
+    <ion-row>
+      <ion-col>
+        <!--3x1-->
+      </ion-col>
+      <ion-col>
+        <ion-input *ngIf="isRegister" class="login-forms" type="email" placeholder="Email" name="email" #email></ion-input>
+        <ion-input *ngIf="isRegister" class="login-forms" type="number" placeholder="Phone Number" name="phonenumber" #mobile></ion-input>
+        <!--3x2-->
+      </ion-col>
+      <ion-col>
+        <!--3x3-->
+      </ion-col>
+      <ion-col>
+        <!--3x4-->
+      </ion-col>
+      <ion-col>
+        <!--3x5-->
+      </ion-col>
+      <ion-col>
+        <!--3x6-->
+      </ion-col>
 
-    </ion-item>
-
-    <ion-item>
-
-      <ion-input type="password" placeholder="Password" name="password" #password></ion-input>
-
-    </ion-item>
-
-
-    <button ion-button round block (click)="initialClick()">Sign In</button>
-
-    <button ion-button round block (click)="signUp()">Register</button>
-  </ion-list>
-
-</ion-content>
-
+    </ion-row>
+    <!-- Row 4 -->
+    <ion-row>
+      <ion-col>
+        <!--4x1-->
+      </ion-col>
+      <ion-col>
+        <!--4x2-->
+      </ion-col>
+      <ion-col>
+        <!--4x3-->
+        <button *ngIf="isRegister" ion-button full (click)="signUp()">Confirm</button>
+        <button *ngIf="!isRegister" ion-button full (click)="initialClick()">Sign In</button>
+        <button class="forgot-pwd">forgot username?</button>
+      </ion-col>
+      <ion-col>
+        <!--4x4-->
+        <button *ngIf="isRegister" ion-button full (click)="cancelRegister()">Cancel</button>
+        <button *ngIf="!isRegister" ion-button full (click)="signUp()">Register</button>
+        <button class="forgot-pwd">forgot password?</button>
+      </ion-col>
+      <ion-col>
+        <!--4x5-->
+      </ion-col>
+      <ion-col>
+        <!--4x6-->
+      </ion-col>
+    </ion-row>
+  </ion-content>

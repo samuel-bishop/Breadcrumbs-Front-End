@@ -1,31 +1,32 @@
 import { Component, ViewChild } from '@angular/core';
 import { NavController, NavParams, AlertController } from 'ionic-angular';
 import { HomePage } from '../home/home';
-import { RegisterPage } from '../Register/Register';
 import { httprequest } from '../../httprequest';
-import { VALID } from '@angular/forms/src/model';
 import { Storage } from '@ionic/storage';
-//import { User } from '../../datastructs';
+import { BCWorker } from '../../worker';
 
-/*
-  Generated class for the LoginPage page.
+function GetEvents(worker, request, storage) {
+  worker.PullInactiveEvents(request, storage);
+  return new Promise(function (resolve, reject) {
+    worker.PullActiveEvent(request, storage);
+    resolve();
+  });
+}
 
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
 @Component({
     selector: 'page-LoginPage',
   templateUrl: 'LoginPage.html',
-    providers: [httprequest]
+  providers: [httprequest]
 })
 export class LoginPagePage {
   @ViewChild("username") username;
   @ViewChild("password") password;
+  isRegister: boolean = false;
   userID: any;
   validUser: any;
   //userValidation: User; 
   data: string;
-  constructor(public navCtrl: NavController, public navParams: NavParams, public alertCtrl: AlertController, public request: httprequest, public storage:Storage) { }
+  constructor(public navCtrl: NavController,public request: httprequest, public navParams: NavParams, public alertCtrl: AlertController, public storage:Storage) { }
 
     ionViewDidLoad() {
         console.log('ionViewDidLoad LoginPagePage');
@@ -44,30 +45,44 @@ export class LoginPagePage {
           title: "Attention", subTitle: "Password field is empty", buttons: ["Ok"]
         });
         alert.present();
-      } 
-
+      }
+    this.storage.set('username', this.username.value);
+    this.storage.set('userID', 1);
         //this.request.SignIn(user)
-   
    }
 
   signUp() {
-    this.navCtrl.push(RegisterPage);
+    //this.navCtrl.push(RegisterPage);
+    this.isRegister = true;
+  }
+
+  cancelRegister() {
+    this.isRegister = false;
   }
 
   initialClick() {
-    this.signIn();
-    this.validateUser();
-    console.log(this.validUser, "its true");
+    //this.signIn();
+    //this.validateUser();
+    //console.log(this.validUser, "its true");
+    this.storage.set('userID', 1);
+    let worker = new BCWorker();
+    GetEvents(worker, this.request, this.storage).then(() => { this.navCtrl.setRoot(HomePage); });
   }
 
   validateUser() {
-    let user = {
-      username: this.username.value,
-      password: this.password.value
-    }
-    if (this.request.SignIn(user))
-      this.navCtrl.push(HomePage);
+    //let user = {
+    //  username: this.username.value,
+    //  password: this.password.value
+    //}
+    //if (request.SignIn(user))
+    //  this.storage.set('userID', 1);
+    //  this.navCtrl.pop();
+    //  location.reload();
   };
-  
+
+
+
 
 }
+
+
