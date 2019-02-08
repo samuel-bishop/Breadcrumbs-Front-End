@@ -1,30 +1,31 @@
 <form [formGroup]="editcontact" (ngSubmit)="editcontactForm()">
+  <ion-item>
+    <ion-select id="contactSelection" name="contactID" [(ngModel)]="contact" (ionChange)="onSelectChange(contact)" multiple="false" formControlName="contactID" interface="action-sheet">
+      <ion-option *ngFor="let contact of contacts; let i = index" [value]="contact" [selected]="i===0">{{contact.ContactFirstName}} {{contact.ContactLastName}}</ion-option>
+    </ion-select>
+  </ion-item>
 
-  <ion-list>
+  <ion-item>
+    <ion-label floating>First Name</ion-label>
+    <ion-input [(ngModel)]="contactFirstName" formControlName="firstName" type="text" inputmode="text"></ion-input>
+  </ion-item>
 
-    <ion-item>
-      <ion-input placeholder="Contact ID" formControlName="contactID" type="text"></ion-input>
-    </ion-item>
+  <ion-item>
+    <ion-label floating>Last Name</ion-label>
+    <ion-input [(ngModel)]="contactLastName" formControlName="lastName" type="text" inputmode="text"></ion-input>
+  </ion-item>
 
-    <ion-item>
-      <ion-input placeholder="First Name" formControlName="firstName" type="text"></ion-input>
-    </ion-item>
+  <ion-item>
+    <ion-label floating>Phone Number</ion-label>
+    <ion-input [(ngModel)]="contactPhoneNumber" formControlName="phoneNumber" type="tel" inputmode="tel"></ion-input>
+  </ion-item>
 
-    <ion-item>
-      <ion-input placeholder="Last Name" formControlName="lastName" type="text"></ion-input>
-    </ion-item>
+  <ion-item>
+    <ion-label floating>Email Address</ion-label>
+    <ion-input [(ngModel)]="contactEmailAddress" formControlName="emailAddress" type="email" inputmode="email"></ion-input>
+  </ion-item>
 
-    <ion-item>
-      <ion-input placeholder="Phone Number" formControlName="phoneNumber" type="text"></ion-input>
-    </ion-item>
-
-    <ion-item>
-      <ion-input placeholder="Email Address" formControlName="emailAddress" type="text"></ion-input>
-    </ion-item>
-
-  </ion-list>
-
-  <!--<button ion-button type="button" (click)="findIDClick()">Find</button> -->
   <button ion-button type="button" (click)="cancelClick()">Cancel</button>
-  <button ion-button type="submit" [disabled]="!editcontact.valid">Submit</button>
+  <button ion-button type="submit" [disabled]="!editcontact.valid">Save</button>
+  <button ion-button type="button" (click)="deleteContact(i)">Delete</button>
 </form>
