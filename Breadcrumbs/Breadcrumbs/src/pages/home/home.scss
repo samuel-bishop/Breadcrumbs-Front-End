@@ -14,7 +14,23 @@ page-home {
     background-repeat: no-repeat;
   }
 
+  .bold {
+    font-weight: bolder;
+  }
 
+  .event-card-header {
+    font-size: 20px;
+    font-family: 'Lucida Sans';
+    text-align: center;
+  }
+
+  .past-event-card-header {
+    font-size: 20px;
+    font-family: 'Lucida Sans';
+    text-align: center;
+    text-anchor: middle;
+    padding-top: -52px;
+  }
 
   .ionic-logo {
     display: inline-flex;
@@ -58,26 +74,6 @@ page-home {
     -webkit-border-radius: 100%;
   }
 
-  @-webkit-keyframes spin {
-    0% {
-      -webkit-transform: rotate(0deg);
-    }
-
-    100% {
-      -webkit-transform: rotate(360deg);
-    }
-  }
-
-  @-moz-keyframes spin {
-    0% {
-      -moz-transform: rotate(0deg);
-    }
-
-    100% {
-      -moz-transform: rotate(360deg);
-    }
-  }
-
   .profile {
     font-family: 'Lucida Sans';
     color: white;
@@ -100,12 +96,22 @@ page-home {
     /*border: solid medium grey;*/
   }
 
+  .event-card {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border: solid medium black;
+    min-width: 300px;
+  }
+
   .past-event-card {
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
     border: solid medium black;
+    min-width: 300px;
   }
 
   .banner {
@@ -116,33 +122,33 @@ page-home {
   }
 
   .end-event-button {
+
     background-color: red;
     font-size: 16px;
     font-family: 'Lucida Sans';
     box-shadow: inherit;
     text-shadow: initial;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
     margin-left: auto;
     margin-right: auto;
-    border: solid medium grey;
   }
 
   .share-event-button {
+    padding-left:20px;
     background-color: rgb(79, 139, 221);
     font-size: 16px;
     font-family: 'Lucida Sans';
     box-shadow: inherit;
     text-shadow: initial;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
     margin-left: auto;
     margin-right: auto;
-    border: solid medium grey;
   }
 
   .breadcrumbs-banner {
@@ -172,5 +178,26 @@ page-home {
 
   #map {
     height: 100%;
+  }
+
+
+  @-webkit-keyframes spin {
+    0% {
+      -webkit-transform: rotate(0deg);
+    }
+
+    100% {
+      -webkit-transform: rotate(360deg);
+    }
+  }
+
+  @-moz-keyframes spin {
+    0% {
+      -moz-transform: rotate(0deg);
+    }
+
+    100% {
+      -moz-transform: rotate(360deg);
+    }
   }
 }

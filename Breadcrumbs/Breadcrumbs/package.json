@@ -22,6 +22,7 @@
     "@ionic-native/core": "^4.20.0",
     "@ionic-native/geolocation": "^4.19.0",
     "@ionic-native/google-maps": "^4.15.1",
+    "@ionic/angular": "^4.0.1",
     "@ionic/storage": "1.1.7",
     "cordova-browser": "^5.0.4",
     "cordova-ios": "4.5.5",

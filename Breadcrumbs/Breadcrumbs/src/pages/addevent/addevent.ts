@@ -8,19 +8,21 @@ import {
   MarkerOptions,
   LatLng
 } from '@ionic-native/google-maps';
+import { Event } from '../../datastructs';
+import { Geolocation } from '@ionic-native/geolocation';
 
 declare var google;
 var AddEventMap;
 var startLocMarker; //Marker Object for Start Location on Google Map
 var endLocMarker; //Marker Object for End Location on Google Map
 var isStartOrEndDestination; //Map marker toggle between Start and End Position
-var currentLat = 42.2587;
-var currentLng = 121.7836;
+var currentLat;
+var currentLng;
 
 @Component({
   selector: 'page-addevent',
   templateUrl: 'addevent.html', 
-  providers: [httprequest]
+  providers: [httprequest, Geolocation]
 })
 
 export class addeventPage {
@@ -32,13 +34,22 @@ export class addeventPage {
   endDateString: String = new Date(this.todaysDate.getTime() - this.todaysDate.getTimezoneOffset() * 58750).toISOString();  //Stringified Event End Date
   currentLng: any; //Location Data for Longitude of Clients Current Position
   currentLat: any; //Location Data for Latitude of Clients Current Position
+  eventName: any ="";
+  eventDesc: any ="";
+  eventPart: any ="";
+
+
   private event: FormGroup;
   @ViewChild('AddEventMap') AddEventMapEl: ElementRef;
-  constructor(public alertCtrl: AlertController, public loadingCtrl: LoadingController, public navCtrl: NavController, public navParams: NavParams, public request: httprequest, public formBuilder: FormBuilder, public storage: Storage) {
+  constructor(public alertCtrl: AlertController, public loadingCtrl: LoadingController, public navCtrl: NavController, public navParams: NavParams, public request: httprequest, public formBuilder: FormBuilder, public storage: Storage, public geo: Geolocation) {
+    //Initialize google AddEventMap and markers
+    this.initMap();
+
     isStartOrEndDestination = false;
     //Creating Forms
     storage.get('userID').then((data) => { this.userid = data; });
     this.loadContacts();
+
     this.event = this.formBuilder.group({
       name: ['', Validators.required],
       description: ['', Validators.required],
@@ -51,6 +62,23 @@ export class addeventPage {
       contactsList: ['', Validators.required],
       participants: ['']
     });
+
+    this.storage.get('EditEvent').then((edit) => {
+      if (edit == true) {
+        this.storage.get('activeEvent').then((event) => {
+          this.eventName = event.EventName;
+          this.eventDesc = event.EventDesc;
+          this.eventPart = event.EventParticipants;
+        });
+      }
+      else {
+        this.eventName = "Event Name";
+        this.eventDesc = "Event Description";
+        this.eventPart = "Event Participants";
+      }
+    });
+
+
   }
 
 
@@ -99,7 +127,7 @@ export class addeventPage {
       //CurrentEvent stores the last submitted event's data
       this.storage.set('LastState', 'EventSubmit').then(() => {
         this.request.InsertEvent(eventData).then(() => {
-          this.navCtrl.pop();
+          this.navCtrl.pop({ animate: false });
           location.reload();
         });
       });
@@ -107,39 +135,47 @@ export class addeventPage {
   }
 
   initMap() {
-    //Init Google Maps API objects
-    navigator.geolocation.getCurrentPosition((position) => {
-        currentLat = position.coords.latitude;
-        currentLng = position.coords.longitude;
-    }, (error) => {
-      currentLat = 42.2587;
-      currentLng = 121.7836;
-      let alert = this.alertCtrl.create({
-        title: "Attention", subTitle: `We can't access your location`, buttons: ["Ok"]
-      });
-      alert.present();
-      });
+    this.storage.get('EditEvent').then((edit) => {
+      if (edit == true) {
+        this.storage.get('activeEvent').then((data) => {
+          let event: Event = data;
+          this.loadMap(event.EventStartLatLng.lat, event.EventStartLatLng.lng, true);
+        });
+      }
+      else {
+        //Init Google Maps API objects
 
-    this.loadMap(currentLat, currentLng);
-
-    var defaultBounds = new google.maps.LatLngBounds(
-      new google.maps.LatLng(currentLat - 0.5, currentLng),
-      new google.maps.LatLng(currentLat, currentLng + 0.5));
-    var input = document.getElementById('searchInput');
-    var options = {
-      bounds: defaultBounds,
-      types: ['address']
-    };
+        this.geo.getCurrentPosition().then((position) => {
+          currentLat = position.coords.latitude;
+          currentLng = position.coords.longitude;
+        }).catch((error) => {
+          currentLat = 42.2587;
+          currentLng = -121.7836;
+          let alert = this.alertCtrl.create({
+            title: "Attention", subTitle: `We can't access your location`, buttons: ["Ok"]
+          });
+          alert.present();
+        }).then(() => { this.loadMap(currentLat, currentLng, false); });
+      }
+    })
   }
 
-  loadMap(lat, lng) {
+  loadMap(lat, lng, isEdit) {
     let element = this.AddEventMapEl.nativeElement;
     AddEventMap = new google.maps.Map(element, {
       zoom: 13,
       center: { lat: lat, lng: lng },
       mapTypeId: google.maps.MapTypeId.ROADMAP
     });
-    if (lat != 0.0 && lng != 0.0) {
+ 
+    if (isEdit == true) {
+      this.storage.get('activeEvent').then((data) => {
+        let event: Event = data;
+        startLocMarker = new google.maps.Marker({ position: event.EventStartLatLng, map: AddEventMap, label: 'S' });
+        endLocMarker = new google.maps.Marker({ position: event.EventEndLatLng, map: AddEventMap, label: 'E' });
+      })
+    }
+    else {
       startLocMarker = new google.maps.Marker({ position: new LatLng(lat, lng), map: AddEventMap, label: 'S' });
     }
 
@@ -158,11 +194,6 @@ export class addeventPage {
         endLocMarker = new google.maps.Marker({ position: event.latLng, map: AddEventMap, label: 'E' });
       }
     });
-  }
-
-  ionViewDidLoad() {
-    //Initialize google AddEventMap and markers
-    this.initMap();
   }
 
   search() {
@@ -192,7 +223,6 @@ export class addeventPage {
   }
 
   ionViewWillLoad() {
-
   }
 
 
@@ -212,10 +242,10 @@ export class addeventPage {
   } 
 
   cancelClick() {
-    this.navCtrl.pop();
+    this.navCtrl.pop({ animate: false });
   }
 
   addContactClick() {
-    this.navCtrl.push(addcontactPage);
+    this.navCtrl.push(addcontactPage, {}, { animate: false });
   }
 }

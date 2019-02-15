@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { NavController, LoadingController, AlertController, MenuController } from 'ionic-angular';
+import { Component, ViewChild } from '@angular/core';
+import { NavController, LoadingController, AlertController, MenuController} from 'ionic-angular';
 import { addeventPage } from '../addevent/addevent';
 import { addcontactPage } from '../addcontact/addcontact';
 import { vieweventsPage } from '../viewevents/viewevents';
@@ -12,6 +12,7 @@ import { LoginPagePage } from '../LoginPage/LoginPage';
 import { Event } from '../../datastructs';
 import { LatLng } from '@ionic-native/google-maps';
 import { BCWorker } from '../../worker';
+import { viewEventPage } from '../viewEvent/viewEvent';
 
 @Component({
   selector: 'page-home',
@@ -26,7 +27,6 @@ import { BCWorker } from '../../worker';
  */
   
 export class HomePage {
-  
   /* Event Members */
   username: any;
   EventName: any;
@@ -56,17 +56,16 @@ export class HomePage {
     //});
     this.request.RequestActiveEvent().then((data) => {
       this.CurrentEventExists = true;
-          let event = data['recordset'][0];
+      let event = data['recordset'][0];
           let newEvent = new Event(event.EventID,
             event.EventName,
             event.EventDescription,
             event.EventParticipants,
             worker.FormatTime(event.EventCreationDate),
             worker.FormatTime(event.EndDate),
-            new LatLng(event.StartLat, event.Startlon),
+            new LatLng(event.StartLat, event.StartLon),
             new LatLng(event.EndLat, event.EndLon),
             true);
-
             this.CurrentEvent = newEvent;
             this.EventName = this.CurrentEvent.EventName;
             this.EventDescription = this.CurrentEvent.EventDesc;
@@ -82,43 +81,29 @@ export class HomePage {
           this.CurrentEventExists = false;
           });
 
-
-        //this.storage.get('inactiveEvents').then((eventsList) => {
-        //  let event = eventsList.pop();
-        //  this.PastEventName = event.EventName;
-        //  this.PastEventDescription = event.EventDesc;
-        //  this.PastEventParticipants = event.EventParticipants;
-        //})
+      this.storage.get('inactiveEvents').then((EventsList) => {
+            this.inactiveEvents = [];
+            for (let event of EventsList) {
+              if (event != null) {
+                this.inactiveEvents.unshift(event);
+              }
+            }
+        });
         this.storage.set('LastState', 'HomePage');
-      //}
-    //})
   }
-
 
   ionViewWillLoad() {
     this.storage.get('username').then((username) => {
       this.username = username;
     });
-
-    //this.storage.get('CurrentEventExists').then((exists) => {
-    //  this.CurrentEventExists = exists;
-    //  if (exists) {
-    //    this.storage.get('activeEvent').then((event) => {
-    //      console.log(event);
-    //      this.CurrentEvent = event;
-    //      this.EventName = this.CurrentEvent.EventName;
-    //      this.EventDescription = this.CurrentEvent.EventDesc;
-    //      this.EventParticipants = this.CurrentEvent.EventParticipants;
-    //      this.EventEndDate = this.CurrentEvent.EventEndDate;
-    //    });
-    //  }
-    //});
+  
   }
 
   checkIn() {
     this.storage.set('CurrentEventExists', false).then(() => {
       this.CurrentEventExists = false;
     });
+    this.storage.set('EditEvent', false);
     this.request.DisableEvent(this.CurrentEvent.EventID);
     this.storage.get('inactiveEvents').then((EventsList) => {
       EventsList.push(this.CurrentEvent);
@@ -129,6 +114,7 @@ export class HomePage {
       this.storage.set('activeEvent', null);
     });
   }
+
 
   toggleExists() {
     if (this.CurrentEventExists) this.CurrentEventExists = false;
@@ -145,16 +131,26 @@ export class HomePage {
     this.navCtrl.push(editcontactPage, {},{ animate: false });
   }
 
+  viewEvent(event) {
+    this.storage.set('viewedEvent', event).then(() => {
+    this.navCtrl.push(viewEventPage, {}, { animate: false });
+    })
+  }
+
   viewPastEvents() {
     this.navCtrl.push(vieweventsPage, {},{ animate: false });
   }
 
   addEvent() {
-    this.navCtrl.push(addeventPage,{}, { animate: false });
+    this.storage.set('EditEvent', false).then(() => {
+      this.navCtrl.push(addeventPage,{}, { animate: false });
+    })
   }
 
   editEvent() {
-    this.navCtrl.push(editeventPage, {}, { animate: false });
+    this.storage.set('EditEvent', true).then(() => {
+    this.navCtrl.push(addeventPage, {}, { animate: false });
+    })
   }
 
   logout() {

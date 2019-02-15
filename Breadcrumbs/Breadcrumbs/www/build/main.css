@@ -22175,7 +22175,7 @@ ion-content {
 }
 
 page-LoginPage ion-content {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(../../assets/mountain.JPG);
+  background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3)), url(../../assets/mountainsigned.png);
   background-size: cover;
 }
 
@@ -22308,62 +22308,6 @@ page-addevent #searchbar {
   border-color: black;
 }
 
-page-editevent .button {
-  box-shadow: inherit;
-  text-shadow: initial;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-  border: solid medium grey;
-  background-color: white;
-  color: black;
-  width: 90px;
-  font-family: 'Lucida Sans';
-}
-
-page-editevent .addcontact-button {
-  box-shadow: inherit;
-  text-shadow: initial;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-  border: solid medium grey;
-  background-color: white;
-  color: black;
-  width: 90px;
-  text-align: right;
-  font-family: 'Lucida Sans';
-}
-
-page-editevent #floating-panel {
-  position: absolute;
-  top: 10px;
-  right: 5px;
-  z-index: 5;
-  background-color: #fff;
-  padding: 5px;
-  border: 1px solid #999;
-  text-align: center;
-  font-family: 'Roboto','sans-serif';
-  line-height: 30px;
-  padding-left: 10px;
-}
-
-page-editevent #EditEventMap {
-  height: 60%;
-  width: 100%;
-  position: center;
-  margin: 0px;
-  padding: 0px;
-}
-
-page-editevent #searchbar {
-  border: thick;
-  border-color: black;
-}
-
 page-home .center {
   text-align: center;
 }
@@ -22377,6 +22321,24 @@ page-home .jeep {
   background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(../../assets/jeep.jpg);
   background-size: cover;
   background-repeat: no-repeat;
+}
+
+page-home .bold {
+  font-weight: bolder;
+}
+
+page-home .event-card-header {
+  font-size: 20px;
+  font-family: 'Lucida Sans';
+  text-align: center;
+}
+
+page-home .past-event-card-header {
+  font-size: 20px;
+  font-family: 'Lucida Sans';
+  text-align: center;
+  text-anchor: middle;
+  padding-top: -52px;
 }
 
 page-home .ionic-logo {
@@ -22423,15 +22385,6 @@ page-home .ionic-logo:before {
   -webkit-border-radius: 100%;
 }
 
-@-webkit-keyframes spin {
-  0% {
-    -webkit-transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-  }
-}
-
 page-home .profile {
   font-family: 'Lucida Sans';
   color: white;
@@ -22454,12 +22407,22 @@ page-home .add-event-button {
   /*border: solid medium grey;*/
 }
 
+page-home .event-card {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border: solid medium black;
+  min-width: 300px;
+}
+
 page-home .past-event-card {
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
   border: solid medium black;
+  min-width: 300px;
 }
 
 page-home .banner {
@@ -22475,28 +22438,27 @@ page-home .end-event-button {
   font-family: 'Lucida Sans';
   box-shadow: inherit;
   text-shadow: initial;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
   margin-left: auto;
   margin-right: auto;
-  border: solid medium grey;
 }
 
 page-home .share-event-button {
+  padding-left: 20px;
   background-color: #4f8bdd;
   font-size: 16px;
   font-family: 'Lucida Sans';
   box-shadow: inherit;
   text-shadow: initial;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
   margin-left: auto;
   margin-right: auto;
-  border: solid medium grey;
 }
 
 page-home .breadcrumbs-banner {
@@ -22526,4 +22488,13 @@ page-home .side-button {
 
 page-home #map {
   height: 100%;
+}
+
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
 }

@@ -73,7 +73,7 @@ export class editeventPage {
   }
 
   ionViewWillLoad() {
-    
+
     //CurrentEvent stores the last submitted event's data
     this.storage.get('activeEvent').then((event) => {
       this.eventName = event.EventName;
@@ -99,7 +99,7 @@ export class editeventPage {
 
   ionViewDidLoad() {
     this.initMap();
-    
+
   }
 
   initMap() {
@@ -109,8 +109,8 @@ export class editeventPage {
       //alert.present();
       let element = this.EditEventMapEl.nativeElement;
       EditEventMap = new google.maps.Map(element, {
-        zoom: 10,
-        center: { lat: (event.StartLat + event.EndLat)/2, lng: (event.StartLon + event.EndLon)/2},
+        zoom: 7,
+        center: { lat: event.StartLat, lng: event.StartLon },
         mapTypeId: google.maps.MapTypeId.ROADMAP
       });
 
@@ -134,7 +134,7 @@ export class editeventPage {
           }
           endLocMarker = new google.maps.Marker({ position: event.latLng, map: EditEventMap, label: 'E' });
         }
-      }); 
+      });
     });
   }
 
@@ -212,11 +212,11 @@ export class editeventPage {
             "contactsList": contactsListString,
             "participants": this.event.value.participants
           }
-          this.storage.set('activeEvent', eventData);
+          this.storage.set('CurrentEvent', eventData);
           return eventData;
         })
         .then((eventData) => {
-          this.storage.set('newEventSubmit', true)
+          this.storage.set('lastState', 'addeventsubmit')
             .then(() => {
               this.request.InsertEvent(eventData);
               this.navCtrl.pop();

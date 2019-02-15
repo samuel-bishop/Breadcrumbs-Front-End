@@ -64,6 +64,37 @@ export class httprequest {
     })
   }
 
+
+  UpdateContact(contactData) {
+    var alert = this.alertCtrl.create({ title: 'contactData', subTitle: contactData.firstName, buttons: ['OK'] });
+    alert.present();
+
+    var header = new Headers();
+    header.append("Accept", 'application/json');
+    header.append('Content-Type', 'application/json');
+    const requestOpts = new RequestOptions({ headers: header });
+    this.http.post(aws_url + '/updatecontact', contactData, requestOpts)
+      .subscribe(data => {
+        console.log(data['_body']);
+      }, error => {
+        console.log(error);
+      });
+  }
+
+  DeleteContact(contactid) {
+    var header = new Headers();
+    header.append("Accept", 'application/json');
+    header.append('Content-Type', 'application/json');
+    const requestOpts = new RequestOptions({ headers: header });
+    let contact = { id: contactid }
+    this.http.post(aws_url + '/deletecontact', contact, requestOpts)
+      .subscribe(data => {
+        console.log(data['_body']);
+      }, error => {
+        console.log(error);
+      });
+  }
+
   //Load contacts
   RequestContacts() {
     //Check if the data has already be created
@@ -222,8 +253,5 @@ export class httprequest {
     }).then(() => {
       console.log(validUser);
       });
-
-   
   } 
-  
 }

@@ -1,4 +1,5 @@
 <form [formGroup]="editcontact" (ngSubmit)="editcontactForm()">
+
   <ion-item>
     <ion-select id="contactSelection" name="contactID" [(ngModel)]="contact" (ionChange)="onSelectChange(contact)" multiple="false" formControlName="contactID" interface="action-sheet">
       <ion-option *ngFor="let contact of contacts; let i = index" [value]="contact" [selected]="i===0">{{contact.ContactFirstName}} {{contact.ContactLastName}}</ion-option>

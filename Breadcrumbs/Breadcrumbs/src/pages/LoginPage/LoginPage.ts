@@ -70,14 +70,7 @@ export class LoginPagePage {
   }
 
   validateUser() {
-    //let user = {
-    //  username: this.username.value,
-    //  password: this.password.value
-    //}
-    //if (request.SignIn(user))
-    //  this.storage.set('userID', 1);
-    //  this.navCtrl.pop();
-    //  location.reload();
+
   };
 
 

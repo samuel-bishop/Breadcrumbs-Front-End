@@ -1,7 +1,7 @@
 <div>
   <form [formGroup]="event" (ngSubmit)="eventForm()">
     <ion-item>
-      <ion-input placeholder="Event Name" formControlName="name" type="text"></ion-input>
+      <ion-input placeholder="{{eventName}} (required)" formControlName="name" type="text"></ion-input>
     </ion-item>
 
     <ion-item>
@@ -17,12 +17,10 @@
     </ion-item>
 
     <ion-item>
-
       <ion-label color="black">Contact(s)</ion-label>
       <ion-select name="contactsList" [(ngModel)]="contact" multiple="true" formControlName="contactsList">
         <ion-option *ngFor="let contact of contacts" [value]="contact"> {{contact.ContactFirstName}} {{contact.ContactLastName}}</ion-option>
       </ion-select>
-
     </ion-item>
 
  
@@ -30,11 +28,11 @@
 
 
     <ion-item>
-      <ion-input placeholder="Participants (optional)" formControlName="participants" type="text"></ion-input>
+      <ion-input placeholder="{{eventPart}} (required)" formControlName="participants" type="text"></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-input placeholder="Description (required)" formControlName="description" type="text"></ion-input>
+      <ion-input placeholder="{{eventDesc}} (required)" formControlName="description" type="text"></ion-input>
     </ion-item>
 
 

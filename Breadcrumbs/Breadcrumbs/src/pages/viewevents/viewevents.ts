@@ -74,7 +74,7 @@ getInactiveEvents() {
   //When ViewEvent gets called, push viewEventPage onto stack.
   ViewEvent(e: any) {
     this.storage.set('viewedEvent', e).then(() => {
-      this.navCtrl.push(viewEventPage);
+      this.navCtrl.push(viewEventPage, {}, { animate: false });
     });
   }
 }

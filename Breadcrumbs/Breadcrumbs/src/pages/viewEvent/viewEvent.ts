@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavController, NavParams, LoadingController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { httprequest } from '../../httprequest';
+import { Event } from '../../datastructs';
 
 @Component({
   selector: 'page-viewEvent',
@@ -11,73 +12,28 @@ import { httprequest } from '../../httprequest';
 
 export class viewEventPage {
 
-  eventContacts: any;
-  viewedEvent: any;
   EventName: any;
+  EventStartDate: any;
+  EventEndDate: any;
+  EventEndLat: any;
+  EventEndLng: any;
+  EventDesc: any;
+  EventParticipants: any;
+  Contacts: any;
+  event: any;
+
   constructor(public loadingCtrl: LoadingController, public navCtrl: NavController, public navParams: NavParams, public request: httprequest, public storage: Storage) {
-  }
-
-  getEventContacts(eventid) {
-    this.request.RequestEventContacts(eventid)
-      .then(data => {
-        this.storage.set('eventContacts', data['recordset']);
+    this.storage.get('viewedEvent').then((event) => {
+      this.request.RequestEventContacts(event.EventID).then((data) => {
+        this.Contacts = data['recordset'];
       })
-  }
-
-  ionViewWillEnter() {
-    //create enums for names of months and days
-    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
-    let loading = this.loadingCtrl.create({
-      content: 'Loading Events...'
+      this.EventName = event.EventName;
+      this.EventStartDate = event.EventStartDate;
+      this.EventEndDate = event.EventEndDate;
+      this.EventEndLat = event.EventEndLatLng.lat;
+      this.EventEndLng = event.EventEndLatLng.lng;
+      this.EventDesc = event.EventDesc;
+      this.EventParticipants = event.EventParticipants;
     });
-    loading.present().then(() => { 
-
-    //get the stored viewedEvent
-    this.storage.get('viewedEvent')
-      .then((data) => {
-        this.request.RequestEventContacts(data.EventID)
-          .then(data => {
-            this.storage.set('eventContacts', data['recordset']);
-          })
-          .then(() => {
-            this.storage.get('eventContacts')
-              .then((econtacts) => {
-                this.eventContacts = econtacts;
-              });
-
-              //function to convert SQL Server smalldatetime to a more human readable string
-              function formatTime(datetime: string): string {
-                let year: string = (new Date(datetime).getFullYear()).toString();
-                let month: string = monthNames[(new Date(datetime).getMonth())];
-                let weekday: string = dayNames[(new Date(datetime).getDay())];
-                let date: string = (new Date(datetime).getDate()).toString();
-                let time: string = new Date(datetime).toISOString().slice(11, 16);
-                let hourInt: number = parseInt(time.slice(0, 2));
-                if (hourInt > 12) {
-                  hourInt -= 12;
-                  time = hourInt.toString() + time.slice(2) + ' PM';
-                }
-                else time = time + ' AM';
-                if (time.startsWith('0')) time = time.slice(1);
-
-                let result: string = weekday + ', ' + month + ' ' + date + ', ' + year + ' at ' + time;
-                return result;
-              }
-
-            //this.EventName = data.EventName;
-            //set the values for the elements in viewEvent
-            document.getElementById("viewEventTitle").textContent = data.EventName;
-            document.getElementById("EventStartDateLabel").textContent = formatTime(data.EventStartDate);
-            document.getElementById("EventEndDateLabel").textContent = formatTime(data.EndDate);
-            document.getElementById("EventPosLatLabel").textContent = data.PositionLatitude;
-            document.getElementById("EventPosLonLabel").textContent = data.PositionLongitude;
-            document.getElementById("EventParticipantsLabel").textContent = data.EventParticipants ? data.EventParticipants : '(blank)';
-            document.getElementById("EventDescriptionLabel").textContent = data.EventDescription ? data.EventDescription : '(blank)';
-          });
-      });
-    });
-    loading.dismiss();
   }
 }

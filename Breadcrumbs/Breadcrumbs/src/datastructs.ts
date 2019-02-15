@@ -29,10 +29,6 @@ export class Event {
     this.EventEndLatLng = endlatlng;
     this.IsActive = isActive;
   }
-
-  AddContacts(contacts) {
-    this.EventContacts = contacts;
-  }
 }
 
 
