@@ -12,7 +12,7 @@ import { appGlobals } from './app/file';
 */
 
 
-var aws_url = 'http://3.90.157.20:4604'
+var aws_url = 'http://18.235.156.238:4604'
 
 @Injectable()
   

@@ -6,9 +6,9 @@ import { Storage } from '@ionic/storage';
 import { BCWorker } from '../../worker';
 
 function GetEvents(worker, request, storage) {
-  worker.PullInactiveEvents(request, storage);
   return new Promise(function (resolve, reject) {
     worker.PullActiveEvent(request, storage);
+    worker.PullInactiveEvents(request, storage);
     resolve();
   });
 }

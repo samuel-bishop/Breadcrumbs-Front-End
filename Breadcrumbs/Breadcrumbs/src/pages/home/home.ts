@@ -79,18 +79,67 @@ export class HomePage {
         }).catch(() => {
           this.storage.set('CurrentEventExists', false);
           this.CurrentEventExists = false;
-          });
+      });
 
-      this.storage.get('inactiveEvents').then((EventsList) => {
-            this.inactiveEvents = [];
-            for (let event of EventsList) {
-              if (event != null) {
-                this.inactiveEvents.unshift(event);
-              }
+       
+        this.storage.get('inactiveEvents').then((EventsList) => {
+          this.inactiveEvents = [];
+          if (EventsList.length == 0) {
+            this.GetInactiveEvents();
+          }
+          for (let event of EventsList) {
+            if (event != null) {
+              this.inactiveEvents.unshift(event);
             }
-        });
+          }
+        }).catch(() => {
+          this.GetInactiveEvents();
+          });
         this.storage.set('LastState', 'HomePage');
   }
+
+  GetInactiveEvents() {
+    this.request.RequestInactiveEvents().then((data) => {
+      let dataset = data['recordset'];
+      for (let event of dataset) {
+        let newEvent = new Event
+          (event.EventID,
+          event.EventName,
+          event.EventDescription,
+          event.EventParticipants,
+          this.FormatTime(event.EventCreationDate),
+          this.FormatTime(event.EndDate),
+          new LatLng(event.StartLat, event.Startlon),
+          new LatLng(event.EndLat, event.EndLon),
+          false);
+        this.inactiveEvents.unshift(newEvent);
+      }
+      this.storage.set('inactiveEvents', this.inactiveEvents);
+      location.reload();
+    })
+  }
+
+  FormatTime(datetime): string {
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+    let year: string = (new Date(datetime).getFullYear()).toString();
+    let month: string = monthNames[(new Date(datetime).getMonth())];
+    let weekday: string = dayNames[(new Date(datetime).getDay())];
+    let date: string = (new Date(datetime).getDate()).toString();
+    let time: string = new Date(datetime).toISOString().slice(11, 16);
+    let hourInt: number = parseInt(time.slice(0, 2));
+    if (hourInt > 12) {
+      hourInt -= 12;
+      time = hourInt.toString() + time.slice(2) + ' PM';
+    }
+    else time = time + ' AM';
+    if (time.startsWith('0')) time = time.slice(1);
+
+    let result: string = weekday + ', ' + month + ' ' + date + ', ' + year + ' at ' + time;
+    return result;
+  }
+
 
   ionViewWillLoad() {
     this.storage.get('username').then((username) => {
@@ -155,6 +204,7 @@ export class HomePage {
 
   logout() {
     this.storage.set('userID', 0);
+    this.storage.remove('inactiveEvents');
     this.navCtrl.setRoot(LoginPagePage);
   }
 
