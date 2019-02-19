@@ -3,8 +3,7 @@ import { Http, Headers, Request, RequestOptions } from '@angular/http';
 import { Storage } from '@ionic/storage';
 import 'rxjs/add/operator/map';
 import { AlertController, LoadingController, NavController } from 'ionic-angular';
-import { UserService } from '../service/user.service';
-import { appGlobals } from './app/file';
+
 /*
   Generated class for the httprequest provider.
   See https://angular.io/docs/ts/latest/guide/dependency-injection.html
@@ -15,11 +14,11 @@ var aws_url = 'http://ec2-18-235-156-238.compute-1.amazonaws.com:4604'
 var aws_tts_url = 'http://ec2-18-205-150-196.compute-1.amazonaws.com:4605'
 
 @Injectable()
-  
+
 export class httprequest {
 
   data: Object;
-  
+  user: Object;
 
   constructor(public alertCtrl: AlertController, public loadingCtrl: LoadingController, public http: Http, public navCtrl: NavController, public storage: Storage) {
     console.log('Hello httprequest Provider');
@@ -204,43 +203,76 @@ export class httprequest {
 
       });
 
-  
-    }
 
-  GetUserID(username) {
+  }
+
+  ResetPassword(user) {
+    var headers = new Headers();
+    headers.append("Accept", 'application/json');
+    headers.append('Content-Type', 'application/json');
+    const requestOptions = new RequestOptions({ headers: headers });
+
+    this.http.post(aws_url + '/resetPassword/', user)
+      .subscribe(data => {
+        console.log(data['body']);
+      }, (error) => {
+
+      
+
+  });
+  }
+
+  GetUserID(user) {
     if (this.data) {
       return Promise.resolve(this.data);
     }
     return new Promise(resolve => {
-      this.http.get(aws_url + '/getUserID/' + username)
-        .map(res => res.json()).subscribe(data => {
+      this.http.get(aws_url + '/getUserID/' + user.username)
+        .map(res => res.json())
+        .subscribe(data => {
           this.data = data;
           resolve(this.data);
         },
           (error) => {
-
+            console.log(error);
           });
     });
 
   }
 
-  SignIn(user) {
-    let data;
+  SignIn(user): any {
 
-    if (this.data) {
-      return Promise.resolve(this.data);
+    if (this.user) {
+      return Promise.resolve(this.user);
     }
 
     return new Promise(resolve => {
       this.http.get(aws_url + '/confirmUser/' + user.username + '/' + user.password)
         .map(res => res.json())
         .subscribe(data => {
-          this.data = data;
-          resolve(data);
-          console.log(data['_body'], "this is correct ");
+          this.user = data;
+          console.log(data);
+          console.log(this.user);
+          resolve(this.user);
         });
-    });
+    })
+     
   }
+
+  InsertContactInfo(userid, contactData) {
+    var header = new Headers();
+    header.append("Accept", 'application/json');
+    header.append('Content-Type', 'application/json');
+    const requestOpts = new RequestOptions({ headers: header });
+    this.http.post(aws_url + '/createContactInfo/', contactData, requestOpts)
+      .subscribe(data => {
+        console.log(data['_body']);
+      }, error => {
+        console.log(error);
+      });
+  }
+
+  
 
   StartWatchTest(eventID, endTime) {
     var body = {

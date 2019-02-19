@@ -2,10 +2,9 @@ import { Component, ViewChild } from '@angular/core';
 import { NavController, NavParams, AlertController } from 'ionic-angular';
 import { HomePage } from '../home/home';
 import { RegisterPage } from '../Register/Register';
+import { passwordPage } from '../password/password';
 import { httprequest } from '../../httprequest';
-import { VALID } from '@angular/forms/src/model';
 import { Storage } from '@ionic/storage';
-//import { User } from '../../datastructs';
 
 /*
   Generated class for the LoginPage page.
@@ -14,25 +13,25 @@ import { Storage } from '@ionic/storage';
   Ionic pages and navigation.
 */
 @Component({
-    selector: 'page-LoginPage',
+  selector: 'page-LoginPage',
   templateUrl: 'LoginPage.html',
-    providers: [httprequest]
+  providers: [httprequest]
 })
 export class LoginPagePage {
   @ViewChild("username") username;
   @ViewChild("password") password;
   userID: any;
-  validUser: any;
-  //userValidation: User; 
-  data: string;
-  constructor(public navCtrl: NavController, public navParams: NavParams, public alertCtrl: AlertController, public request: httprequest, public storage:Storage) { }
+  data: any;
+  isValid: any;
 
-    ionViewDidLoad() {
-        console.log('ionViewDidLoad LoginPagePage');
-    }
-  
+  constructor(public navCtrl: NavController, public navParams: NavParams, public alertCtrl: AlertController, public request: httprequest, public storage: Storage) { }
+
+  ionViewDidLoad() {
+    console.log('ionViewDidLoad LoginPagePage');
+  }
+
   signIn() {
-    //this.navCtrl.push(HomePage);
+    //check to see if username or password are blank
     if (this.username.value == "") {
       let alert = this.alertCtrl.create({
         title: "Attention", subTitle: "Username field is empty", buttons: ["Ok"]
@@ -44,32 +43,47 @@ export class LoginPagePage {
           title: "Attention", subTitle: "Password field is empty", buttons: ["Ok"]
         });
         alert.present();
-      } 
+      }
 
-        //this.request.SignIn(user)
-   
-   }
+    //creates a user, storing the input of username and password into the user object
+    let user = {
+      username: this.username.value,
+      password: this.password.value,
+      userID: 0
+    }
+
+    //check API server to see if the user is valid
+    this.request.GetUserID(user).then((data) => {
+      this.userID = data['recordset'][0].UserID;
+      console.log("uuuussser ID", this.userID);
+
+      //if the user is valid, then check the password
+      if (data['recordset'][0].UserID > 0) {
+        this.request.SignIn(user).then((data2) => {
+          if (data2 == true) { this.navCtrl.push(HomePage); }
+          else {
+            //password incorrect alert
+            let alert = this.alertCtrl.create({
+              title: "Attention", subTitle: "Incorrect password, try again!", buttons: ["Ok"]            });
+            alert.present();
+          }
+
+        });
+      }
+    });
+
+
+
+  }
 
   signUp() {
     this.navCtrl.push(RegisterPage);
   }
 
-  initialClick() {
-    this.signIn();
-    this.validateUser();
-    console.log(this.validUser, "its true");
+  resetPassword() {
+    this.navCtrl.push(passwordPage);
   }
 
-  validateUser() {
-    let user = {
-      username: this.username.value,
-      password: this.password.value
-    }
-    this.request.SignIn(user).then((data) => {
-      console.log("Data %s", data);
-      this.storage.set('validUser', data);
-      //console.log(this.storage.get('validUser'));
-    });
-    this.navCtrl.push(HomePage);
-  }
+
 }
+
