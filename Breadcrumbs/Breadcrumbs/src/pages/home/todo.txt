@@ -1,2 +1,10 @@
 Current Location on AddEventPage
 Current Location on EditEventPage
+
+Alerts
+        /*
+        let alert = this.alertCtrl.create({
+          title: "Attention", subTitle: `lat: ${currentLat} lng: ${currentLng}`, buttons: ["Ok"]
+        });
+        alert.present();
+        */

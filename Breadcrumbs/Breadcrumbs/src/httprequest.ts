@@ -10,8 +10,8 @@ import { AlertController, LoadingController, NavController } from 'ionic-angular
   for more info on providers and Angular 2 DI.
 */
 
-var aws_url = 'http://ec2-18-235-156-238.compute-1.amazonaws.com:4604'
-var aws_tts_url = 'http://ec2-18-205-150-196.compute-1.amazonaws.com:4605'
+
+var aws_url = 'http://18.235.156.238:4604'
 
 @Injectable()
 
@@ -32,7 +32,7 @@ export class httprequest {
     return new Promise(resolve => {
       this.storage.get('userID').then((userid) => {
 
-        this.http.get(aws_url + '/activeEvent/' + userid)
+        this.http.get(aws_url + '/api/activeEvent/' + userid)
           .map(res => res.json())
           .subscribe(data => {
             this.data = data;
@@ -53,7 +53,7 @@ export class httprequest {
     }
     return new Promise(resolve => {
       this.storage.get('userID').then((userid) => {
-        this.http.get(aws_url + '/inactiveEvents/' + userid)
+        this.http.get(aws_url + '/api/inactiveEvents/' + userid)
           .subscribe(data => {
             data = data.json();
             resolve(data);
@@ -64,70 +64,6 @@ export class httprequest {
     })
   }
 
-  //Load contacts
-  RequestContacts() {
-    //Check if the data has already be created
-    if (this.data) {
-      return Promise.resolve(this.data);
-    }
-    //Return a new promise
-    return new Promise(resolve => { //Get the userid from storage
-      this.storage.get('userID').then(userid => { //Create a GET call to the API servers contacts page
-        this.http.get(aws_url + '/contacts/' + userid)
-          .map(res => res.json()) //Map the response as a JSON object
-          .subscribe(data => { //Handle the returned value from .map
-            this.data = data;
-            resolve(this.data);
-          },
-            //On error
-            (error) => {
-
-            });
-      });
-    })
-  }
-
-  RequestEvents() {
-    if (this.data) {
-      return Promise.resolve(this.data);
-    }
-    return new Promise(resolve => {
-      this.storage.get('userID').then((userid) => {
-        this.http.get(aws_url + '/events/' + userid)
-          .map(res => res.json())
-          .subscribe(data => {
-            this.data = data;
-            resolve(this.data);
-          });
-      });
-    })
-  }
-
-  InsertEvent(eventData) {
-    var header = new Headers();
-    header.append("Accept", 'application/json');
-    header.append('Content-Type', 'application/json')
-    const requestOpts = new RequestOptions({ headers: header });
-    this.http.post(aws_url + '/newevent', eventData, requestOpts)
-      .subscribe(data => {
-        console.log(data['_body']);
-      }, error => {
-        console.log(error);
-      });
-  }
-
-  InsertContact(userid, contactData) {
-    var header = new Headers();
-    header.append("Accept", 'application/json');
-    header.append('Content-Type', 'application/json');
-    const requestOpts = new RequestOptions({ headers: header });
-    this.http.post(aws_url + '/newContact', contactData, requestOpts)
-      .subscribe(data => {
-        console.log(data['_body']);
-      }, error => {
-        console.log(error);
-      });
-  }
 
   UpdateContact(contactData) {
     var alert = this.alertCtrl.create({ title: 'contactData', subTitle: contactData.firstName, buttons: ['OK'] });
@@ -159,13 +95,81 @@ export class httprequest {
       });
   }
 
+  //Load contacts
+  RequestContacts() {
+    //Check if the data has already be created
+    if (this.data) {
+      return Promise.resolve(this.data);
+    }
+    //Return a new promise
+    return new Promise(resolve => { //Get the userid from storage
+      this.storage.get('userID').then(userid => { //Create a GET call to the API servers contacts page
+        this.http.get(aws_url + '/api/contacts/' + userid)
+          .map(res => res.json()) //Map the response as a JSON object
+          .subscribe(data => { //Handle the returned value from .map
+            this.data = data;
+            resolve(this.data);
+          },
+            //On error
+            (error) => {
+
+            });
+      });
+    })
+  }
+
+  RequestEvents() {
+    if (this.data) {
+      return Promise.resolve(this.data);
+    }
+    return new Promise(resolve => {
+      this.storage.get('userID').then((userid) => {
+        this.http.get(aws_url + '/api/events/' + userid)
+          .map(res => res.json())
+          .subscribe(data => {
+            this.data = data;
+            resolve(this.data);
+          });
+      });
+    })
+  }
+
+  InsertEvent(eventData) {
+    return new Promise(resolve => {
+      var header = new Headers();
+      header.append("Accept", 'application/json');
+      header.append('Content-Type', 'application/json')
+      const requestOpts = new RequestOptions({ headers: header });
+      this.http.post(aws_url + '/api/newevent/', eventData, requestOpts)
+        .subscribe(data => {
+          console.log(data['_body']);
+        }, error => {
+          console.log(error);
+        });
+      resolve('Success');
+    });
+  }
+
+  InsertContact(userid, contactData) {
+    var header = new Headers();
+    header.append("Accept", 'application/json');
+    header.append('Content-Type', 'application/json');
+    const requestOpts = new RequestOptions({ headers: header });
+    this.http.post(aws_url + '/api/newContact/', contactData, requestOpts)
+      .subscribe(data => {
+        console.log(data['_body']);
+      }, error => {
+        console.log(error);
+      });
+  }
+
   RequestEventContacts(eventID) {
     if (this.data) {
       return Promise.resolve(this.data);
     }
 
     return new Promise(resolve => {
-      this.http.get(aws_url + '/eventContacts/' + eventID)
+      this.http.get(aws_url + '/api/eventContacts/' + eventID)
         .map(res => res.json())
         .subscribe(data => {
           this.data = data;
@@ -175,17 +179,20 @@ export class httprequest {
   }
 
   DisableEvent(eventID) {
-    const requestOpts = new RequestOptions({ headers: header });
-    var header = new Headers();
-    header.append("Accept", 'application/json');
-    header.append('Content-Type', 'application/json')
-    var body = { 'eventID': eventID }
-    this.http.post(aws_url + '/disableEvent/', body)
-      .subscribe(data => {
-        console.log(data['_body']);
-      }, error => {
-        console.log(error);
-      });
+    return new Promise(resolve => {
+      const requestOpts = new RequestOptions({ headers: header });
+      var header = new Headers();
+      header.append("Accept", 'application/json');
+      header.append('Content-Type', 'application/json')
+      var body = { 'eventID': eventID }
+      this.http.post(aws_url + '/api/disableEvent/', body)
+        .subscribe(data => {
+          console.log(data['_body']);
+        }, error => {
+          console.log(error);
+        });
+      resolve("Success");
+    })
   }
 
   //Create User Account
@@ -196,7 +203,7 @@ export class httprequest {
     const requestOptions = new RequestOptions({ headers: headers });
 
 
-    this.http.post(aws_url + '/createUser/', data)
+    this.http.post(aws_url + '/api/createUser/', data)
       .subscribe(data => {
         console.log(data['_body']);
       }, (error) => {
@@ -247,7 +254,7 @@ export class httprequest {
     }
 
     return new Promise(resolve => {
-      this.http.get(aws_url + '/confirmUser/' + user.username + '/' + user.password)
+      this.http.get(aws_url + '/api/confirmUser/' + user.username + '/' + user.password)
         .map(res => res.json())
         .subscribe(data => {
           this.user = data;
@@ -294,5 +301,5 @@ export class httprequest {
       }, error => {
         console.log(error);
       });
-  }
+  } 
 }

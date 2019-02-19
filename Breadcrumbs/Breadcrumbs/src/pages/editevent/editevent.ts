@@ -73,7 +73,7 @@ export class editeventPage {
   }
 
   ionViewWillLoad() {
-    
+
     //CurrentEvent stores the last submitted event's data
     this.storage.get('activeEvent').then((event) => {
       this.eventName = event.EventName;
@@ -99,7 +99,7 @@ export class editeventPage {
 
   ionViewDidLoad() {
     this.initMap();
-    
+
   }
 
   initMap() {
@@ -110,7 +110,7 @@ export class editeventPage {
       let element = this.EditEventMapEl.nativeElement;
       EditEventMap = new google.maps.Map(element, {
         zoom: 7,
-        center: { lat: event.StartLat, lng: event.StartLon},
+        center: { lat: event.StartLat, lng: event.StartLon },
         mapTypeId: google.maps.MapTypeId.ROADMAP
       });
 
@@ -134,7 +134,7 @@ export class editeventPage {
           }
           endLocMarker = new google.maps.Marker({ position: event.latLng, map: EditEventMap, label: 'E' });
         }
-      }); 
+      });
     });
   }
 

@@ -98,7 +98,7 @@ export class editcontactPage {
   }
 
   cancelClick() {
-    this.navCtrl.pop();
+    this.navCtrl.pop({animate: false});
   }
 
   deleteContact() {

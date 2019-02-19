@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="io.ionic.starter" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>MyApp</name>
+    <name>Breadcrumbs</name>
     <description>An awesome Ionic/Cordova app.</description>
-    <author email="hi@ionicframework" href="http://ionicframework.com/">Ionic Framework Team</author>
+    <author email="hi@ionicframework" href="http://ionicframework.com/">Breadcrumbs Junior Project</author>
     <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
@@ -17,7 +17,7 @@
     <preference name="SplashMaintainAspectRatio" value="true" />
     <preference name="FadeSplashScreenDuration" value="300" />
     <preference name="SplashShowOnlyFirstTime" value="false" />
-    <preference name="SplashScreen" value="screen" />
+    <preference name="SplashScreen" value="none" />
     <preference name="SplashScreenDelay" value="3000" />
     <platform name="android">
         <allow-intent href="market:*" />
@@ -86,11 +86,13 @@
     <engine name="windows" spec="4.4.2" />
     <preference name="windows-target-version" value="10.0" />
     <plugin name="cordova-plugin-geolocation" spec="2.4.3" />
-    <engine name="browser" spec="~5.0.4" />
     <plugin name="cordova-plugin-googlemaps" spec="git+https://github.com/mapsplugin/cordova-plugin-googlemaps.git#multiple_maps">
         <variable name="API_KEY_FOR_ANDROID" value="AIzaSyD3sMflyq9z7LKPcu1ZNsa3jhlv2KRg09s" />
         <variable name="API_KEY_FOR_IOS" value="AIzaSyD3sMflyq9z7LKPcu1ZNsa3jhlv2KRg09s" />
         <variable name="PLAY_SERVICES_VERSION" value="15.0.1" />
         <variable name="ANDROID_SUPPORT_V4_VERSION" value="27.+" />
     </plugin>
+    <plugin name="cordova-plugin-console" spec="~1.0.5" />
+    <plugin name="ionic-plugin-keyboard" spec="~2.2.1" />
+    <engine name="browser" spec="~5.0.4" />
 </widget>

@@ -7,7 +7,6 @@ import { addcontactPage } from '../pages/addcontact/addcontact';
 import { vieweventsPage } from '../pages/viewevents/viewevents';
 import { Storage } from '@ionic/storage'
 import { viewEventPage } from '../pages/viewEvent/viewEvent';
-import { editeventPage } from '../pages/editevent/editevent';
 import { LoginPagePage } from '../pages/LoginPage/LoginPage';
 import { RegisterPage } from '../pages/Register/Register';
 import { editcontactPage } from '../pages/editcontact/editcontact';
@@ -38,7 +37,6 @@ import { passwordPage } from '../pages/password/password';
     addcontactPage,
     vieweventsPage,
     viewEventPage,
-    editeventPage,
     LoginPagePage,
     RegisterPage,
     editcontactPage,

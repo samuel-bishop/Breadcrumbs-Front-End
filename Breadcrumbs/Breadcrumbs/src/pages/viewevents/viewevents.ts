@@ -40,12 +40,16 @@ export class vieweventsPage {
     //Put the user's inactive events into local storage
 
     this.storage.get('inactiveEvents').then((events) => {
+      this.inactiveEvents = null;
       if (events != null) {
         this.inactiveEvents = events;
         //function to convert SQL Server smalldatetime to a more human readable string
       }
       else {
-          this.getInactiveEvents();
+        this.getInactiveEvents();
+        this.storage.get('inactiveEvents').then((events) => {
+          this.inactiveEvents.events;
+        })
       }
       function formatTime(datetime: string): string {
         let year: string = (new Date(datetime).getFullYear()).toString();
@@ -70,7 +74,7 @@ getInactiveEvents() {
   //When ViewEvent gets called, push viewEventPage onto stack.
   ViewEvent(e: any) {
     this.storage.set('viewedEvent', e).then(() => {
-      this.navCtrl.push(viewEventPage);
+      this.navCtrl.push(viewEventPage, {}, { animate: false });
     });
   }
 }

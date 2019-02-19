@@ -15,17 +15,8 @@
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
 
-.text-input::-moz-placeholder {
-  font-family: Calibri;
-  color: white;
-}
 
-.text-input:-ms-input-placeholder {
-  font-family: Calibri;
-  color: white;
-}
-
-.text-input::-webkit-input-placeholder {
-  font-family: Calibri;
-  color: darkslategrey;
+ion-content {
+  /*background: url('../assets/mountain.JPG');
+  background-size: cover;*/
 }
