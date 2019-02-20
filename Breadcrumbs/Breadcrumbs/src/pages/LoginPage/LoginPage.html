@@ -12,7 +12,7 @@
         <!--1x2-->
         <ion-input class="login-forms" type="text" placeholder="Username" name="username" #username></ion-input>
         <ion-input class="login-forms" type="password" placeholder="Password" name="password" #password></ion-input>
-        <ion-input *ngIf="isRegister" class="login-forms" typeof="password" placeholder="Confirm Password" name="passwordConfirm"></ion-input>
+        <ion-input *ngIf="isRegister" class="login-forms" type="password" placeholder="Confirm Password" name="passwordConfirm"></ion-input>
       </ion-col>
       <ion-col>
         <!--1x3-->
@@ -48,15 +48,6 @@
       <ion-col>
         <!--3x3-->
       </ion-col>
-      <ion-col>
-        <!--3x4-->
-      </ion-col>
-      <ion-col>
-        <!--3x5-->
-      </ion-col>
-      <ion-col>
-        <!--3x6-->
-      </ion-col>
 
     </ion-row>
     <!-- Row 4 -->
@@ -69,7 +60,7 @@
       </ion-col>
       <ion-col>
         <!--4x3-->
-        <button *ngIf="isRegister" ion-button full (click)="signUp()">Confirm</button>
+        <button *ngIf="isRegister" ion-button full (click)="Register()">Confirm</button>
         <button *ngIf="!isRegister" ion-button full (click)="initialClick()">Sign In</button>
         <button class="forgot-pwd">forgot username?</button>
       </ion-col>

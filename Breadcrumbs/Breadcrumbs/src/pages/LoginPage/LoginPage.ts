@@ -1,9 +1,11 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, NavParams, AlertController } from 'ionic-angular';
+import { NavController, NavParams, AlertController, LoadingController } from 'ionic-angular';
 import { HomePage } from '../home/home';
 import { httprequest } from '../../httprequest';
 import { Storage } from '@ionic/storage';
 import { BCWorker } from '../../worker';
+import { LatLng } from '@ionic-native/google-maps';
+import { Event } from '../../datastructs';
 
 function GetEvents(worker, request, storage) {
   return new Promise(function (resolve, reject) {
@@ -14,11 +16,15 @@ function GetEvents(worker, request, storage) {
 }
 
 @Component({
-    selector: 'page-LoginPage',
+  selector: 'page-LoginPage',
   templateUrl: 'LoginPage.html',
   providers: [httprequest]
 })
 export class LoginPagePage {
+  @ViewChild("firstName") firstName;
+  @ViewChild("lastName") lastName;
+  @ViewChild("email") email;
+  @ViewChild("mobile") phonenumber;
   @ViewChild("username") username;
   @ViewChild("password") password;
   isRegister: boolean = false;
@@ -26,14 +32,13 @@ export class LoginPagePage {
   validUser: any;
   //userValidation: User; 
   data: string;
-  constructor(public navCtrl: NavController,public request: httprequest, public navParams: NavParams, public alertCtrl: AlertController, public storage:Storage) { }
+  constructor(public navCtrl: NavController, public request: httprequest, public navParams: NavParams, public alertCtrl: AlertController, public storage: Storage, public loadingCtrl: LoadingController) { }
 
-    ionViewDidLoad() {
-        console.log('ionViewDidLoad LoginPagePage');
-    }
-  
+  ionViewDidLoad() {
+    console.log('ionViewDidLoad LoginPagePage');
+  }
+
   signIn() {
-    //this.navCtrl.push(HomePage);
     if (this.username.value == "") {
       let alert = this.alertCtrl.create({
         title: "Attention", subTitle: "Username field is empty", buttons: ["Ok"]
@@ -46,13 +51,79 @@ export class LoginPagePage {
         });
         alert.present();
       }
-    this.storage.set('username', this.username.value);
-    this.storage.set('userID', 1);
-        //this.request.SignIn(user)
-   }
+  }
+
+  Register() {
+    //check fields to see if they are valid
+    if (this.firstName.value == "") {
+      let alert = this.alertCtrl.create({
+        title: "Attention", subTitle: "First Name field is empty", buttons: ["Ok"]
+      });
+      alert.present();
+    } else
+      if (this.lastName.value == "") {
+        let alert = this.alertCtrl.create({
+          title: "Attention", subTitle: "Last Name field is empty", buttons: ["Ok"]
+        });
+        alert.present();
+      } else
+        if (this.email.value == "") {
+          let alert = this.alertCtrl.create({
+            title: "Attention", subTitle: "Email field is empty", buttons: ["Ok"]
+          });
+          alert.present();
+        } else
+          if (this.phonenumber.value == "") {
+            let alert = this.alertCtrl.create({
+              title: "Attention", subTitle: "Phone number field is empty", buttons: ["Ok"]
+            });
+            alert.present();
+          } else
+            if (this.username.value == "") {
+              let alert = this.alertCtrl.create({
+                title: "Attention", subTitle: "Username field is empty", buttons: ["Ok"]
+              });
+              alert.present();
+            } else
+              if (this.password.value == "") {
+                let alert = this.alertCtrl.create({
+                  title: "Attention", subTitle: "Password field is empty", buttons: ["Ok"]
+                });
+                alert.present();
+              } else
+              //submit data if all feilds are valid
+              {
+                let data2 = {
+                  username: this.username.value,
+                  password: this.password.value,
+                  email: this.email.value,
+                  firstname: this.firstName.value,
+                  lastname: this.lastName.value,
+                  userID: -1
+                }
+                let loading = this.loadingCtrl.create({
+                  content: 'Registering..'
+                });
+                loading.present().then(() => {
+                  this.request.CreateUser(data2).then(() => {
+                    location.reload();
+                  });
+                });
+              }
+  }
+
+
+  GetUser() {
+    this.request.GetUser(this.username.value).then((user) => {
+      this.storage.set('user', user['recordset'][0]).then(() => {
+        this.storage.set('userID', user['recordset'][0].UserID).then(() => {
+          this.navCtrl.setRoot(HomePage);
+        })
+      });
+    });
+  }
 
   signUp() {
-    //this.navCtrl.push(RegisterPage);
     this.isRegister = true;
   }
 
@@ -61,21 +132,21 @@ export class LoginPagePage {
   }
 
   initialClick() {
-    //this.signIn();
-    //this.validateUser();
-    //console.log(this.validUser, "its true");
-    this.storage.set('userID', 1);
-    let worker = new BCWorker();
-    GetEvents(worker, this.request, this.storage).then(() => { this.navCtrl.setRoot(HomePage); });
+    this.signIn();
+    this.validateUser();
+    console.log(this.validUser, "its true");
   }
 
   validateUser() {
-
-  };
-
-
-
-
+    let user = {
+      username: this.username.value,
+      password: this.password.value
+    }
+    this.request.SignIn(user).then((isValid) => {
+      if (isValid) this.GetUser();
+    });
+  }
 }
+
 
 

@@ -1,5 +1,5 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { NavController, NavParams, DateTime, LoadingController, AlertController, Alert } from 'ionic-angular';
+import { NavController, NavParams, DateTime, LoadingController, AlertController, Alert, Select } from 'ionic-angular';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { addcontactPage } from '../addcontact/addcontact';
 import { httprequest } from '../../httprequest';
@@ -37,19 +37,17 @@ export class addeventPage {
   eventName: any ="";
   eventDesc: any ="";
   eventPart: any ="";
-
+  isVisible: boolean = false;
 
   private event: FormGroup;
+  @ViewChild('contactsList') select: Select;
   @ViewChild('AddEventMap') AddEventMapEl: ElementRef;
   constructor(public alertCtrl: AlertController, public loadingCtrl: LoadingController, public navCtrl: NavController, public navParams: NavParams, public request: httprequest, public formBuilder: FormBuilder, public storage: Storage, public geo: Geolocation) {
     //Initialize google AddEventMap and markers
     this.initMap();
-
     isStartOrEndDestination = false;
     //Creating Forms
     storage.get('userID').then((data) => { this.userid = data; });
-    this.loadContacts();
-
     this.event = this.formBuilder.group({
       name: ['', Validators.required],
       description: ['', Validators.required],
@@ -77,10 +75,11 @@ export class addeventPage {
         this.eventPart = "Event Participants";
       }
     });
-
-
   }
 
+  ionViewWillEnter() {
+    this.loadContacts();
+  }
 
   eventForm() {
     let endDate = new Date(this.event.value.endDate);
@@ -222,30 +221,28 @@ export class addeventPage {
     return AddEventMap.addMarker(markerOptions);
   }
 
-  ionViewWillLoad() {
-  }
-
-
-  
-
   loadContacts() {
+    this.contacts = null;
     let loading = this.loadingCtrl.create({
       content: 'Loading Contacts...'
     });
-
     loading.present().then(() => {
       this.request.RequestContacts().then((data) => {
+        this.isVisible = true;
         this.contacts = data['recordset'];
       });
       loading.dismiss();
     });
   } 
 
+
+
   cancelClick() {
     this.navCtrl.pop({ animate: false });
   }
 
   addContactClick() {
+    this.isVisible = false;
     this.navCtrl.push(addcontactPage, {}, { animate: false });
   }
 }

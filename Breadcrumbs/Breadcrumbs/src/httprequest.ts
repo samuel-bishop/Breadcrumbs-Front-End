@@ -2,7 +2,7 @@ import { Injectable, Component } from '@angular/core';
 import { Http, Headers, Request, RequestOptions } from '@angular/http';
 import { Storage } from '@ionic/storage';
 import 'rxjs/add/operator/map';
-import { AlertController, LoadingController, NavController } from 'ionic-angular';
+import { AlertController, LoadingController } from 'ionic-angular';
 import { UserService } from '../service/user.service';
 import { appGlobals } from './app/file';
 /*
@@ -12,10 +12,9 @@ import { appGlobals } from './app/file';
 */
 
 
-var aws_url = 'http://18.235.156.238:4604'
+var aws_url = 'http://ec2-18-235-156-238.compute-1.amazonaws.com:4604'
 
 @Injectable()
-  
 export class httprequest {
 
   data: Object;
@@ -26,12 +25,8 @@ export class httprequest {
 
   //Load Active Event 
   RequestActiveEvent() {
-    if (this.data) {
-      return Promise.resolve(this.data);
-    }
     return new Promise(resolve => {
       this.storage.get('userID').then((userid) => {
-
         this.http.get(aws_url + '/api/activeEvent/' + userid)
           .map(res => res.json())
           .subscribe(data => {
@@ -47,10 +42,6 @@ export class httprequest {
   }
 
   RequestInactiveEvents() {
-    let data;
-    if (data) {
-      return Promise.resolve(this.data);
-    }
     return new Promise(resolve => {
       this.storage.get('userID').then((userid) => {
         this.http.get(aws_url + '/api/inactiveEvents/' + userid)
@@ -73,7 +64,7 @@ export class httprequest {
     header.append("Accept", 'application/json');
     header.append('Content-Type', 'application/json');
     const requestOpts = new RequestOptions({ headers: header });
-    this.http.post(aws_url + '/updatecontact', contactData, requestOpts)
+    this.http.post(aws_url + '/api/updatecontact', contactData, requestOpts)
       .subscribe(data => {
         console.log(data['_body']);
       }, error => {
@@ -87,7 +78,7 @@ export class httprequest {
     header.append('Content-Type', 'application/json');
     const requestOpts = new RequestOptions({ headers: header });
     let contact = { id: contactid }
-    this.http.post(aws_url + '/deletecontact', contact, requestOpts)
+    this.http.post(aws_url + '/api/deletecontact', contact, requestOpts)
       .subscribe(data => {
         console.log(data['_body']);
       }, error => {
@@ -197,29 +188,37 @@ export class httprequest {
 
   //Create User Account
   CreateUser(data) {
-    var headers = new Headers();
-    headers.append("Accept", 'application/json');
-    headers.append('Content-Type', 'application/json');
-    const requestOptions = new RequestOptions({ headers: headers });
+    return new Promise(resolve => {
+      var headers = new Headers();
+      headers.append("Accept", 'application/json');
+      headers.append('Content-Type', 'application/json');
+      const requestOptions = new RequestOptions({ headers: headers });
+      this.http.post(aws_url + '/api/createUser/', data)
+        .subscribe(data => {
+          console.log(data['_body']);
+        });
+      resolve("Success");
+    });
+  }
 
+  GetUser(user: string) {
+    return new Promise(resolve => {
+      this.http.get(`${aws_url}/api/getUser/${user}`)
+        .map(res => res.json())
+        .subscribe(data => {
+          this.data = data;
+          resolve(this.data);
+        }, (error) => {
 
-    this.http.post(aws_url + '/api/createUser/', data)
-      .subscribe(data => {
-        console.log(data['_body']);
-      }, (error) => {
-
-      });
-
-  
-    }
+        });
+    })
+  }
 
   GetUserID(username) {
-    if (this.data) {
-      return Promise.resolve(this.data);
-    }
     return new Promise(resolve => {
       this.http.get(aws_url + '/api/getUserID/' + username)
-        .map(res => res.json()).subscribe(data => {
+        .map(res => res.json())
+        .subscribe(data => {
           this.data = data;
           resolve(this.data);
         },
@@ -227,31 +226,19 @@ export class httprequest {
 
           });
     });
-
   }
 
   SignIn(user) {
-    let data;
-    let validUser;
-    //var headers = new Headers();
-    //headers.append("Accept", 'application/json');
-    //headers.append('Content-Type', 'application/json');
-    //const requestOptions = new RequestOptions({ headers: headers });
-    if (this.data) {
-      return Promise.resolve(this.data);
-    }
-
     return new Promise(resolve => {
+      let isValid;
       this.http.get(aws_url + '/api/confirmUser/' + user.username + '/' + user.password)
         .map(res => res.json())
         .subscribe(data => {
-          this.data = data;
-          validUser = data;
-          resolve(data);
-          console.log(data['_body'], "this is correct ");
+          isValid = data;
+          resolve(isValid);
+          //console.log(data['_body'], "this is correct ");
         });
-    }).then(() => {
-      console.log(validUser);
-      });
-  } 
-}
+    });
+  }
+
+ }

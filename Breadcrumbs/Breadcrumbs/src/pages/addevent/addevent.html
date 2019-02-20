@@ -16,9 +16,9 @@
                     id="endDate" pickerFormat="MMM/D/YY h:mm A" displayFormat="MM/DD/YYYY h:mm A">Start Date</ion-datetime>
     </ion-item>
 
-    <ion-item>
-      <ion-label color="black">Contact(s)</ion-label>
-      <ion-select name="contactsList" [(ngModel)]="contact" multiple="true" formControlName="contactsList">
+    <ion-item >
+      <ion-label  color="black">Contact(s)</ion-label>
+      <ion-select #contactsList [(ngModel)]="contact" id="contactsList"  multiple="true" formControlName="contactsList">
         <ion-option *ngFor="let contact of contacts" [value]="contact"> {{contact.ContactFirstName}} {{contact.ContactLastName}}</ion-option>
       </ion-select>
     </ion-item>
@@ -28,7 +28,7 @@
 
 
     <ion-item>
-      <ion-input placeholder="{{eventPart}} (required)" formControlName="participants" type="text"></ion-input>
+      <ion-input placeholder="{{eventPart}} (optional)" formControlName="participants" type="text"></ion-input>
     </ion-item>
 
     <ion-item>

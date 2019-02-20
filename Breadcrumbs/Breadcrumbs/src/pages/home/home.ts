@@ -13,6 +13,7 @@ import { Event } from '../../datastructs';
 import { LatLng } from '@ionic-native/google-maps';
 import { BCWorker } from '../../worker';
 import { viewEventPage } from '../viewEvent/viewEvent';
+import { isUndefined } from 'ionic-angular/umd/util/util';
 
 @Component({
   selector: 'page-home',
@@ -45,61 +46,58 @@ export class HomePage {
   newEventSubmit: boolean; //A boolean to check if an event has recently been submitted
   CurrentEvent: Event; //A local store of the newly created event
   CurrentEventExists: boolean; //A boolean for the UI to know if theres an Active Event
+    FirstName: any;
+    LastName: any;
+    Email: any;
 
   //Constructor (called on page creation)
-  constructor(public alertCtrl: AlertController, private menu: MenuController, public loadingCtrl: LoadingController, public navCtrl: NavController, public request: httprequest, public storage: Storage) {   
+  constructor(public alertCtrl: AlertController, private menu: MenuController, public loadingCtrl: LoadingController, public navCtrl: NavController, public request: httprequest, public storage: Storage) {
     let worker = new BCWorker();
-    //this.storage.get('LastState').then((state) => {
-      //if (state == 'EventSubmit') {
-    //this.storage.get('CurrentEventExists').then((exists) => {
-    //  this.CurrentEventExists = exists;
-    //});
+
     this.request.RequestActiveEvent().then((data) => {
       this.CurrentEventExists = true;
       let event = data['recordset'][0];
-          let newEvent = new Event(event.EventID,
-            event.EventName,
-            event.EventDescription,
-            event.EventParticipants,
-            worker.FormatTime(event.EventCreationDate),
-            worker.FormatTime(event.EndDate),
-            new LatLng(event.StartLat, event.StartLon),
-            new LatLng(event.EndLat, event.EndLon),
-            true);
-            this.CurrentEvent = newEvent;
-            this.EventName = this.CurrentEvent.EventName;
-            this.EventDescription = this.CurrentEvent.EventDesc;
-            this.EventParticipants = this.CurrentEvent.EventParticipants;
-            this.EventEndDate = this.CurrentEvent.EventEndDate;
-
-            this.storage.set('activeEvent', newEvent).then(() => {
-              this.storage.set('CurrentEventExists', true);
-              this.CurrentEventExists = true;
-          });
-        }).catch(() => {
-          this.storage.set('CurrentEventExists', false);
-          this.CurrentEventExists = false;
+      let newEvent = new Event(event.EventID,
+        event.EventName,
+        event.EventDescription,
+        event.EventParticipants,
+        worker.FormatTime(event.EventCreationDate),
+        worker.FormatTime(event.EndDate),
+        new LatLng(event.StartLat, event.StartLon),
+        new LatLng(event.EndLat, event.EndLon),
+        true);
+      this.CurrentEvent = newEvent;
+      this.EventName = this.CurrentEvent.EventName;
+      this.EventDescription = this.CurrentEvent.EventDesc;
+      this.EventParticipants = this.CurrentEvent.EventParticipants;
+      this.EventEndDate = this.CurrentEvent.EventEndDate;
+      this.storage.set('activeEvent', newEvent).then(() => {
+        this.storage.set('CurrentEventExists', true);
       });
+    }).catch(() => {
+      this.storage.set('CurrentEventExists', false);
+      this.CurrentEventExists = false;
+    });
 
-       
-        this.storage.get('inactiveEvents').then((EventsList) => {
-          this.inactiveEvents = [];
-          if (EventsList.length == 0) {
-            this.GetInactiveEvents();
+
+    this.storage.get('inactiveEvents').then((EventsList) => {
+      this.inactiveEvents = [];
+      if (EventsList.length != 0) {
+        for (let event of EventsList) {
+          if (event != null) {
+            this.inactiveEvents.unshift(event);
           }
-          for (let event of EventsList) {
-            if (event != null) {
-              this.inactiveEvents.unshift(event);
-            }
-          }
-        }).catch(() => {
-          this.GetInactiveEvents();
-          });
-        this.storage.set('LastState', 'HomePage');
+        }
+      }
+      }).catch(() => {
+        this.GetInactiveEvents();
+      });
+    this.storage.set('LastState', 'HomePage');
   }
-
+  
   GetInactiveEvents() {
     this.request.RequestInactiveEvents().then((data) => {
+      this.inactiveEvents = [];
       let dataset = data['recordset'];
       for (let event of dataset) {
         let newEvent = new Event
@@ -113,10 +111,11 @@ export class HomePage {
           new LatLng(event.EndLat, event.EndLon),
           false);
         this.inactiveEvents.unshift(newEvent);
+
       }
-      this.storage.set('inactiveEvents', this.inactiveEvents);
-      location.reload();
-    })
+
+      this.storage.set('inactiveEvents', this.inactiveEvents).then(() => { location.reload(); });
+    });
   }
 
   FormatTime(datetime): string {
@@ -142,8 +141,11 @@ export class HomePage {
 
 
   ionViewWillLoad() {
-    this.storage.get('username').then((username) => {
-      this.username = username;
+    this.storage.get('user').then((user) => {
+      this.username = user.UserName;
+      this.FirstName = user.FirstName;
+      this.LastName = user.LastName;
+      this.Email = user.Email;
     });
   
   }
@@ -154,14 +156,7 @@ export class HomePage {
     });
     this.storage.set('EditEvent', false);
     this.request.DisableEvent(this.CurrentEvent.EventID);
-    this.storage.get('inactiveEvents').then((EventsList) => {
-      EventsList.push(this.CurrentEvent);
-      this.PastEventName = this.CurrentEvent.EventName;
-      this.PastEventDescription = this.CurrentEvent.EventDesc;
-      this.PastEventParticipants = this.CurrentEvent.EventParticipants;
-      this.storage.set('inactiveEvents', EventsList);
-      this.storage.set('activeEvent', null);
-    });
+    location.reload();
   }
 
 
@@ -203,9 +198,10 @@ export class HomePage {
   }
 
   logout() {
-    this.storage.set('userID', 0);
-    this.storage.remove('inactiveEvents');
-    this.navCtrl.setRoot(LoginPagePage);
+    this.storage.clear().then(() => {
+      this.storage.set('userID', 0);
+    })
+    this.navCtrl.setRoot(LoginPagePage);  
   }
 
   openFirst() {
