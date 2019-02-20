@@ -32,6 +32,8 @@ export class LoginPagePage {
   validUser: any;
   //userValidation: User; 
   data: string;
+  shouldHeight: any = document.body.clientHeight + 'px';
+
   constructor(public navCtrl: NavController, public request: httprequest, public navParams: NavParams, public alertCtrl: AlertController, public storage: Storage, public loadingCtrl: LoadingController) { }
 
   ionViewDidLoad() {

@@ -12,7 +12,9 @@ import { appGlobals } from './app/file';
 */
 
 
-var aws_url = 'http://ec2-18-235-156-238.compute-1.amazonaws.com:4604'
+//var aws_url = 'http://ec2-18-235-156-238.compute-1.amazonaws.com:4604'
+var aws_url = 'http://18.235.156.238:4604'
+var aws_tts_url = 'http://35.174.49.106:4605'
 
 @Injectable()
 export class httprequest {
@@ -241,4 +243,53 @@ export class httprequest {
     });
   }
 
+
+  InsertContactInfo(userid, contactData) {
+    var header = new Headers();
+    header.append("Accept", 'application/json');
+    header.append('Content-Type', 'application/json');
+    const requestOpts = new RequestOptions({ headers: header });
+    this.http.post(aws_url + '/createContactInfo/', contactData, requestOpts)
+      .subscribe(data => {
+        console.log(data['_body']);
+      }, error => {
+        console.log(error);
+      });
+  }
+
+  StartWatchTest(eventID, endTime) {
+    var body = {
+      'eventID': eventID, 'endTime': endTime, 'c1FName': "TestFName1", 'c1LName': "TestLName1"
+    }//, 'c1Email': "testEmail1@gmail.com", 'c1Phone': "111-111-1111", 'c2FName': "TestFName2", 'c2LName': "TestLName1", 'c2Email': "testEmail2@gmail.com", 'c2Phone': "222-222-2222", 'c3FName': "TestFName3", 'c3LName': "TestLName1", 'c3Email': "testEmail3@gmail.com", 'c3Phone': "333-333-3333"}
+    this.http.post(aws_tts_url + '/startwatch/', body)
+      .subscribe(data => {
+        console.log(data['_body']);
+      }, error => {
+        console.log(error);
+      });
+  }
+
+  CancelWatch(eventID) {
+    var body = { 'eventID': eventID }
+    this.http.post(aws_tts_url + '/cancelwatch/', body)
+      .subscribe(data => {
+        console.log(data['_body']);
+      }, error => {
+        console.log(error);
+      });
+  }
+
+
+  ResetPassword(user) {
+    var headers = new Headers();
+    headers.append("Accept", 'application/json');
+    headers.append('Content-Type', 'application/json');
+    const requestOptions = new RequestOptions({ headers: headers });
+
+    this.http.post(aws_url + '/resetPassword/', user)
+      .subscribe(data => {
+        console.log(data['body']);
+      }, (error) => {
+      });
+  }
  }

@@ -20,7 +20,6 @@ import { passwordPage } from '../pages/password/password';
     addcontactPage,
     vieweventsPage,
     viewEventPage,
-    editeventPage,
     editcontactPage,
     LoginPagePage,
     RegisterPage,

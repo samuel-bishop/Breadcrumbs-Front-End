@@ -22174,7 +22174,7 @@ ion-content {
   background-size: cover;*/
 }
 
-page-LoginPage ion-content {
+page-LoginPage .content-background {
   background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3)), url(../../assets/mountainsigned.png);
   background-size: cover;
 }
