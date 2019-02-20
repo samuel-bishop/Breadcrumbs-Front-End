@@ -29,17 +29,17 @@
     </ion-card>
 
     <ion-list>
-      <button ion-item menuClose class="side-button">
+      <!--<button ion-item menuClose class="side-button">
         <ion-icon name="build"></ion-icon>
         Edit Profile
-      </button>
-      <button ion-item menuClose (click)="addContact()" class="side-button">
+      </button>-->
+      <!--<button ion-item menuClose (click)="addContact()" class="side-button">
         <ion-icon name="person-add"></ion-icon>
         Add Contact
-      </button>
+      </button>-->
       <button ion-item menuClose (click)="editContacts()" class="side-button">
         <ion-icon name="contacts"></ion-icon>
-        Edit Contact
+        Emergency Contacts
       </button>
       <button ion-item menuClose (click)="logout()" class="side-button" style="color:red">Logout</button>
     </ion-list>
@@ -51,7 +51,7 @@
 
   <ion-row *ngIf="CurrentEventExists" style="background-color:white; opacity:.7" class="past-events-card-header">
 
-    <ion-col><h1 style="text-anchor:middle; font-size:30px; text-align:center; color:black"> Active Event </h1></ion-col>
+    <ion-col><h1 style="text-anchor:middle; font-size:30px; text-align:center; color:black; margin-top:-3px; margin-bottom:-3px"> Active Event </h1></ion-col>
 
   </ion-row>
 
@@ -60,7 +60,7 @@
     <ion-col></ion-col>
     <ion-col>
       <ion-card *ngIf="CurrentEventExists" class="event-card">
-        <ion-row style="background-color:rgb(58, 106, 76); " class="event-card-header">
+        <ion-row style="background-color:rgb(92, 138, 109); " class="event-card-header">
           <ion-col></ion-col>
           <ion-col><h1 style="text-anchor:middle; color:white "> {{EventName}} </h1></ion-col>
           <ion-col></ion-col>
@@ -95,10 +95,10 @@
 
           </ion-col>
           <ion-col style="padding-right:20px">
-            <button ion-button class="share-event-button" type="button" style="font-size:16px; font-family:'Lucida Sans'; ">
+            <!--<button ion-button class="share-event-button" type="button" style="font-size:16px; font-family:'Lucida Sans'; ">
               <ion-icon name="share" style="font-size:20px">
               </ion-icon>
-            </button>
+            </button>-->
           </ion-col>
         </ion-row>
 
@@ -118,7 +118,7 @@
 
 
   <ion-row *ngIf="PastEventExist" style="background-color:white; opacity:.7" class="past-events-card-header">
-    <ion-col><h1 style="text-anchor:middle; font-size:30px; text-align:center; color:black"> Past Events </h1></ion-col>
+    <ion-col><h1 style="text-anchor:middle; font-size:30px; text-align:center; color:black; margin-top:-3px; margin-bottom:-3px"> Past Events </h1></ion-col>
   </ion-row>
 
 

@@ -59,9 +59,6 @@ export class httprequest {
 
 
   UpdateContact(contactData) {
-    var alert = this.alertCtrl.create({ title: 'contactData', subTitle: contactData.firstName, buttons: ['OK'] });
-    alert.present();
-
     var header = new Headers();
     header.append("Accept", 'application/json');
     header.append('Content-Type', 'application/json');

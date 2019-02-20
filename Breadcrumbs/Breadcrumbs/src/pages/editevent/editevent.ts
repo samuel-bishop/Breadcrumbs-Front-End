@@ -237,7 +237,7 @@ export class editeventPage {
         this.contacts = data['recordset'];
       });
       loading.dismiss();
-    });
+    }).catch(() => { loading.dismiss(); });
   }
 
   cancelClick() {
@@ -245,6 +245,6 @@ export class editeventPage {
   }
 
   addContactClick() {
-    this.navCtrl.push(addcontactPage);
+    this.navCtrl.push(addcontactPage, { animate: false });
   }
 }

@@ -115,14 +115,14 @@ export class LoginPagePage {
   }
 
 
-  GetUser() {
+  GetUser(loading) {
     this.request.GetUser(this.username.value).then((user) => {
       this.storage.set('user', user['recordset'][0]).then(() => {
         this.storage.set('userID', user['recordset'][0].UserID).then(() => {
           this.navCtrl.setRoot(HomePage);
         })
       });
-    });
+    }).then(() => { loading.dismiss() });
   }
 
   signUp() {
@@ -144,8 +144,14 @@ export class LoginPagePage {
       username: this.username.value,
       password: this.password.value
     }
-    this.request.SignIn(user).then((isValid) => {
-      if (isValid) this.GetUser();
+    let loading = this.loadingCtrl.create({
+      content: 'Retrieving account information...'
+    });
+    loading.present().then(() => {
+      this.request.SignIn(user).then((isValid) => {
+ 
+        if (isValid) this.GetUser(loading);
+      });
     });
   }
 }

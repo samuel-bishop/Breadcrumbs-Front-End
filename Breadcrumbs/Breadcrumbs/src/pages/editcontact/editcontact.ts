@@ -3,6 +3,8 @@ import { NavController, NavParams, DateTime, LoadingController, AlertController,
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { httprequest } from '../../httprequest';
 import { Storage } from '@ionic/storage';
+import { addcontactPage } from '../addcontact/addcontact';
+import { HomePage } from '../home/home';
 
 //TODO: Get select options to update on edit and delete.
 
@@ -52,6 +54,10 @@ export class editcontactPage {
       this.contactEmailAddress = data['recordset'][0].ContactEmailAddress;
     }).then(() => {
       loading.dismiss();
+      }).catch((data) => {
+        this.navCtrl.pop({ animate: false });
+        this.navCtrl.push(addcontactPage, { animate: false });
+        loading.dismiss();
     });
   }
 
@@ -84,12 +90,9 @@ export class editcontactPage {
                 "emailAddress": this.editcontact.value.emailAddress
               }
             this.request.UpdateContact(editcontactData);
-            //can't get the select list to update :(
-            //for (let contact of this.contacts) {
-            //  if (contact.contactID == this.contactID) {
-            //    delete this.contacts['contact'];
-            //  }
-            //}
+            this.navCtrl.pop({ animate: false });
+            var alert = this.alertCtrl.create({ title: 'Success!', subTitle: 'Contact has been updated.', buttons: ['Radical!'] });
+            alert.present();
             }
         }]
     });
@@ -115,10 +118,16 @@ export class editcontactPage {
           text: 'Confirm',
           handler: () => {
             this.request.DeleteContact(this.contactID);
-            
+            this.navCtrl.pop({ animate: false });
+            var alert = this.alertCtrl.create({ title: 'Success!', subTitle: 'Contact has been deleted.', buttons: ['Radical!'] });
+            alert.present();
           }
         }]
     });
     alert.present();
+  }
+
+  addNewContact() {
+    this.navCtrl.push(addcontactPage, { animate: false });
   }
 }
