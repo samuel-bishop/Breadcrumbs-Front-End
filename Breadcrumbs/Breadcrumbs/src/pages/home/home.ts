@@ -46,6 +46,7 @@ export class HomePage {
   newEventSubmit: boolean; //A boolean to check if an event has recently been submitted
   CurrentEvent: Event; //A local store of the newly created event
   CurrentEventExists: boolean; //A boolean for the UI to know if theres an Active Event
+  PastEventExist: boolean;
     FirstName: any;
     LastName: any;
     Email: any;
@@ -78,9 +79,11 @@ export class HomePage {
         for (let event of EventsList) {
           if (event != null) {
             this.inactiveEvents.unshift(event);
+            this.PastEventExist = true;
           }
         }
       }
+      else this.PastEventExist = false;
     }).catch(() => {
       this.GetInactiveEvents();
     });
@@ -133,7 +136,9 @@ export class HomePage {
           false);
         this.inactiveEvents.unshift(newEvent);
       }
-      this.storage.set('inactiveEvents', this.inactiveEvents).then(() => { location.reload(); });
+      this.storage.set('inactiveEvents', this.inactiveEvents);
+      if (this.inactiveEvents.length == 0) this.PastEventExist = false;
+      else this.PastEventExist = true;
     });
   }
 

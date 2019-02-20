@@ -13,7 +13,6 @@
 
 <ion-menu [content]="sidebar">
   <ion-content style="margin-top:10px">
-
     <ion-card color="primary" style=" text-align:center; margin-bottom: 20px">
       <ion-row>
         <ion-col>
@@ -118,7 +117,7 @@
   </ion-row>
 
 
-  <ion-row style="background-color:white; opacity:.7" class="past-events-card-header">
+  <ion-row *ngIf="PastEventExist" style="background-color:white; opacity:.7" class="past-events-card-header">
     <ion-col><h1 style="text-anchor:middle; font-size:30px; text-align:center; color:black"> Past Events </h1></ion-col>
   </ion-row>
 
