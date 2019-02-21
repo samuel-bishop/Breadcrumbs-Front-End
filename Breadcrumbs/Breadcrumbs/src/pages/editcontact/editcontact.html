@@ -5,15 +5,14 @@
     </ion-col>
   </ion-row>
   <ion-row>
-    <ion-col></ion-col>
-    <ion-col>
-
+    <ion-col width-80>
       <ion-row>
         <ion-col>
           <ion-item>
-            <ion-select id="contactSelection" name="contactID" [(ngModel)]="contact" (ionChange)="onSelectChange(contact)" multiple="false" formControlName="contactID" interface="action-sheet">
+            <ion-select style=" max-width:100% !important" id="contactSelection" name="contactID" [(ngModel)]="contact" (ionChange)="onSelectChange(contact)" multiple="false" formControlName="contactID" interface="action-sheet">
               <ion-option *ngFor="let contact of contacts; let i = index" [value]="contact" [selected]="i===0">{{contact.ContactFirstName}} {{contact.ContactLastName}}</ion-option>
             </ion-select>
+
           </ion-item>
 
           <ion-item>
@@ -36,23 +35,26 @@
             <ion-input [(ngModel)]="contactEmailAddress" formControlName="emailAddress" type="email" inputmode="email"></ion-input>
           </ion-item>
 
-          <ion-row>
-            <ion-col text-center>
-              <button ion-button type="button" (click)="cancelClick()" style="width:85px; text-align:center; line-height:50%; align-content:center">Cancel</button>
-            </ion-col>
-            <ion-col text-center>
-              <button ion-button type="submit" [disabled]="!editcontact.valid" style="width:85px; text-align:center; line-height:50%; align-content:center">Save</button>
-            </ion-col>
-            <ion-col text-center>
-              <button ion-button type="button" (click)="deleteContact(i)" style="width:85px; text-align:center; line-height:50%; align-content:center">Delete</button>
-            </ion-col>
-            <ion-col text-center>
-              <button ion-button type="button" (click)="addNewContact()" style="width:85px; text-align:center; line-height:50%; align-content:center">New</button>
-            </ion-col>
-          </ion-row>
         </ion-col>
+
+      </ion-row>
+      <ion-row>
+        <ion-col></ion-col>
+        <ion-col>
+          <button ion-button type="submit" [disabled]="!editcontact.valid" style=" text-align:center; line-height:50%; ">Submit</button>
+        </ion-col>
+        <ion-col>
+          <button ion-button type="button" (click)="cancelClick()" style=" text-align:center; line-height:50%; ">Cancel</button>
+        </ion-col>
+        <ion-col>
+          <button ion-button type="button" (click)="deleteContact(i)" style=" text-align:center; line-height:50%; ">Delete</button>
+        </ion-col>
+        <ion-col>
+          <button ion-button type="button" (click)="addNewContact()" style="text-align:center; line-height:50%; ">New</button>
+        </ion-col>
+        <ion-col></ion-col>
       </ion-row>
     </ion-col>
-    <ion-col></ion-col>
   </ion-row>
+
 </form>

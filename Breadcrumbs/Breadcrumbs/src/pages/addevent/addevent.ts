@@ -38,6 +38,7 @@ export class addeventPage {
   eventDesc: any ="";
   eventPart: any ="";
   isVisible: boolean = false;
+  activeEventName: any;
 
   private event: FormGroup;
   @ViewChild('contactsList') select: Select;
@@ -61,6 +62,10 @@ export class addeventPage {
       participants: ['']
     });
 
+    this.eventName = "";
+    this.eventDesc = "";
+    this.eventPart = "";
+
     this.storage.get('EditEvent').then((edit) => {
       if (edit == true) {
         this.storage.get('activeEvent').then((event) => {
@@ -68,11 +73,6 @@ export class addeventPage {
           this.eventDesc = event.EventDesc;
           this.eventPart = event.EventParticipants;
         });
-      }
-      else {
-        this.eventName = "Event Name";
-        this.eventDesc = "Event Description";
-        this.eventPart = "Event Participants";
       }
     });
   }
@@ -125,13 +125,16 @@ export class addeventPage {
       }
       //CurrentEvent stores the last submitted event's data
       this.storage.set('LastState', 'EventSubmit').then(() => {
+        let alert = this.alertCtrl.create({
+          title: "Attention", subTitle: `Adding Event`, buttons: ["Ok"]
+        });
+        alert.present();
+        alert.onDidDismiss(() => { location.reload(); })
         this.request.InsertEvent(eventData).then(() => {
           this.request.RequestActiveEvent().then((data) => {
             let event = data['recordset'][0];
            // this.request.StartWatchTest(event.EventID, event.EndDate);
           });
-          this.navCtrl.pop({ animate: false });
-          location.reload();
         });
       });
     }
@@ -226,19 +229,25 @@ export class addeventPage {
   }
 
   loadContacts() {
-    this.contacts = null;
     let loading = this.loadingCtrl.create({
       content: 'Loading Contacts...'
     });
-    loading.present().then(() => {
-      this.request.RequestContacts().then((data) => {
-        this.isVisible = true;
-        this.contacts = data['recordset'];
-      });
-      loading.dismiss();
-    });
-  } 
 
+    loading.present();
+    this.request.RequestContacts().then((data) => {
+      if (data['recordset'].length == 0) {
+        this.navCtrl.push(addcontactPage, { animate: false });
+      }
+      this.contacts = data['recordset'];
+    }).then(() => {
+      loading.dismiss();
+    }).catch((data) => {
+      this.navCtrl.pop({ animate: false });
+      this.navCtrl.push(addcontactPage, { animate: false });
+    
+      });
+    loading.dismiss();
+  }
 
 
   cancelClick() {

@@ -86,7 +86,7 @@ export class HomePage {
       if (EventsList.length != 0) {
         for (let event of EventsList) {
           if (event != null) {
-            this.inactiveEvents.unshift(event);
+            this.inactiveEvents.push(event);
           }
         }
       }
@@ -148,9 +148,44 @@ export class HomePage {
   }
 
   Refresh() {
-    this.storage.remove('activeEvent');
-    this.CurrentEventExists = false;
-    this.GetActiveEvent();  
+    let loading = this.loadingCtrl.create({
+      content: 'Refreshing...'
+    });
+
+    loading.present().then(() => {
+      this.storage.remove('activeEvent');
+      this.CurrentEventExists = false;
+      this.request.RequestActiveEvent().then((data) => {
+        let event = data['recordset'][0];
+        if (event != undefined) {
+          let newEvent = new Event(event.EventID,
+            event.EventName,
+            event.EventDescription,
+            event.EventParticipants,
+            this.FormatTime(event.EventCreationDate),
+            this.FormatTime(event.EndDate),
+            new LatLng(event.StartLat, event.StartLon),
+            new LatLng(event.EndLat, event.EndLon),
+            true);
+          this.CurrentEvent = newEvent;
+          this.EventName = this.CurrentEvent.EventName;
+          this.EventDescription = this.CurrentEvent.EventDesc;
+          this.EventParticipants = this.CurrentEvent.EventParticipants;
+          this.EventEndDate = this.CurrentEvent.EventEndDate;
+          this.storage.set('activeEvent', newEvent).then(() => {
+            this.storage.set('CurrentEventExists', true);
+            this.CurrentEventExists = true;
+            loading.dismiss();
+          }).catch(() => {
+            this.storage.set('CurrentEventExists', false);
+            this.CurrentEventExists = false;
+            loading.dismiss();
+          });
+        }
+        else { this.CurrentEventExists = false; loading.dismiss();}
+      });
+    })
+
   }
 
   FormatTime(datetime): string {

@@ -4,10 +4,19 @@
 
 <ion-header>
   <ion-navbar>
-    <button ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </button>
-    <h1 style="font-family:'Lucida Sans'; margin-right:auto; text-anchor:middle">Breadcrumbs</h1>
+    <ion-row style="height:40px" >
+      <ion-col><button ion-button menuToggle> <ion-icon name="menu"></ion-icon></button></ion-col>
+      <ion-col></ion-col>
+      <ion-col></ion-col>
+      <ion-col><ion-title style="font-family:'Lucida Sans'; padding-left:35px;">Breadcrumbs</ion-title></ion-col>
+      <ion-col></ion-col>
+      <ion-col></ion-col>
+      <ion-col>
+        <button ion-button (click)="Refresh()" style="background-color:transparent; color:black; margin-left:75px; "><ion-icon name="refresh"></ion-icon></button>
+      </ion-col>
+    </ion-row>
+    
+    
   </ion-navbar>
 </ion-header>
 
@@ -29,14 +38,6 @@
     </ion-card>
 
     <ion-list>
-      <!--<button ion-item menuClose class="side-button">
-      <ion-icon name="build"></ion-icon>
-      Edit Profile
-    </button>-->
-      <!--<button ion-item menuClose (click)="addContact()" class="side-button">
-      <ion-icon name="person-add"></ion-icon>
-      Add Contact
-    </button>-->
       <button ion-item menuClose (click)="editContacts()" class="side-button">
         <ion-icon name="contacts"></ion-icon>
         Emergency Contacts
@@ -44,7 +45,6 @@
       <button ion-item menuClose (click)="logout()" class="side-button" style="color:red">Logout</button>
     </ion-list>
   </ion-content>
-
 </ion-menu>
 <ion-nav #sidebar></ion-nav>
 
@@ -60,7 +60,6 @@
   <ion-row style="margin-bottom: -52px;">
     <ion-col> </ion-col>
     <ion-col>
-      <button ion-button (click)="Refresh()" style="background-color:transparent"><ion-icon name="refresh"></ion-icon></button>
       <ion-card *ngIf="CurrentEventExists" class="event-card">
         <ion-row style="background-color:rgb(92, 138, 109); " class="event-card-header">
           <ion-col></ion-col>

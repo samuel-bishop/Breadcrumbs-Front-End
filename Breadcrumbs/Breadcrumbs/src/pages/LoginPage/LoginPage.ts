@@ -108,9 +108,14 @@ export class LoginPagePage {
                 });
                 loading.present().then(() => {
                   this.request.CreateUser(data2).then(() => {
-                    location.reload();
+                    loading.dismiss();
+                    let alert = this.alertCtrl.create({
+                      title: "Account Created!", subTitle: `Please Sign In`, buttons: ["Ok"]
+                    });
+                    alert.present();
+                    alert.onDidDismiss(() => { location.reload(); })
                   });
-                });
+                }); 
               }
   }
 
@@ -151,6 +156,13 @@ export class LoginPagePage {
       this.request.SignIn(user).then((isValid) => {
  
         if (isValid) this.GetUser(loading);
+        else {
+          loading.dismiss();
+          let alert = this.alertCtrl.create({
+            title: "Attention", subTitle: `Incorrect Login`, buttons: ["Ok"]
+          });
+          alert.present();
+        }
       });
     });
   }
