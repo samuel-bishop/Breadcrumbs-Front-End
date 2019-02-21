@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, LoadingController, AlertController, MenuController} from 'ionic-angular';
+import { NavController, LoadingController, AlertController, MenuController } from 'ionic-angular';
 import { addeventPage } from '../addevent/addevent';
 import { addcontactPage } from '../addcontact/addcontact';
 import { vieweventsPage } from '../viewevents/viewevents';
@@ -26,7 +26,7 @@ import { isUndefined } from 'ionic-angular/umd/util/util';
  * user on their currently active event and allow them to 
  * access other pages
  */
-  
+
 export class HomePage {
   /* Event Members */
   username: any;
@@ -46,17 +46,24 @@ export class HomePage {
   newEventSubmit: boolean; //A boolean to check if an event has recently been submitted
   CurrentEvent: Event; //A local store of the newly created event
   CurrentEventExists: boolean; //A boolean for the UI to know if theres an Active Event
-  PastEventExist: boolean;
-    FirstName: any;
-    LastName: any;
-    Email: any;
+  FirstName: any;
+  LastName: any;
+  Email: any;
+    PastEventExists: boolean;
 
   //Constructor (called on page creation)
   constructor(public alertCtrl: AlertController, private menu: MenuController, public loadingCtrl: LoadingController, public navCtrl: NavController, public request: httprequest, public storage: Storage) {
-  
+    
   }
 
-  ionViewWillEnter() {
+  ionViewWillLoad() {
+    this.storage.get('user').then((user) => {
+      this.username = user.UserName;
+      this.FirstName = user.FirstName;
+      this.LastName = user.LastName;
+      this.Email = user.Email;
+    });
+
     this.storage.get('CurrentEventExists').then((doesExists) => {
       if (doesExists == true) {
         this.CurrentEventExists = true;
@@ -75,54 +82,54 @@ export class HomePage {
 
     this.storage.get('inactiveEvents').then((EventsList) => {
       this.inactiveEvents = [];
+      this.PastEventExists = true;
       if (EventsList.length != 0) {
         for (let event of EventsList) {
           if (event != null) {
             this.inactiveEvents.unshift(event);
-            this.PastEventExist = true;
           }
         }
       }
-      else this.PastEventExist = false;
     }).catch(() => {
       this.GetInactiveEvents();
     });
   }
 
   GetActiveEvent() {
-     this.request.RequestActiveEvent().then((data) => {
-       let event = data['recordset'][0];
-       if (event != undefined) {
-         let newEvent = new Event(event.EventID,
-           event.EventName,
-           event.EventDescription,
-           event.EventParticipants,
-           this.FormatTime(event.EventCreationDate),
-           this.FormatTime(event.EndDate),
-           new LatLng(event.StartLat, event.StartLon),
-           new LatLng(event.EndLat, event.EndLon),
-           true);
-         this.CurrentEvent = newEvent;
-         this.EventName = this.CurrentEvent.EventName;
-         this.EventDescription = this.CurrentEvent.EventDesc;
-         this.EventParticipants = this.CurrentEvent.EventParticipants;
-         this.EventEndDate = this.CurrentEvent.EventEndDate;
-         this.storage.set('activeEvent', newEvent).then(() => {
-           this.storage.set('CurrentEventExists', true);
-           this.CurrentEventExists = true;
-         }).catch(() => {
-           this.storage.set('CurrentEventExists', false);
-           this.CurrentEventExists = false;
-         });
-       }
-       else { this.CurrentEventExists = false; }
+    this.request.RequestActiveEvent().then((data) => {
+      let event = data['recordset'][0];
+      if (event != undefined) {
+        let newEvent = new Event(event.EventID,
+          event.EventName,
+          event.EventDescription,
+          event.EventParticipants,
+          this.FormatTime(event.EventCreationDate),
+          this.FormatTime(event.EndDate),
+          new LatLng(event.StartLat, event.StartLon),
+          new LatLng(event.EndLat, event.EndLon),
+          true);
+        this.CurrentEvent = newEvent;
+        this.EventName = this.CurrentEvent.EventName;
+        this.EventDescription = this.CurrentEvent.EventDesc;
+        this.EventParticipants = this.CurrentEvent.EventParticipants;
+        this.EventEndDate = this.CurrentEvent.EventEndDate;
+        this.storage.set('activeEvent', newEvent).then(() => {
+          this.storage.set('CurrentEventExists', true);
+          this.CurrentEventExists = true;
+        }).catch(() => {
+          this.storage.set('CurrentEventExists', false);
+          this.CurrentEventExists = false;
+        });
+      }
+      else { this.CurrentEventExists = false; }
     });
   }
-  
+
   GetInactiveEvents() {
     this.request.RequestInactiveEvents().then((data) => {
       this.inactiveEvents = [];
       let dataset = data['recordset'];
+      this.PastEventExists = true;
       for (let event of dataset) {
         let newEvent = new Event
           (event.EventID,
@@ -136,10 +143,14 @@ export class HomePage {
           false);
         this.inactiveEvents.unshift(newEvent);
       }
-      this.storage.set('inactiveEvents', this.inactiveEvents);
-      if (this.inactiveEvents.length == 0) this.PastEventExist = false;
-      else this.PastEventExist = true;
+      this.storage.set('inactiveEvents', this.inactiveEvents).then(() => { this.PastEventExists = false; location.reload(); });
     });
+  }
+
+  Refresh() {
+    this.storage.remove('activeEvent');
+    this.CurrentEventExists = false;
+    this.GetActiveEvent();  
   }
 
   FormatTime(datetime): string {
@@ -163,22 +174,11 @@ export class HomePage {
     return result;
   }
 
-
-  ionViewWillLoad() {
-    this.storage.get('user').then((user) => {
-      this.username = user.UserName;
-      this.FirstName = user.FirstName;
-      this.LastName = user.LastName;
-      this.Email = user.Email;
-    });
-  
-  }
-
   checkIn() {
     this.storage.set('EditEvent', false);
     this.storage.get('activeEvent').then((Event) => {
       this.storage.get('inactiveEvents').then((InactiveEvents) => {
-        InactiveEvents.unshift(Event);
+        InactiveEvents.push(Event);
         this.storage.set('inactiveEvents', InactiveEvents);
         this.inactiveEvents = InactiveEvents;
       });
@@ -199,32 +199,32 @@ export class HomePage {
   }
 
   addContact() {
-    this.navCtrl.push(addcontactPage, {},{ animate: false });
+    this.navCtrl.push(addcontactPage, {}, { animate: false });
   }
 
   editContacts() {
-    this.navCtrl.push(editcontactPage, {},{ animate: false });
+    this.navCtrl.push(editcontactPage, {}, { animate: false });
   }
 
   viewEvent(event) {
     this.storage.set('viewedEvent', event).then(() => {
-    this.navCtrl.push(viewEventPage, {}, { animate: false });
+      this.navCtrl.push(viewEventPage, {}, { animate: false });
     })
   }
 
   viewPastEvents() {
-    this.navCtrl.push(vieweventsPage, {},{ animate: false });
+    this.navCtrl.push(vieweventsPage, {}, { animate: false });
   }
 
   addEvent() {
     this.storage.set('EditEvent', false).then(() => {
-      this.navCtrl.push(addeventPage,{}, { animate: false });
+      this.navCtrl.push(addeventPage, {}, { animate: false });
     })
   }
 
   editEvent() {
     this.storage.set('EditEvent', true).then(() => {
-    this.navCtrl.push(addeventPage, {}, { animate: false });
+      this.navCtrl.push(addeventPage, {}, { animate: false });
     })
   }
 
@@ -232,7 +232,7 @@ export class HomePage {
     this.storage.clear().then(() => {
       this.storage.set('userID', 0);
     })
-    this.navCtrl.setRoot(LoginPagePage);  
+    this.navCtrl.setRoot(LoginPagePage);
   }
 
   openFirst() {

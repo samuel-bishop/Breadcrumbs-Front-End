@@ -128,7 +128,7 @@ export class addeventPage {
         this.request.InsertEvent(eventData).then(() => {
           this.request.RequestActiveEvent().then((data) => {
             let event = data['recordset'][0];
-            this.request.StartWatchTest(event.EventID, event.EndDate);
+           // this.request.StartWatchTest(event.EventID, event.EndDate);
           });
           this.navCtrl.pop({ animate: false });
           location.reload();

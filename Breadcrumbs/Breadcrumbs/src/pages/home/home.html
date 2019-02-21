@@ -7,7 +7,7 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title style="font-family:'Lucida Sans'">Breadcrumbs</ion-title>
+    <h1 style="font-family:'Lucida Sans'; margin-right:auto; text-anchor:middle">Breadcrumbs</h1>
   </ion-navbar>
 </ion-header>
 
@@ -30,13 +30,13 @@
 
     <ion-list>
       <!--<button ion-item menuClose class="side-button">
-        <ion-icon name="build"></ion-icon>
-        Edit Profile
-      </button>-->
+      <ion-icon name="build"></ion-icon>
+      Edit Profile
+    </button>-->
       <!--<button ion-item menuClose (click)="addContact()" class="side-button">
-        <ion-icon name="person-add"></ion-icon>
-        Add Contact
-      </button>-->
+      <ion-icon name="person-add"></ion-icon>
+      Add Contact
+    </button>-->
       <button ion-item menuClose (click)="editContacts()" class="side-button">
         <ion-icon name="contacts"></ion-icon>
         Emergency Contacts
@@ -47,23 +47,26 @@
 
 </ion-menu>
 <ion-nav #sidebar></ion-nav>
+
 <ion-content class="forest">
 
-  <ion-row *ngIf="CurrentEventExists" style="background-color:white; opacity:.7" class="past-events-card-header">
-
-    <ion-col><h1 style="text-anchor:middle; font-size:30px; text-align:center; color:black; margin-top:-3px; margin-bottom:-3px"> Active Event </h1></ion-col>
-
+  <ion-row *ngIf="CurrentEventExists"  class="past-events-card-header">
+    <ion-col></ion-col>
+    <ion-col width-80><h1 style="text-anchor:middle; font-size:30px; text-align:center; color:black; margin-top:-3px; margin-bottom:-3px; background-color:white; opacity:.7"> Active Event </h1></ion-col>
+    <ion-col></ion-col>
   </ion-row>
 
   <!-- Active Event Info -->
   <ion-row style="margin-bottom: -52px;">
-    <ion-col></ion-col>
+    <ion-col> </ion-col>
     <ion-col>
+      <button ion-button (click)="Refresh()" style="background-color:transparent"><ion-icon name="refresh"></ion-icon></button>
       <ion-card *ngIf="CurrentEventExists" class="event-card">
         <ion-row style="background-color:rgb(92, 138, 109); " class="event-card-header">
           <ion-col></ion-col>
           <ion-col><h1 style="text-anchor:middle; color:white "> {{EventName}} </h1></ion-col>
-          <ion-col></ion-col>
+          <ion-col>
+          </ion-col>
         </ion-row>
         <ion-row style="text-align:center; font-family:'Lucida Sans'; font-size:20px; text-align:left">
           <ion-col style="padding-left:20px;">
@@ -96,9 +99,9 @@
           </ion-col>
           <ion-col style="padding-right:20px">
             <!--<button ion-button class="share-event-button" type="button" style="font-size:16px; font-family:'Lucida Sans'; ">
-              <ion-icon name="share" style="font-size:20px">
-              </ion-icon>
-            </button>-->
+          <ion-icon name="share" style="font-size:20px">
+          </ion-icon>
+        </button>-->
           </ion-col>
         </ion-row>
 
@@ -117,8 +120,10 @@
   </ion-row>
 
 
-  <ion-row *ngIf="PastEventExist" style="background-color:white; opacity:.7" class="past-events-card-header">
-    <ion-col><h1 style="text-anchor:middle; font-size:30px; text-align:center; color:black; margin-top:-3px; margin-bottom:-3px"> Past Events </h1></ion-col>
+  <ion-row *ngIf="PastEventExists" class="past-events-card-header">
+    <ion-col></ion-col>
+    <ion-col width-80><h1 style="text-anchor:middle; background-color:white; opacity:.7; font-size:30px; text-align:center; color:black; margin-top:-3px; margin-bottom:-3px"> Past Events </h1></ion-col>
+    <ion-col></ion-col>
   </ion-row>
 
 
