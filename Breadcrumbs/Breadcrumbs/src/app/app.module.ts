@@ -22,7 +22,6 @@ import { passwordPage } from '../pages/password/password';
     viewEventPage,
     editcontactPage,
     LoginPagePage,
-    RegisterPage,
     passwordPage
   ],
   imports: [
@@ -37,7 +36,6 @@ import { passwordPage } from '../pages/password/password';
     vieweventsPage,
     viewEventPage,
     LoginPagePage,
-    RegisterPage,
     editcontactPage,
     passwordPage
   ],
