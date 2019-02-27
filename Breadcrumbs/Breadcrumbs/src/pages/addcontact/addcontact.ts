@@ -38,7 +38,7 @@ export class addcontactPage {
       "emailAddress": this.contact.value.emailAddress
     }
       this.request.InsertContact(this.storage.get('userID'), contactData);
-      this.navCtrl.pop({ animate: false});
+      this.navCtrl.popToRoot({ animate: false });
     });
    }
 
@@ -47,7 +47,7 @@ export class addcontactPage {
   }
 
   cancelClick() {
-    this.navCtrl.pop({animate: false});
+    this.navCtrl.popToRoot({ animate: false });
   }
 
 }

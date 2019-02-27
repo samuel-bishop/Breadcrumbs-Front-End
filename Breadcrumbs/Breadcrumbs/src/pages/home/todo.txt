@@ -8,3 +8,7 @@ Alerts
         });
         alert.present();
         */
+
+
+TODO:
+Fix add event for android

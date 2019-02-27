@@ -20,10 +20,8 @@ import { passwordPage } from '../pages/password/password';
     addcontactPage,
     vieweventsPage,
     viewEventPage,
-    editeventPage,
     editcontactPage,
     LoginPagePage,
-    RegisterPage,
     passwordPage
   ],
   imports: [
@@ -38,7 +36,6 @@ import { passwordPage } from '../pages/password/password';
     vieweventsPage,
     viewEventPage,
     LoginPagePage,
-    RegisterPage,
     editcontactPage,
     passwordPage
   ],

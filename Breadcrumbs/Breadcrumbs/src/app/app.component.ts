@@ -26,10 +26,8 @@ export class MyApp {
 
   constructor(platform: Platform, public request: httprequest, public storage: Storage) {
     this.storage.get('userID').then((id) => {
-      if (id == 0) this.rootPage = LoginPagePage;
-      else {
-        this.rootPage = HomePage;    
-      }
+      if (id > 0) this.rootPage = HomePage;
+      else this.rootPage = LoginPagePage;
     }).catch(() => { this.rootPage = LoginPagePage; });
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.

@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, LoadingController, AlertController, MenuController} from 'ionic-angular';
+import { NavController, LoadingController, AlertController, MenuController } from 'ionic-angular';
 import { addeventPage } from '../addevent/addevent';
 import { addcontactPage } from '../addcontact/addcontact';
 import { vieweventsPage } from '../viewevents/viewevents';
@@ -13,6 +13,7 @@ import { Event } from '../../datastructs';
 import { LatLng } from '@ionic-native/google-maps';
 import { BCWorker } from '../../worker';
 import { viewEventPage } from '../viewEvent/viewEvent';
+import { isUndefined } from 'ionic-angular/umd/util/util';
 
 @Component({
   selector: 'page-home',
@@ -25,7 +26,7 @@ import { viewEventPage } from '../viewEvent/viewEvent';
  * user on their currently active event and allow them to 
  * access other pages
  */
-  
+
 export class HomePage {
   /* Event Members */
   username: any;
@@ -45,62 +46,90 @@ export class HomePage {
   newEventSubmit: boolean; //A boolean to check if an event has recently been submitted
   CurrentEvent: Event; //A local store of the newly created event
   CurrentEventExists: boolean; //A boolean for the UI to know if theres an Active Event
+  FirstName: any;
+  LastName: any;
+  Email: any;
+    PastEventExists: boolean;
 
   //Constructor (called on page creation)
-  constructor(public alertCtrl: AlertController, private menu: MenuController, public loadingCtrl: LoadingController, public navCtrl: NavController, public request: httprequest, public storage: Storage) {   
-    let worker = new BCWorker();
-    //this.storage.get('LastState').then((state) => {
-      //if (state == 'EventSubmit') {
-    //this.storage.get('CurrentEventExists').then((exists) => {
-    //  this.CurrentEventExists = exists;
-    //});
-    this.request.RequestActiveEvent().then((data) => {
-      this.CurrentEventExists = true;
-      let event = data['recordset'][0];
-          let newEvent = new Event(event.EventID,
-            event.EventName,
-            event.EventDescription,
-            event.EventParticipants,
-            worker.FormatTime(event.EventCreationDate),
-            worker.FormatTime(event.EndDate),
-            new LatLng(event.StartLat, event.StartLon),
-            new LatLng(event.EndLat, event.EndLon),
-            true);
-            this.CurrentEvent = newEvent;
-            this.EventName = this.CurrentEvent.EventName;
-            this.EventDescription = this.CurrentEvent.EventDesc;
-            this.EventParticipants = this.CurrentEvent.EventParticipants;
-            this.EventEndDate = this.CurrentEvent.EventEndDate;
+  constructor(public alertCtrl: AlertController, private menu: MenuController, public loadingCtrl: LoadingController, public navCtrl: NavController, public request: httprequest, public storage: Storage) {
+    
+  }
 
-            this.storage.set('activeEvent', newEvent).then(() => {
-              this.storage.set('CurrentEventExists', true);
-              this.CurrentEventExists = true;
-          });
+  ionViewWillLoad() {
+    this.storage.get('user').then((user) => {
+      this.username = user.UserName;
+      this.FirstName = user.FirstName;
+      this.LastName = user.LastName;
+      this.Email = user.Email;
+    });
+
+    this.storage.get('CurrentEventExists').then((doesExists) => {
+      if (doesExists == true) {
+        this.CurrentEventExists = true;
+        this.storage.get('activeEvent').then((ActiveEvent) => {
+          this.CurrentEvent = ActiveEvent;
+          this.EventName = this.CurrentEvent.EventName;
+          this.EventDescription = this.CurrentEvent.EventDesc;
+          this.EventParticipants = this.CurrentEvent.EventParticipants;
+          this.EventEndDate = this.CurrentEvent.EventEndDate;
+        })
+      }
+      else {
+        this.GetActiveEvent();
+      }
+    });
+
+    this.storage.get('inactiveEvents').then((EventsList) => {
+      this.inactiveEvents = [];
+      this.PastEventExists = true;
+      if (EventsList.length != 0) {
+        for (let event of EventsList) {
+          if (event != null) {
+            this.inactiveEvents.push(event);
+          }
+        }
+      }
+    }).catch(() => {
+      this.GetInactiveEvents();
+    });
+  }
+
+  GetActiveEvent() {
+    this.request.RequestActiveEvent().then((data) => {
+      let event = data['recordset'][0];
+      if (event != undefined) {
+        let newEvent = new Event(event.EventID,
+          event.EventName,
+          event.EventDescription,
+          event.EventParticipants,
+          this.FormatTime(event.EventCreationDate),
+          this.FormatTime(event.EndDate),
+          new LatLng(event.StartLat, event.StartLon),
+          new LatLng(event.EndLat, event.EndLon),
+          true);
+        this.CurrentEvent = newEvent;
+        this.EventName = this.CurrentEvent.EventName;
+        this.EventDescription = this.CurrentEvent.EventDesc;
+        this.EventParticipants = this.CurrentEvent.EventParticipants;
+        this.EventEndDate = this.CurrentEvent.EventEndDate;
+        this.storage.set('activeEvent', newEvent).then(() => {
+          this.storage.set('CurrentEventExists', true);
+          this.CurrentEventExists = true;
         }).catch(() => {
           this.storage.set('CurrentEventExists', false);
           this.CurrentEventExists = false;
-      });
-
-       
-        this.storage.get('inactiveEvents').then((EventsList) => {
-          this.inactiveEvents = [];
-          if (EventsList.length == 0) {
-            this.GetInactiveEvents();
-          }
-          for (let event of EventsList) {
-            if (event != null) {
-              this.inactiveEvents.unshift(event);
-            }
-          }
-        }).catch(() => {
-          this.GetInactiveEvents();
-          });
-        this.storage.set('LastState', 'HomePage');
+        });
+      }
+      else { this.CurrentEventExists = false; }
+    });
   }
 
   GetInactiveEvents() {
     this.request.RequestInactiveEvents().then((data) => {
+      this.inactiveEvents = [];
       let dataset = data['recordset'];
+      this.PastEventExists = true;
       for (let event of dataset) {
         let newEvent = new Event
           (event.EventID,
@@ -114,9 +143,49 @@ export class HomePage {
           false);
         this.inactiveEvents.unshift(newEvent);
       }
-      this.storage.set('inactiveEvents', this.inactiveEvents);
-      location.reload();
+      this.storage.set('inactiveEvents', this.inactiveEvents).then(() => { this.PastEventExists = false; location.reload(); });
+    });
+  }
+
+  Refresh() {
+    let loading = this.loadingCtrl.create({
+      content: 'Refreshing...'
+    });
+
+    loading.present().then(() => {
+      this.storage.remove('activeEvent');
+      this.CurrentEventExists = false;
+      this.request.RequestActiveEvent().then((data) => {
+        let event = data['recordset'][0];
+        if (event != undefined) {
+          let newEvent = new Event(event.EventID,
+            event.EventName,
+            event.EventDescription,
+            event.EventParticipants,
+            this.FormatTime(event.EventCreationDate),
+            this.FormatTime(event.EndDate),
+            new LatLng(event.StartLat, event.StartLon),
+            new LatLng(event.EndLat, event.EndLon),
+            true);
+          this.CurrentEvent = newEvent;
+          this.EventName = this.CurrentEvent.EventName;
+          this.EventDescription = this.CurrentEvent.EventDesc;
+          this.EventParticipants = this.CurrentEvent.EventParticipants;
+          this.EventEndDate = this.CurrentEvent.EventEndDate;
+          this.storage.set('activeEvent', newEvent).then(() => {
+            this.storage.set('CurrentEventExists', true);
+            this.CurrentEventExists = true;
+            loading.dismiss();
+          }).catch(() => {
+            this.storage.set('CurrentEventExists', false);
+            this.CurrentEventExists = false;
+            loading.dismiss();
+          });
+        }
+        else { this.CurrentEventExists = false; loading.dismiss();}
+      });
     })
+
   }
 
   FormatTime(datetime): string {
@@ -140,28 +209,20 @@ export class HomePage {
     return result;
   }
 
-
-  ionViewWillLoad() {
-    this.storage.get('username').then((username) => {
-      this.username = username;
-    });
-  
-  }
-
   checkIn() {
-    this.storage.set('CurrentEventExists', false).then(() => {
-      this.CurrentEventExists = false;
-    });
     this.storage.set('EditEvent', false);
-    this.request.DisableEvent(this.CurrentEvent.EventID);
-    this.storage.get('inactiveEvents').then((EventsList) => {
-      EventsList.push(this.CurrentEvent);
-      this.PastEventName = this.CurrentEvent.EventName;
-      this.PastEventDescription = this.CurrentEvent.EventDesc;
-      this.PastEventParticipants = this.CurrentEvent.EventParticipants;
-      this.storage.set('inactiveEvents', EventsList);
-      this.storage.set('activeEvent', null);
-    });
+    this.storage.get('activeEvent').then((Event) => {
+      this.storage.get('inactiveEvents').then((InactiveEvents) => {
+        InactiveEvents.push(Event);
+        this.storage.set('inactiveEvents', InactiveEvents);
+        this.inactiveEvents = InactiveEvents;
+      });
+      this.request.DisableEvent(Event.EventID).then(() => {
+        this.storage.set('CurrentEventExists', false).then(() => {
+          this.CurrentEventExists = false;
+        });
+      })
+    })
   }
 
 
@@ -173,38 +234,39 @@ export class HomePage {
   }
 
   addContact() {
-    this.navCtrl.push(addcontactPage, {},{ animate: false });
+    this.navCtrl.push(addcontactPage, {}, { animate: false });
   }
 
   editContacts() {
-    this.navCtrl.push(editcontactPage, {},{ animate: false });
+    this.navCtrl.push(editcontactPage, {}, { animate: false });
   }
 
   viewEvent(event) {
     this.storage.set('viewedEvent', event).then(() => {
-    this.navCtrl.push(viewEventPage, {}, { animate: false });
+      this.navCtrl.push(viewEventPage, {}, { animate: false });
     })
   }
 
   viewPastEvents() {
-    this.navCtrl.push(vieweventsPage, {},{ animate: false });
+    this.navCtrl.push(vieweventsPage, {}, { animate: false });
   }
 
   addEvent() {
     this.storage.set('EditEvent', false).then(() => {
-      this.navCtrl.push(addeventPage,{}, { animate: false });
+      this.navCtrl.push(addeventPage, {}, { animate: false });
     })
   }
 
   editEvent() {
     this.storage.set('EditEvent', true).then(() => {
-    this.navCtrl.push(addeventPage, {}, { animate: false });
+      this.navCtrl.push(addeventPage, {}, { animate: false });
     })
   }
 
   logout() {
-    this.storage.set('userID', 0);
-    this.storage.remove('inactiveEvents');
+    this.storage.clear().then(() => {
+      this.storage.set('userID', 0);
+    })
     this.navCtrl.setRoot(LoginPagePage);
   }
 

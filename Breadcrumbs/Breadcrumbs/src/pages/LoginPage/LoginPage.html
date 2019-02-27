@@ -2,7 +2,7 @@
   <ion-title > <label style="color:white"> Breadcrumbs </label>  </ion-title>
 </ion-header>
 
-  <ion-content padding>
+  <ion-content padding class="content-background" [style.background-size]="'100% ' + shouldHeight">
     <!-- Row 1 -->
     <ion-row>
       <ion-col>
@@ -12,7 +12,7 @@
         <!--1x2-->
         <ion-input class="login-forms" type="text" placeholder="Username" name="username" #username></ion-input>
         <ion-input class="login-forms" type="password" placeholder="Password" name="password" #password></ion-input>
-        <ion-input *ngIf="isRegister" class="login-forms" typeof="password" placeholder="Confirm Password" name="passwordConfirm"></ion-input>
+        <ion-input *ngIf="isRegister" class="login-forms" type="password" placeholder="Confirm Password" name="passwordConfirm"></ion-input>
       </ion-col>
       <ion-col>
         <!--1x3-->
@@ -35,20 +35,19 @@
       </ion-col>
     </ion-row>
 
-    </ion-item>
-
-    <ion-item>
-
-      <ion-input type="password" placeholder="Password" name="password" #password></ion-input>
-
-    </ion-item>
-
-    
-    <button ion-button round block (click)="signIn()">Sign In</button>
-
-    <button ion-button round block (click)="signUp()">Register</button>
-    <button ion-button round small (click) ="resetPassword()">Reset Password?</button>
-  </ion-list>
+    <!-- Row 3 -->
+    <ion-row>
+      <ion-col>
+        <!--3x1-->
+      </ion-col>
+      <ion-col>
+        <ion-input *ngIf="isRegister" class="login-forms" type="email" placeholder="Email" name="email" #email></ion-input>
+        <ion-input *ngIf="isRegister" class="login-forms" type="number" placeholder="Phone Number" name="phonenumber" #mobile></ion-input>
+        <!--3x2-->
+      </ion-col>
+      <ion-col>
+        <!--3x3-->
+      </ion-col>
 
     </ion-row>
     <!-- Row 4 -->
@@ -61,7 +60,7 @@
       </ion-col>
       <ion-col>
         <!--4x3-->
-        <button *ngIf="isRegister" ion-button full (click)="signUp()">Confirm</button>
+        <button *ngIf="isRegister" ion-button full (click)="Register()">Confirm</button>
         <button *ngIf="!isRegister" ion-button full (click)="initialClick()">Sign In</button>
         <button class="forgot-pwd">forgot username?</button>
       </ion-col>

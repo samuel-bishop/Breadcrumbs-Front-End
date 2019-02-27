@@ -1,28 +1,46 @@
 <form [formGroup]="contact" (ngSubmit)="contactForm()">
-  <ion-list>
+  <ion-row style="background-color:rgb(130, 86, 126); opacity:.7" class="past-events-card-header">
+    <ion-col>
+      <h1 style="text-anchor:middle; font-size:30px; text-align:center; color:black; margin-top:-4px; margin-bottom:-4px"> Add Emergency Contact </h1>
+    </ion-col>
+  </ion-row>
 
-    <ion-item row-1>
-      <ion-label floating>First Name</ion-label>
-      <ion-input formControlName="firstName" type="text"></ion-input>
-    </ion-item>
+  <ion-row>
+    <ion-col></ion-col>
+    <ion-col>
+      <ion-list>
 
-    <ion-item row-2>
-      <ion-label floating>Last Name</ion-label>
-      <ion-input formControlName="lastName" type="text"></ion-input>
-    </ion-item>
+        <ion-item row-1>
+          <ion-label floating>First Name</ion-label>
+          <ion-input formControlName="firstName" type="text"></ion-input>
+        </ion-item>
 
-    <ion-item row-3>
-      <ion-label floating>Phone Number</ion-label>
-      <ion-input formControlName="phoneNumber" type="text"></ion-input>
-    </ion-item>
+        <ion-item row-2>
+          <ion-label floating>Last Name</ion-label>
+          <ion-input formControlName="lastName" type="text"></ion-input>
+        </ion-item>
 
-    <ion-item>
-      <ion-label floating>Email Address</ion-label>
-      <ion-input formControlName="emailAddress" type="text"></ion-input>
-    </ion-item>
+        <ion-item row-3>
+          <ion-label floating>Phone Number</ion-label>
+          <ion-input formControlName="phoneNumber" type="text"></ion-input>
+        </ion-item>
 
-  </ion-list>
+        <ion-item>
+          <ion-label floating>Email Address</ion-label>
+          <ion-input formControlName="emailAddress" type="text"></ion-input>
+        </ion-item>
+      </ion-list>
+      <ion-row>
+        <ion-col text-center>
+          <button ion-button type="button" (click)="cancelClick()" style="width:85px; text-align:center; line-height:50%; align-content:center">Cancel</button>
+        </ion-col>
+        <ion-col text-center>
+          <button ion-button type="submit" [disabled]="!contact.valid" style="width:85px; text-align:center; line-height:50%; align-content:center">Submit</button>
+        </ion-col>
+      </ion-row>
+    </ion-col>
+    <ion-col></ion-col>
+  </ion-row>
 
-  <button ion-button type="button" (click)="cancelClick()">Cancel</button>
-  <button ion-button type="submit" [disabled]="!contact.valid">Submit</button>
+
 </form>

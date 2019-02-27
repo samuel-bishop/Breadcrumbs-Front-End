@@ -1,5 +1,5 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { NavController, NavParams, DateTime, LoadingController, AlertController, Alert } from 'ionic-angular';
+import { NavController, NavParams, DateTime, LoadingController, AlertController, Alert, Select } from 'ionic-angular';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { addcontactPage } from '../addcontact/addcontact';
 import { httprequest } from '../../httprequest';
@@ -37,19 +37,18 @@ export class addeventPage {
   eventName: any ="";
   eventDesc: any ="";
   eventPart: any ="";
-
+  isVisible: boolean = false;
+  activeEventName: any;
 
   private event: FormGroup;
+  @ViewChild('contactsList') select: Select;
   @ViewChild('AddEventMap') AddEventMapEl: ElementRef;
   constructor(public alertCtrl: AlertController, public loadingCtrl: LoadingController, public navCtrl: NavController, public navParams: NavParams, public request: httprequest, public formBuilder: FormBuilder, public storage: Storage, public geo: Geolocation) {
     //Initialize google AddEventMap and markers
     this.initMap();
-
     isStartOrEndDestination = false;
     //Creating Forms
     storage.get('userID').then((data) => { this.userid = data; });
-    this.loadContacts();
-
     this.event = this.formBuilder.group({
       name: ['', Validators.required],
       description: ['', Validators.required],
@@ -63,6 +62,10 @@ export class addeventPage {
       participants: ['']
     });
 
+    this.eventName = "";
+    this.eventDesc = "";
+    this.eventPart = "";
+
     this.storage.get('EditEvent').then((edit) => {
       if (edit == true) {
         this.storage.get('activeEvent').then((event) => {
@@ -71,16 +74,12 @@ export class addeventPage {
           this.eventPart = event.EventParticipants;
         });
       }
-      else {
-        this.eventName = "Event Name";
-        this.eventDesc = "Event Description";
-        this.eventPart = "Event Participants";
-      }
     });
-
-
   }
 
+  ionViewWillEnter() {
+    this.loadContacts();
+  }
 
   eventForm() {
     let endDate = new Date(this.event.value.endDate);
@@ -126,9 +125,16 @@ export class addeventPage {
       }
       //CurrentEvent stores the last submitted event's data
       this.storage.set('LastState', 'EventSubmit').then(() => {
+        let alert = this.alertCtrl.create({
+          title: "Attention", subTitle: `Adding Event`, buttons: ["Ok"]
+        });
+        alert.present();
+        alert.onDidDismiss(() => { location.reload(); })
         this.request.InsertEvent(eventData).then(() => {
-          this.navCtrl.pop({ animate: false });
-          location.reload();
+          this.request.RequestActiveEvent().then((data) => {
+            let event = data['recordset'][0];
+           // this.request.StartWatchTest(event.EventID, event.EndDate);
+          });
         });
       });
     }
@@ -222,30 +228,34 @@ export class addeventPage {
     return AddEventMap.addMarker(markerOptions);
   }
 
-  ionViewWillLoad() {
-  }
-
-
-  
-
   loadContacts() {
     let loading = this.loadingCtrl.create({
       content: 'Loading Contacts...'
     });
 
-    loading.present().then(() => {
-      this.request.RequestContacts().then((data) => {
-        this.contacts = data['recordset'];
-      });
+    loading.present();
+    this.request.RequestContacts().then((data) => {
+      if (data['recordset'].length == 0) {
+        this.navCtrl.push(addcontactPage, { animate: false });
+      }
+      this.contacts = data['recordset'];
+    }).then(() => {
       loading.dismiss();
-    });
-  } 
+    }).catch((data) => {
+      this.navCtrl.pop({ animate: false });
+      this.navCtrl.push(addcontactPage, { animate: false });
+    
+      });
+    loading.dismiss();
+  }
+
 
   cancelClick() {
     this.navCtrl.pop({ animate: false });
   }
 
   addContactClick() {
+    this.isVisible = false;
     this.navCtrl.push(addcontactPage, {}, { animate: false });
   }
 }

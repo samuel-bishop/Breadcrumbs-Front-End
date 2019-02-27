@@ -1,32 +1,60 @@
 <form [formGroup]="editcontact" (ngSubmit)="editcontactForm()">
+  <ion-row style="background-color:rgb(130, 86, 126); opacity:.7" class="past-events-card-header">
+    <ion-col>
+      <h1 style="text-anchor:middle; font-size:30px; text-align:center; color:black; margin-top:-4px; margin-bottom:-4px"> Edit Emergency Contacts </h1>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col width-80>
+      <ion-row>
+        <ion-col>
+          <ion-item>
+            <ion-select style=" max-width:100% !important" id="contactSelection" name="contactID" [(ngModel)]="contact" (ionChange)="onSelectChange(contact)" multiple="false" formControlName="contactID" interface="action-sheet">
+              <ion-option *ngFor="let contact of contacts; let i = index" [value]="contact" [selected]="i===0">{{contact.ContactFirstName}} {{contact.ContactLastName}}</ion-option>
+            </ion-select>
 
-  <ion-item>
-    <ion-select id="contactSelection" name="contactID" [(ngModel)]="contact" (ionChange)="onSelectChange(contact)" multiple="false" formControlName="contactID" interface="action-sheet">
-      <ion-option *ngFor="let contact of contacts; let i = index" [value]="contact" [selected]="i===0">{{contact.ContactFirstName}} {{contact.ContactLastName}}</ion-option>
-    </ion-select>
-  </ion-item>
+          </ion-item>
 
-  <ion-item>
-    <ion-label floating>First Name</ion-label>
-    <ion-input [(ngModel)]="contactFirstName" formControlName="firstName" type="text" inputmode="text"></ion-input>
-  </ion-item>
+          <ion-item>
+            <ion-label floating>First Name</ion-label>
+            <ion-input [(ngModel)]="contactFirstName" formControlName="firstName" type="text" inputmode="text"></ion-input>
+          </ion-item>
 
-  <ion-item>
-    <ion-label floating>Last Name</ion-label>
-    <ion-input [(ngModel)]="contactLastName" formControlName="lastName" type="text" inputmode="text"></ion-input>
-  </ion-item>
+          <ion-item>
+            <ion-label floating>Last Name</ion-label>
+            <ion-input [(ngModel)]="contactLastName" formControlName="lastName" type="text" inputmode="text"></ion-input>
+          </ion-item>
 
-  <ion-item>
-    <ion-label floating>Phone Number</ion-label>
-    <ion-input [(ngModel)]="contactPhoneNumber" formControlName="phoneNumber" type="tel" inputmode="tel"></ion-input>
-  </ion-item>
+          <ion-item>
+            <ion-label floating>Phone Number</ion-label>
+            <ion-input [(ngModel)]="contactPhoneNumber" formControlName="phoneNumber" type="tel" inputmode="tel"></ion-input>
+          </ion-item>
 
-  <ion-item>
-    <ion-label floating>Email Address</ion-label>
-    <ion-input [(ngModel)]="contactEmailAddress" formControlName="emailAddress" type="email" inputmode="email"></ion-input>
-  </ion-item>
+          <ion-item style="padding-bottom:25px">
+            <ion-label floating>Email Address</ion-label>
+            <ion-input [(ngModel)]="contactEmailAddress" formControlName="emailAddress" type="email" inputmode="email"></ion-input>
+          </ion-item>
 
-  <button ion-button type="button" (click)="cancelClick()">Cancel</button>
-  <button ion-button type="submit" [disabled]="!editcontact.valid">Save</button>
-  <button ion-button type="button" (click)="deleteContact(i)">Delete</button>
+        </ion-col>
+
+      </ion-row>
+      <ion-row>
+        <ion-col></ion-col>
+        <ion-col>
+          <button ion-button type="submit" [disabled]="!editcontact.valid" style=" text-align:center; line-height:50%; ">Submit</button>
+        </ion-col>
+        <ion-col>
+          <button ion-button type="button" (click)="cancelClick()" style=" text-align:center; line-height:50%; ">Cancel</button>
+        </ion-col>
+        <ion-col>
+          <button ion-button type="button" (click)="deleteContact(i)" style=" text-align:center; line-height:50%; ">Delete</button>
+        </ion-col>
+        <ion-col>
+          <button ion-button type="button" (click)="addNewContact()" style="text-align:center; line-height:50%; ">New</button>
+        </ion-col>
+        <ion-col></ion-col>
+      </ion-row>
+    </ion-col>
+  </ion-row>
+
 </form>

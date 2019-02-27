@@ -1,37 +1,46 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, NavParams, AlertController } from 'ionic-angular';
+import { NavController, NavParams, AlertController, LoadingController } from 'ionic-angular';
 import { HomePage } from '../home/home';
-import { RegisterPage } from '../Register/Register';
-import { passwordPage } from '../password/password';
 import { httprequest } from '../../httprequest';
 import { Storage } from '@ionic/storage';
+import { BCWorker } from '../../worker';
+import { LatLng } from '@ionic-native/google-maps';
+import { Event } from '../../datastructs';
 
-/*
-  Generated class for the LoginPage page.
+function GetEvents(worker, request, storage) {
+  return new Promise(function (resolve, reject) {
+    worker.PullActiveEvent(request, storage);
+    worker.PullInactiveEvents(request, storage);
+    resolve();
+  });
+}
 
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
 @Component({
   selector: 'page-LoginPage',
   templateUrl: 'LoginPage.html',
   providers: [httprequest]
 })
 export class LoginPagePage {
+  @ViewChild("firstName") firstName;
+  @ViewChild("lastName") lastName;
+  @ViewChild("email") email;
+  @ViewChild("mobile") phonenumber;
   @ViewChild("username") username;
   @ViewChild("password") password;
+  isRegister: boolean = false;
   userID: any;
-  data: any;
-  isValid: any;
+  validUser: any;
+  //userValidation: User; 
+  data: string;
+  shouldHeight: any = document.body.clientHeight + 'px';
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public alertCtrl: AlertController, public request: httprequest, public storage: Storage) { }
+  constructor(public navCtrl: NavController, public request: httprequest, public navParams: NavParams, public alertCtrl: AlertController, public storage: Storage, public loadingCtrl: LoadingController) { }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad LoginPagePage');
   }
 
   signIn() {
-    //check to see if username or password are blank
     if (this.username.value == "") {
       let alert = this.alertCtrl.create({
         title: "Attention", subTitle: "Username field is empty", buttons: ["Ok"]
@@ -44,46 +53,120 @@ export class LoginPagePage {
         });
         alert.present();
       }
+  }
 
-    //creates a user, storing the input of username and password into the user object
-    let user = {
-      username: this.username.value,
-      password: this.password.value,
-      userID: 0
-    }
-
-    //check API server to see if the user is valid
-    this.request.GetUserID(user).then((data) => {
-      this.userID = data['recordset'][0].UserID;
-      console.log("uuuussser ID", this.userID);
-
-      //if the user is valid, then check the password
-      if (data['recordset'][0].UserID > 0) {
-        this.request.SignIn(user).then((data2) => {
-          if (data2 == true) { this.navCtrl.push(HomePage); }
-          else {
-            //password incorrect alert
-            let alert = this.alertCtrl.create({
-              title: "Attention", subTitle: "Incorrect password, try again!", buttons: ["Ok"]            });
-            alert.present();
-          }
-
+  Register() {
+    //check fields to see if they are valid
+    if (this.firstName.value == "") {
+      let alert = this.alertCtrl.create({
+        title: "Attention", subTitle: "First Name field is empty", buttons: ["Ok"]
+      });
+      alert.present();
+    } else
+      if (this.lastName.value == "") {
+        let alert = this.alertCtrl.create({
+          title: "Attention", subTitle: "Last Name field is empty", buttons: ["Ok"]
         });
-      }
-    });
+        alert.present();
+      } else
+        if (this.email.value == "") {
+          let alert = this.alertCtrl.create({
+            title: "Attention", subTitle: "Email field is empty", buttons: ["Ok"]
+          });
+          alert.present();
+        } else
+          if (this.phonenumber.value == "") {
+            let alert = this.alertCtrl.create({
+              title: "Attention", subTitle: "Phone number field is empty", buttons: ["Ok"]
+            });
+            alert.present();
+          } else
+            if (this.username.value == "") {
+              let alert = this.alertCtrl.create({
+                title: "Attention", subTitle: "Username field is empty", buttons: ["Ok"]
+              });
+              alert.present();
+            } else
+              if (this.password.value == "") {
+                let alert = this.alertCtrl.create({
+                  title: "Attention", subTitle: "Password field is empty", buttons: ["Ok"]
+                });
+                alert.present();
+              } else
+              //submit data if all feilds are valid
+              {
+                let data2 = {
+                  username: this.username.value,
+                  password: this.password.value,
+                  email: this.email.value,
+                  firstname: this.firstName.value,
+                  lastname: this.lastName.value,
+                  userID: -1
+                }
+                let loading = this.loadingCtrl.create({
+                  content: 'Registering..'
+                });
+                loading.present().then(() => {
+                  this.request.CreateUser(data2).then(() => {
+                    loading.dismiss();
+                    let alert = this.alertCtrl.create({
+                      title: "Account Created!", subTitle: `Please Sign In`, buttons: ["Ok"]
+                    });
+                    alert.present();
+                    alert.onDidDismiss(() => { location.reload(); })
+                  });
+                }); 
+              }
+  }
 
 
-
+  GetUser(loading) {
+    this.request.GetUser(this.username.value).then((user) => {
+      this.storage.set('user', user['recordset'][0]).then(() => {
+        this.storage.set('userID', user['recordset'][0].UserID).then(() => {
+          this.navCtrl.setRoot(HomePage);
+        })
+      });
+    }).then(() => { loading.dismiss() });
   }
 
   signUp() {
-    this.navCtrl.push(RegisterPage);
+    this.isRegister = true;
   }
 
-  resetPassword() {
-    this.navCtrl.push(passwordPage);
+  cancelRegister() {
+    this.isRegister = false;
   }
 
+  initialClick() {
+    this.signIn();
+    this.validateUser();
+    console.log(this.validUser, "its true");
+  }
 
+  validateUser() {
+    let user = {
+      username: this.username.value,
+      password: this.password.value
+    }
+    let loading = this.loadingCtrl.create({
+      content: 'Retrieving account information...'
+    });
+    loading.present().then(() => {
+      this.request.SignIn(user).then((isValid) => {
+ 
+        if (isValid) this.GetUser(loading);
+        else {
+          loading.dismiss();
+          let alert = this.alertCtrl.create({
+            title: "Attention", subTitle: `Incorrect Login`, buttons: ["Ok"]
+          });
+          alert.present();
+        }
+      });
+    });
+  }
 }
+
+
 
