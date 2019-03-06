@@ -143,17 +143,20 @@ export class addeventPage {
         let e = data['recordset'][0];
         request.RequestEventContacts(data['recordset'][0].EventID).then((contactData) => {
           let c = contactData['recordset'];
-          request.StartWatchTest(e.EventID, e.EndDate,
-            c[0].ContactFirstName, c[0].ContactLastName, c[0].ContactPhoneNumber, c[0].ContactEmailAddress,
-            c[1].ContactFirstName, c[1].ContactLastName, c[1].ContactPhoneNumber, c[1].ContactEmailAddress,
-            c[2].ContactFirstName, c[2].ContactLastName, c[2].ContactPhoneNumber, c[2].ContactEmailAddress,
-          );
+          return new Promise(resolve => {
+            request.StartWatchTest(e.EventID, e.EndDate,
+              c[0].ContactFirstName, c[0].ContactLastName, c[0].ContactPhoneNumber, c[0].ContactEmailAddress,
+              c[1].ContactFirstName, c[1].ContactLastName, c[1].ContactPhoneNumber, c[1].ContactEmailAddress,
+              c[2].ContactFirstName, c[2].ContactLastName, c[2].ContactPhoneNumber, c[2].ContactEmailAddress,
+            );
+            resolve();
+          }).then(() => {
+            loading.dismiss();
+            navCtrl.pop({ animate: false });
+            location.reload();
+          });
         });
       })
-    }).then(() => {
-        loading.dismiss();
-        navCtrl.pop({ animate: false });
-        location.reload();
     });
   }
 
