@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild, NgZone } from '@angular/core';
 import { NavController, NavParams, DateTime, LoadingController, AlertController, Alert, Select } from 'ionic-angular';
 import { Http, Headers, Request, RequestOptions } from '@angular/http';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
@@ -16,7 +16,7 @@ declare var google;
 var AddEventMap;
 var startLocMarker; //Marker Object for Start Location on Google Map
 var endLocMarker; //Marker Object for End Location on Google Map
-var isStartOrEndDestination; //Map marker toggle between Start and End Position
+var isStartLocation; //Map marker toggle between Start and End Position
 var currentLat;
 var currentLng;
 var aws_url = 'http://18.235.156.238:4604'
@@ -41,14 +41,23 @@ export class addeventPage {
   eventPart: any = "";
   isVisible: boolean = false;
   data: any;
+  activeEventName: any;
+  GoogleAutocomplete: any;
+  autocomplete: any;
+  autocompleteItems: any;
+  geocoder: any;
 
   private event: FormGroup;
   @ViewChild('contactsList') select: Select;
   @ViewChild('AddEventMap') AddEventMapEl: ElementRef;
-  constructor(public alertCtrl: AlertController, public http: Http, public loadingCtrl: LoadingController, public navCtrl: NavController, public navParams: NavParams, public request: httprequest, public formBuilder: FormBuilder, public storage: Storage, public geo: Geolocation) {
+  constructor(public alertCtrl: AlertController, public http: Http, private zone: NgZone, public loadingCtrl: LoadingController, public navCtrl: NavController, public navParams: NavParams, public request: httprequest, public formBuilder: FormBuilder, public storage: Storage, public geo: Geolocation) {
     //Initialize google AddEventMap and markers
     this.initMap();
-    isStartOrEndDestination = false;
+    isStartLocation = false;
+    this.GoogleAutocomplete = new google.maps.places.AutocompleteService();
+    this.autocomplete = { input: '' };
+    this.autocompleteItems = [];
+    this.geocoder = new google.maps.Geocoder;
     //Creating Forms
     storage.get('userID').then((data) => { this.userid = data; });
     this.event = this.formBuilder.group({
@@ -162,6 +171,47 @@ export class addeventPage {
     });
   }
 
+  selectSearchResult(item) {
+    this.autocompleteItems = [];
+
+    this.geocoder.geocode({ 'placeId': item.place_id }, (results, status) => {
+      if (status === 'OK' && results[0]) {
+        if (isStartLocation) {
+          if (startLocMarker != null) {
+            startLocMarker.setMap(null);
+          }
+          startLocMarker = new google.maps.Marker({ position: results[0].geometry.location, map: AddEventMap, label: "S" });
+        }
+        else {
+          if (endLocMarker != null) {
+            endLocMarker.setMap(null);
+          }
+          endLocMarker = new google.maps.Marker({ position: results[0].geometry.location, map: AddEventMap, label: "E" });
+        }
+
+
+        AddEventMap.setCenter(results[0].geometry.location);
+      }
+    })
+
+  }
+
+  updateSearchResults() {
+    if (this.autocomplete.input == '') {
+      this.autocompleteItems = [];
+      return;
+    }
+    this.GoogleAutocomplete.getPlacePredictions({ input: this.autocomplete.input },
+      (predictions, status) => {
+        this.autocompleteItems = [];
+        this.zone.run(() => {
+          predictions.forEach((prediction) => {
+            this.autocompleteItems.push(prediction);
+          });
+        });
+      });
+  }
+
   initMap() {
     this.storage.get('EditEvent').then((edit) => {
       if (edit == true) {
@@ -209,7 +259,7 @@ export class addeventPage {
 
     /* Listeners */
     AddEventMap.addListener('click', function (event) {
-      if (isStartOrEndDestination == true) {
+      if (isStartLocation == true) {
         if (startLocMarker != null) {
           startLocMarker.setMap(null);
         }
@@ -232,12 +282,12 @@ export class addeventPage {
   }
 
   togglePosition() {
-    if (isStartOrEndDestination == true) {
-      isStartOrEndDestination = false;
+    if (isStartLocation == true) {
+      isStartLocation = false;
       document.getElementById('togglePosition').textContent = "End";
     }
     else {
-      isStartOrEndDestination = true;
+      isStartLocation = true;
       document.getElementById('togglePosition').textContent = "Start";
     }
   }

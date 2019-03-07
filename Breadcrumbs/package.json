@@ -51,7 +51,7 @@
     "zone.js": "0.6.26"
   },
   "devDependencies": {
-    "@ionic/app-scripts": "^3.2.2",
+    "@ionic/app-scripts": "^3.2.3",
     "typescript": "2.0.9"
   },
   "description": "Ionic2Blank: An Ionic project",

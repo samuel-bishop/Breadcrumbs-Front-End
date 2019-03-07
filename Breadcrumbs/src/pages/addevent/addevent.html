@@ -1,48 +1,61 @@
-<div>
+
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-searchbar [(ngModel)]="autocomplete.input" (ionInput)="updateSearchResults()" placeholder="Search for a place"></ion-searchbar>
+  </ion-toolbar>
+  <ion-list [hidden]="autocompleteItems.length == 0">
+    <ion-item *ngFor="let item of autocompleteItems" tappable (click)="selectSearchResult(item)">
+      {{ item.description }}
+    </ion-item>
+  </ion-list>
+</ion-header>
+
+<ion-content>
+  <div #AddEventMap id="AddEventMap"></div>
   <form [formGroup]="event" (ngSubmit)="eventForm()">
-    <ion-item>
-      <ion-input placeholder="{{eventName}} (required)" formControlName="name" type="text"></ion-input>
-    </ion-item>
-
-    <ion-item>
-      <ion-label color="black">Start Date/Time</ion-label>
-      <ion-datetime formControlName="startDate" [(ngModel)]="todaysDateString" allowOldDates="false" [min]="todaysDateString"
-                    id="startDate" max="2021-12-31" pickerFormat="MMM/D/YY h:mm A" displayFormat="MM/DD/YYYY h:mm A">Start Date</ion-datetime>
-    </ion-item>
-
-    <ion-item>
-      <ion-label color="black">End Date/Time</ion-label>
-      <ion-datetime formControlName="endDate" [(ngModel)]="endDateString" allowOldDates="false" [min]="endDateString" max="2021-12-31"
-                    id="endDate" pickerFormat="MMM/D/YY h:mm A" displayFormat="MM/DD/YYYY h:mm A">End Date</ion-datetime>
-    </ion-item>
-
-    <ion-item >
-      <ion-label  color="black">Contact(s)</ion-label>
-      <ion-select #contactsList [(ngModel)]="contact" id="contactsList"  multiple="true" formControlName="contactsList">
-        <ion-option *ngFor="let contact of contacts" [value]="contact"> {{contact.ContactFirstName}} {{contact.ContactLastName}}</ion-option>
-      </ion-select>
-    </ion-item>
-
- 
-    <button ion-button class="addcontact-button" type="button" (click)="addContactClick()">+ <ion-icon name="contacts"></ion-icon></button>
-
-
-    <ion-item>
-      <ion-input placeholder="{{eventPart}} (optional)" formControlName="participants" type="text"></ion-input>
-    </ion-item>
-
-    <ion-item>
-      <ion-input placeholder="{{eventDesc}} (required)" formControlName="description" type="text"></ion-input>
-    </ion-item>
-
-
-    <button ion-button class="button" type="button" (click)="cancelClick()">Cancel</button>
-    <button ion-button class="button" type="submit" [disabled]="!event.valid">Submit</button>
-    <button ion-button class="button" type="button" id="togglePosition" (click)="togglePosition()">End</button>
+    <ion-row>
+      <ion-item>
+        <ion-input placeholder="Event Name (required)" [(ngModel)]="eventName" formControlName="name" type="text" id="name"></ion-input>
+      </ion-item>
+    </ion-row>
+    <ion-row>
+      <ion-item>
+        <ion-label color="black">Start Date/Time</ion-label>
+        <ion-datetime formControlName="startDate" [(ngModel)]="todaysDateString" allowOldDates="false" [min]="todaysDateString"
+                      id="startDate" max="2021-12-31" pickerFormat="MMM/D/YY h:mm A" displayFormat="MM/DD/YYYY h:mm A">Start Date</ion-datetime>
+      </ion-item>
+    </ion-row>
+    <ion-row>
+      <ion-item>
+        <ion-label color="black">End Date/Time</ion-label>
+        <ion-datetime formControlName="endDate" [(ngModel)]="endDateString" allowOldDates="false" [min]="endDateString" max="2021-12-31"
+                      id="endDate" pickerFormat="MMM/D/YY h:mm A" displayFormat="MM/DD/YYYY h:mm A">Start Date</ion-datetime>
+      </ion-item>
+    </ion-row>
+    <ion-row>
+      <ion-item>
+        <ion-label color="black">Contact(s)</ion-label>
+        <ion-select #contactsList [(ngModel)]="contact" id="contactsList" multiple="true" formControlName="contactsList">
+          <ion-option *ngFor="let contact of contacts" [value]="contact"> {{contact.ContactFirstName}} {{contact.ContactLastName}}</ion-option>
+        </ion-select>
+      </ion-item>
+    </ion-row>
+    <ion-row>
+      <ion-item>
+        <ion-input placeholder="Event Participants (optional)" [(ngModel)]="eventPart" formControlName="participants" type="text"></ion-input>
+      </ion-item>
+    </ion-row>
+    <ion-row>
+      <ion-item>
+        <ion-input placeholder="Event Description (required)" [(ngModel)]="eventDesc" formControlName="description" type="text"></ion-input>
+      </ion-item>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <button ion-button type="button" (click)="cancelClick()">Cancel</button>
+        <button ion-button type="submit" [disabled]="!event.valid">Submit</button>
+        <button ion-button type="button" id="togglePosition" (click)="togglePosition()">End</button>
+      </ion-col>
+    </ion-row>
   </form>
-</div>
-
-<div> <input type="text" id="searchInput" placeholder="Search an address.." /> </div>
-
-<div #AddEventMap id="AddEventMap"></div>
-
+</ion-content>
