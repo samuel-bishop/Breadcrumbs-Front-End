@@ -112,6 +112,8 @@ export class addeventPage {
           contactsListString += this.event.value.contactsList[i].EmergencyContactID;
         }
       }
+      let startDate = new Date(this.event.value.startDate).toUTCString();
+      let endDate = new Date(this.event.value.endDate).toUTCString();
       let eventData = {
         "userid": this.userid,
         "name": this.event.value.name,
@@ -120,8 +122,8 @@ export class addeventPage {
         "startLong": startLocMarker.getPosition().lng(),
         "endLat": endLocMarker.getPosition().lat(),
         "endLong": endLocMarker.getPosition().lng(),
-        "startDate": this.event.value.startDate,
-        "endDate": this.event.value.endDate,
+        "startDate": startDate,
+        "endDate": endDate,
         "contactsList": contactsListString,
         "participants": this.event.value.participants
       }
