@@ -79,7 +79,7 @@ export class editeventPage {
       this.eventName = event.EventName;
       this.eventDescription = event.EventDescription;
       this.eventEndDate = event.EndDate;
-      this.eventStartDate = event.EventCreationDate;
+      this.eventStartDate = event.EventStartDate;
       this.eventParticipants = event.EventParticipants;
       this.eventStartLat = event.StartLat;
       this.eventStartLng = event.StartLon;

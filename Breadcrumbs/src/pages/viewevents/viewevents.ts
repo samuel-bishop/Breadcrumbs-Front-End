@@ -21,7 +21,7 @@ import { viewEventPage } from '../viewEvent/viewEvent';
       {{e.EventName}}
     </ion-card-header>
     <ion-card-content>
-       Create on: {{e.EventCreationDate}}
+       Create on: {{e.EventStartDate}}
     </ion-card-content>
   </ion-card>
 </ion-content>
