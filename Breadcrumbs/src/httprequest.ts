@@ -13,7 +13,8 @@ import { appGlobals } from './app/file';
 
 
 //var aws_url = 'http://ec2-18-235-156-238.compute-1.amazonaws.com:4604'
-var aws_url = 'http://18.235.156.238:4604'
+//var aws_url = 'http://18.235.156.238:4604'
+var aws_url = 'http://18.214.215.136:4604'
 var aws_tts_url = 'http://35.174.49.106:4605'
 
 @Injectable()
@@ -249,13 +250,24 @@ export class httprequest {
       });
   }
 
-  StartWatchTest(eventID, endTime, c1FName, c1LName, c1Phone, c1Email, c2FName, c2LName, c2Phone, c2Email, c3FName, c3LName, c3Phone, c3Email) {
+  StartWatchTest(eventID, endTime, contacts, name) {//c1FName, c1LName, c1Phone, c1Email, c2FName, c2LName, c2Phone, c2Email, c3FName, c3LName, c3Phone, c3Email) {
+    /*
     var body = {
       'eventID': eventID, 'endTime': endTime,
       'c1FName': c1FName, 'c1LName': c1LName, 'c1Phone': c1Phone, 'c1Email': c1Email,
       'c2FName': c2FName, 'c2LName': c2LName, 'c2Phone': c2Phone, 'c2Email': c2Email,
       'c3FName': c3FName, 'c3LName': c3LName, 'c3Phone': c3Phone, 'c3Email': c3Email
     }
+    */
+    var body = [];
+    var contacts_array = [];
+
+    for (let c of contacts) {
+      contacts_array.push({ 'fname': c.ContactFirstName, 'lname': c.ContactLastName, 'phone': c.ContactPhoneNumber, 'email': c.ContactEmailAddress });
+    }
+    body.push({ 'eventID': eventID, 'endTime': endTime });
+    body.push(contacts_array);
+    body.push(name);
     this.http.post(aws_tts_url + '/startwatch/', body)
       .subscribe(data => {
         console.log(data['_body']);

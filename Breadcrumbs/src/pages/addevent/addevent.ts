@@ -32,8 +32,11 @@ export class addeventPage {
   contacts: any;
   userid: any;
   todaysDate = new Date();
-  todaysDateString: String = new Date(this.todaysDate.getTime() - this.todaysDate.getTimezoneOffset() * 60000).toISOString(); //Stringified Event Start Date
-  endDateString: String = new Date(this.todaysDate.getTime() - this.todaysDate.getTimezoneOffset() * 58750).toISOString();  //Stringified Event End Date
+  //Convert UTC to local timezone
+
+  todaysDateString: String = new Date(this.todaysDate.getTime() - this.todaysDate.getTimezoneOffset() * 60000).toISOString();
+  endDateString: String = new Date(this.todaysDate.getTime() - this.todaysDate.getTimezoneOffset() * 57500).toISOString();//Stringified Event End Date
+
   currentLng: any; //Location Data for Longitude of Clients Current Position
   currentLat: any; //Location Data for Latitude of Clients Current Position
   eventName: any = "";
@@ -46,13 +49,16 @@ export class addeventPage {
   autocomplete: any;
   autocompleteItems: any;
   geocoder: any;
+  selectedItemsCount: number;
 
   private event: FormGroup;
   @ViewChild('contactsList') select: Select;
   @ViewChild('AddEventMap') AddEventMapEl: ElementRef;
+
   constructor(public alertCtrl: AlertController, public http: Http, private zone: NgZone, public loadingCtrl: LoadingController, public navCtrl: NavController, public navParams: NavParams, public request: httprequest, public formBuilder: FormBuilder, public storage: Storage, public geo: Geolocation) {
     //Initialize google AddEventMap and markers
     this.initMap();
+    this.selectedItemsCount = 0;
     isStartLocation = false;
     this.GoogleAutocomplete = new google.maps.places.AutocompleteService();
     this.autocomplete = { input: '' };
@@ -99,7 +105,11 @@ export class addeventPage {
       var alert = this.alertCtrl.create({ title: 'Error: No Contacts Selected', subTitle: 'Please select at least one contact', buttons: ['ok'] });
       alert.present();
     }
-    if (this.event.value.endDate < this.event.value.startDate) {
+    else if (this.event.value.contactsList.length > 3) {
+      var alert = this.alertCtrl.create({ title: 'Error: Max of 3 Contacts Allowed', subTitle: 'Uncheck some contacts', buttons: ['ok'] });
+      alert.present();
+    }
+    else if (this.event.value.endDate < this.event.value.startDate) {
       var alert = this.alertCtrl.create({ title: 'Error: Time Conflict', subTitle: 'Please check that your dates are not conflicting (End Date should not be before Start Date)', buttons: ['ok'] });
       alert.present();
     }
@@ -121,8 +131,13 @@ export class addeventPage {
           contactsListString += this.event.value.contactsList[i].EmergencyContactID;
         }
       }
-      let startDate = new Date(this.event.value.startDate).toUTCString();
-      let endDate = new Date(this.event.value.endDate).toUTCString();
+
+      let StartDate = new Date(this.event.value.startDate);
+      let StartDateISO = new Date((StartDate.getTime() + StartDate.getTimezoneOffset() * 60000)).toISOString();
+      let EndDate = new Date(this.event.value.endDate);
+      let EndDateISO = new Date((EndDate.getTime() + EndDate.getTimezoneOffset() * 60000)).toISOString();
+
+
       let eventData = {
         "userid": this.userid,
         "name": this.event.value.name,
@@ -131,21 +146,21 @@ export class addeventPage {
         "startLong": startLocMarker.getPosition().lng(),
         "endLat": endLocMarker.getPosition().lat(),
         "endLong": endLocMarker.getPosition().lng(),
-        "startDate": startDate,
-        "endDate": endDate,
+        "startDate": StartDateISO,
+        "endDate": EndDateISO,
         "contactsList": contactsListString,
         "participants": this.event.value.participants
       }
       //CurrentEvent stores the last submitted event's data
       this.storage.set('LastState', 'EventSubmit').then(() => {
         this.request.InsertEvent(eventData).then(() => {
-          setTimeout(this.waitToInsertActiveEvent, 1000, this.request, this.alertCtrl, this.navCtrl, this.loadingCtrl);
+          setTimeout(this.waitToInsertActiveEvent, 1000, this.request, this.alertCtrl, this.navCtrl, this.loadingCtrl, this.storage);
         });
       });
     }
   }
 
-  waitToInsertActiveEvent(request, alertCtrl, navCtrl, loadingCtrl) {
+  waitToInsertActiveEvent(request, alertCtrl, navCtrl, loadingCtrl, storage) {
     let loading = loadingCtrl.create({
       content: 'Creating Event...'
     });
@@ -153,18 +168,17 @@ export class addeventPage {
       request.RequestActiveEvent().then((data) => {
         let e = data['recordset'][0];
         request.RequestEventContacts(data['recordset'][0].EventID).then((contactData) => {
-          let c = contactData['recordset'];
-          return new Promise(resolve => {
-            request.StartWatchTest(e.EventID, e.EndDate,
-              c[0].ContactFirstName, c[0].ContactLastName, c[0].ContactPhoneNumber, c[0].ContactEmailAddress,
-              c[1].ContactFirstName, c[1].ContactLastName, c[1].ContactPhoneNumber, c[1].ContactEmailAddress,
-              c[2].ContactFirstName, c[2].ContactLastName, c[2].ContactPhoneNumber, c[2].ContactEmailAddress,
-            );
-            resolve();
-          }).then(() => {
-            loading.dismiss();
-            navCtrl.pop({ animate: false });
-            location.reload();
+          let contacts = contactData['recordset'];
+          storage.get('user').then((user) => {
+            let fname = user.FirstName + ' ' + user.LastName[0] + '.'; 
+            return new Promise(resolve => {
+              request.StartWatchTest(e.EventID, e.EndDate, contacts, fname);
+              resolve();
+            }).then(() => {
+              loading.dismiss();
+              navCtrl.pop({ animate: false });
+              location.reload();
+            });
           });
         });
       })

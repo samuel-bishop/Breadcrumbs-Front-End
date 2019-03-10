@@ -100,15 +100,21 @@ export class HomePage {
     this.request.RequestActiveEvent().then((data) => {
       let event = data['recordset'][0];
       if (event != undefined) {
+        let EndDate = new Date(event.EndDate);
+        let EndDateISO = new Date(EndDate.getTime() - EndDate.getTimezoneOffset() * 60000);
+        let StartDate = new Date(event.EventStartDate);
+        let StartDateISO = new Date((StartDate.getTime() - StartDate.getTimezoneOffset() * 60000)).toISOString();
+
         let newEvent = new Event(event.EventID,
           event.EventName,
           event.EventDescription,
           event.EventParticipants,
-          this.FormatTime(event.EventCreationDate),
-          this.FormatTime(event.EndDate),
+          this.FormatTime(StartDateISO),
+          this.FormatTime(EndDateISO),
           new LatLng(event.StartLat, event.StartLon),
           new LatLng(event.EndLat, event.EndLon),
           true);
+
         this.CurrentEvent = newEvent;
         this.EventName = this.CurrentEvent.EventName;
         this.EventDescription = this.CurrentEvent.EventDesc;
@@ -137,8 +143,8 @@ export class HomePage {
           event.EventName,
           event.EventDescription,
           event.EventParticipants,
-          this.FormatTime(event.EventCreationDate),
-          this.FormatTime(event.EndDate),
+          event.EventStartDate,
+          event.EndDate,
           new LatLng(event.StartLat, event.Startlon),
           new LatLng(event.EndLat, event.EndLon),
           false);
