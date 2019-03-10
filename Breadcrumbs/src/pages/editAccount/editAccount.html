@@ -1,0 +1,48 @@
+<!--
+  Generated template for the NewPage page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>editAccount</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <form [formGroup]="editAccount" (ngSubmit)="editAccountForm()">
+    <ion-item>
+      <ion-label floating>First Name</ion-label>
+      <ion-input [(ngModel)]="accFirstName" formControlName="firstName" type="text" inputmode="text"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label floating>Last Name</ion-label>
+      <ion-input [(ngModel)]="accLastName" formControlName="lastName" type="text" inputmode="text"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label floating>Phone Number</ion-label>
+      <ion-input [(ngModel)]="accPhoneNumber" formControlName="phoneNumber" type="tel" inputmode="tel"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label floating>Email Address</ion-label>
+      <ion-input [(ngModel)]="accEmail" formControlName="emailAddress" type="email" inputmode="email"></ion-input>
+    </ion-item>
+    <ion-row>
+      <ion-col></ion-col>
+
+      <ion-col>
+        <button ion-button type="button" (click)="editAccountForm()" style=" text-align:center; line-height:50%">Submit</button>
+        <button ion-button type="button" (click)="cancelClick()" style=" text-align:center; line-height:50%; ">Cancel</button>
+      </ion-col>
+
+      <ion-col></ion-col>
+    </ion-row>
+  </form>
+</ion-content>

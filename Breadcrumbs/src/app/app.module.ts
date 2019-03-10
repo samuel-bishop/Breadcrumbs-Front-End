@@ -11,6 +11,7 @@ import { LoginPagePage } from '../pages/LoginPage/LoginPage';
 import { RegisterPage } from '../pages/Register/Register';
 import { editcontactPage } from '../pages/editcontact/editcontact';
 import { passwordPage } from '../pages/password/password';
+import { editAccountPage } from '../pages/editAccount/editAccount';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { passwordPage } from '../pages/password/password';
     editcontactPage,
     LoginPagePage,
     RegisterPage,
-    passwordPage
+    passwordPage,
+    editAccountPage
   ],
   imports: [
     IonicModule.forRoot(MyApp),
@@ -39,7 +41,8 @@ import { passwordPage } from '../pages/password/password';
     LoginPagePage,
     RegisterPage,
     editcontactPage,
-    passwordPage
+    passwordPage,
+    editAccountPage
   ],
   providers: [{ provide: ErrorHandler, useClass: IonicErrorHandler}, Storage]
 })

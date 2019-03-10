@@ -287,4 +287,39 @@ export class httprequest {
       }, (error) => {
       });
   }
+
+  AccountInfo() {
+    //Check if the data has already be created
+    if (this.data) {
+      return Promise.resolve(this.data);
+    }
+    let accountInfo;
+    return new Promise(resolve => {
+      this.storage.get('userID').then(userid => {
+        this.http.get(aws_url + '/api/accountInfo/' + userid)
+          .map(res => res.json())
+          .subscribe(data => {
+            accountInfo = data;
+            resolve(accountInfo);
+          },
+            //On error
+            (error) => {
+
+            });
+      });
+    })
+  }
+
+  UpdateAccount(accountData) {
+    var header = new Headers();
+    header.append("Accept", 'application/json');
+    header.append('Content-Type', 'application/json');
+    const requestOpts = new RequestOptions({ headers: header });
+    this.http.post(aws_url + '/api/updateAccount', accountData, requestOpts)
+      .subscribe(data => {
+        console.log(data['_body']);
+      }, error => {
+        console.log(error);
+      });
+  }
  }

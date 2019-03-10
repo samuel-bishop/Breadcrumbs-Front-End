@@ -14,6 +14,7 @@ import { LatLng } from '@ionic-native/google-maps';
 import { BCWorker } from '../../worker';
 import { viewEventPage } from '../viewEvent/viewEvent';
 import { isUndefined } from 'ionic-angular/umd/util/util';
+import { editAccountPage } from '../editAccount/editAccount';
 
 @Component({
   selector: 'page-home',
@@ -247,6 +248,10 @@ export class HomePage {
   openCustom() {
     this.menu.enable(true, 'custom');
     this.menu.open('custom');
+  }
+
+  editAccount() {
+    this.navCtrl.push(editAccountPage);
   }
 }
 
