@@ -68,7 +68,7 @@
         <!--4x4-->
         <button *ngIf="isRegister" ion-button full (click)="cancelRegister()">Cancel</button>
         <button *ngIf="!isRegister" ion-button full (click)="signUp()">Register</button>
-        <button class="forgot-pwd">forgot password?</button>
+        <button class="forgot-pwd" (click)="forgotPassword()">forgot password?</button>
       </ion-col>
       <ion-col>
         <!--4x5-->

@@ -1,11 +1,12 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, NavParams, AlertController, LoadingController } from 'ionic-angular';
+import { NavController, NavParams, AlertController, LoadingController, Nav, Alert } from 'ionic-angular';
 import { HomePage } from '../home/home';
 import { httprequest } from '../../httprequest';
 import { Storage } from '@ionic/storage';
 import { BCWorker } from '../../worker';
 import { LatLng } from '@ionic-native/google-maps';
 import { Event } from '../../datastructs';
+import { passwordPage } from '../password/password';
 
 function GetEvents(worker, request, storage) {
   return new Promise(function (resolve, reject) {
@@ -46,13 +47,15 @@ export class LoginPagePage {
         title: "Attention", subTitle: "Username field is empty", buttons: ["Ok"]
       });
       alert.present();
-    } else
-      if (this.password.value == "") {
+    }
+    else if (this.password.value == "") {
         let alert = this.alertCtrl.create({
           title: "Attention", subTitle: "Password field is empty", buttons: ["Ok"]
         });
         alert.present();
-      }
+    }
+    else this.validateUser();
+
   }
 
   Register() {
@@ -92,9 +95,8 @@ export class LoginPagePage {
                   title: "Attention", subTitle: "Password field is empty", buttons: ["Ok"]
                 });
                 alert.present();
-              } else
-              //submit data if all feilds are valid
-              {
+              } else { //submit data if all feilds are valid 
+    
                 let data2 = {
                   username: this.username.value,
                   password: this.password.value,
@@ -135,8 +137,11 @@ export class LoginPagePage {
 
   initialClick() {
     this.signIn();
-    this.validateUser();
     console.log(this.validUser, "its true");
+  }
+
+  forgotPassword() {
+    this.navCtrl.push(passwordPage);
   }
 
   validateUser() {
@@ -149,8 +154,14 @@ export class LoginPagePage {
     });
     loading.present().then(() => {
       this.request.SignIn(user).then((isValid) => {
- 
         if (isValid) this.GetUser(loading);
+        else {
+          let alert = this.alertCtrl.create({
+            title: "Attention", subTitle: `Wrong Password`, buttons: ["Ok"]
+          });
+          alert.present();
+          loading.dismiss();
+        }
       });
     });
   }

@@ -197,7 +197,6 @@ export class HomePage {
     })
   }
 
-
   toggleExists() {
     if (this.CurrentEventExists) this.CurrentEventExists = false;
     else this.CurrentEventExists = true;

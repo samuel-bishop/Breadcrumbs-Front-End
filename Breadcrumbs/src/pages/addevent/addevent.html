@@ -1,7 +1,14 @@
 
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-searchbar [(ngModel)]="autocomplete.input" (ionInput)="updateSearchResults()" placeholder="Search for a place"></ion-searchbar>
+    <ion-row>
+      <ion-col width-20>
+        <ion-navbar></ion-navbar>
+      </ion-col>
+      <ion-col width-80>
+        <ion-searchbar [(ngModel)]="autocomplete.input" (ionInput)="updateSearchResults()" placeholder="Search for a place"></ion-searchbar>
+      </ion-col>
+    </ion-row>
   </ion-toolbar>
   <ion-list [hidden]="autocompleteItems.length == 0">
     <ion-item *ngFor="let item of autocompleteItems" tappable (click)="selectSearchResult(item)">
@@ -52,9 +59,8 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <button ion-button type="button" (click)="cancelClick()">Cancel</button>
         <button ion-button type="submit" [disabled]="!event.valid">Submit</button>
-        <button ion-button type="button" id="togglePosition" (click)="togglePosition()">End</button>
+        <button ion-button style="width:220px" type="button" id="togglePosition" (click)="togglePosition()">Toggle Marker: End</button>
       </ion-col>
     </ion-row>
   </form>

@@ -13,8 +13,8 @@ import { appGlobals } from './app/file';
 
 
 //var aws_url = 'http://ec2-18-235-156-238.compute-1.amazonaws.com:4604'
-//var aws_url = 'http://18.235.156.238:4604'
-var aws_url = 'http://18.214.215.136:4604'
+var aws_url = 'http://breadcrumbsapp.net:4604'
+//var aws_url = 'http://18.214.215.136:4604'
 var aws_tts_url = 'http://35.174.49.106:4605'
 
 @Injectable()
@@ -293,7 +293,7 @@ export class httprequest {
     headers.append('Content-Type', 'application/json');
     const requestOptions = new RequestOptions({ headers: headers });
 
-    this.http.post(aws_url + '/resetPassword/', user)
+    this.http.post(aws_url + '/api/resetPassword/', user)
       .subscribe(data => {
         console.log(data['body']);
       }, (error) => {
