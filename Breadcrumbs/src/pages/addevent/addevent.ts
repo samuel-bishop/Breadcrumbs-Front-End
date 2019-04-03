@@ -264,7 +264,9 @@ export class addeventPage {
       this.storage.get('activeEvent').then((data) => {
         let event: Event = data;
         startLocMarker = new google.maps.Marker({ position: event.EventStartLatLng, map: AddEventMap, label: 'S' });
+        startLocMarker.setMap(AddEventMap);
         endLocMarker = new google.maps.Marker({ position: event.EventEndLatLng, map: AddEventMap, label: 'E' });
+        endLocMarker.setMap(endLocMarker);
       })
     }
     else {
@@ -284,6 +286,7 @@ export class addeventPage {
           endLocMarker.setMap(null);
         }
         endLocMarker = new google.maps.Marker({ position: event.latLng, map: AddEventMap, label: 'E' });
+
       }
     });
   }
@@ -298,11 +301,11 @@ export class addeventPage {
   togglePosition() {
     if (isStartLocation == true) {
       isStartLocation = false;
-      document.getElementById('togglePosition').textContent = "End";
+      document.getElementById('togglePosition').textContent = "Toggle Marker: End";
     }
     else {
       isStartLocation = true;
-      document.getElementById('togglePosition').textContent = "Start";
+      document.getElementById('togglePosition').textContent = "Toggle Marker: Start";
     }
   }
 

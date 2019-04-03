@@ -60,14 +60,19 @@ export class passwordPage {
     //check valid user through API server
 
     //check API server to see if the user is valid
-    this.request.GetUserID(user).then((data) => {
+    this.request.GetUserID(user.username).then((data) => {
       this.userID = data['recordset'][0].UserID;
-      console.log("uuuussser ID", this.userID);
-
       //if the user is valid, then check the password
-      if (data['recordset'][0].UserID > 0) {
-        this.request.SignIn(user).then((data2) => {
-          if (data2 == true) { this.request.ResetPassword(user); }
+      if (this.userID > 0) {
+        this.request.SignIn(user).then((valid) => {
+          if (valid) {
+            this.request.ResetPassword(user);
+            let alert = this.alertCtrl.create({
+              title: "Password Updated", subTitle: "Password updated, please log in again", buttons: ["Ok"]
+            });
+            alert.present();
+            this.navCtrl.pop();
+          }
           else {
             //password incorrect alert
             let alert = this.alertCtrl.create({
@@ -75,16 +80,19 @@ export class passwordPage {
             });
             alert.present();
           }
-
-        });
+        }).catch((err) => {
+          let alert = this.alertCtrl.create({
+            title: "Attention", subTitle: err, buttons: ["Ok"]
+          });
+          alert.present();
+          });
       }
-    });
-
-    let alert = this.alertCtrl.create({
-      title: "Password Updated", subTitle: "Password updated, please log in again", buttons: ["Ok"]
-    });
-    alert.present();
-    this.navCtrl.pop();
+    }).catch((err) => {
+      let alert = this.alertCtrl.create({
+        title: "Attention", subTitle: err, buttons: ["Ok"]
+      });
+      alert.present();
+      });
   }
   
 

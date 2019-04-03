@@ -1,9 +1,10 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Emergency Contacts</ion-title>
+  </ion-navbar>
+</ion-header>
+
 <form [formGroup]="editcontact" (ngSubmit)="editcontactForm()">
-  <ion-row style="background-color:rgb(130, 86, 126); opacity:.7" class="past-events-card-header">
-    <ion-col>
-      <h1 style="text-anchor:middle; font-size:30px; text-align:center; color:black; margin-top:-4px; margin-bottom:-4px"> Edit Emergency Contacts </h1>
-    </ion-col>
-  </ion-row>
   <ion-row>
     <ion-col></ion-col>
     <ion-col>
@@ -37,9 +38,6 @@
           </ion-item>
 
           <ion-row>
-            <ion-col text-center>
-              <button ion-button type="button" (click)="cancelClick()" style="width:85px; text-align:center; line-height:50%; align-content:center">Cancel</button>
-            </ion-col>
             <ion-col text-center>
               <button ion-button type="submit" [disabled]="!editcontact.valid" style="width:85px; text-align:center; line-height:50%; align-content:center">Save</button>
             </ion-col>
