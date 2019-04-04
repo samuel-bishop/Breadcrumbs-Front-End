@@ -153,16 +153,33 @@ export class LoginPagePage {
       content: 'Retrieving account information...'
     });
     loading.present().then(() => {
-      this.request.SignIn(user).then((isValid) => {
-        if (isValid) this.GetUser(loading);
+      this.request.GetUser(user.username).then((data) => {
+        if (data['recordset'][0].UserID > 0) {
+          this.request.SignIn(user).then((isValid) => {
+            if (isValid) this.GetUser(loading);
+            else {
+              let alert = this.alertCtrl.create({
+                title: "Attention", subTitle: `Wrong Password`, buttons: ["Ok"]
+              });
+              alert.present();
+              loading.dismiss();
+            }
+          });
+        }
         else {
           let alert = this.alertCtrl.create({
-            title: "Attention", subTitle: `Wrong Password`, buttons: ["Ok"]
+            title: "Attention", subTitle: `Wrong Username`, buttons: ["Ok"]
           });
           alert.present();
           loading.dismiss();
         }
-      });
+      }).catch(() => {
+        let alert = this.alertCtrl.create({
+          title: "Attention", subTitle: `Wrong Username`, buttons: ["Ok"]
+        });
+        alert.present();
+        loading.dismiss();
+        });
     });
   }
 }

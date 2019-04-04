@@ -186,6 +186,7 @@ export class HomePage {
     this.storage.get('activeEvent').then((Event) => {
       this.storage.get('inactiveEvents').then((InactiveEvents) => {
         InactiveEvents.push(Event);
+        this.request.CancelWatch(Event.EventID);
         this.storage.set('inactiveEvents', InactiveEvents);
         this.inactiveEvents = InactiveEvents;
       });
@@ -193,8 +194,8 @@ export class HomePage {
         this.storage.set('CurrentEventExists', false).then(() => {
           this.CurrentEventExists = false;
         });
-      })
-    })
+      });
+    });
   }
 
   toggleExists() {
@@ -257,6 +258,7 @@ export class HomePage {
 
   editAccount() {
     this.navCtrl.push(editAccountPage);
+
   }
 }
 

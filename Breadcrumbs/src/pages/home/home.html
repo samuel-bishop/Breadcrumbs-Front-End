@@ -12,12 +12,17 @@
 </ion-header>
 
 <ion-menu [content]="sidebar" type="overlay">
+  
   <ion-content style="margin-top:10px">
     <ion-card color="primary" style=" text-align:center; margin-bottom: 20px">
       <ion-row>
+        <ion-col></ion-col>
+        <ion-col></ion-col>
         <ion-col>
           <ion-icon name="happy" style="font-size:40px; color:white"></ion-icon>
         </ion-col>
+        <ion-col></ion-col>
+        <ion-col><button ion-button (click)="Refresh()" style="background-color:transparent"><ion-icon name="refresh"></ion-icon></button></ion-col>
       </ion-row>
       <ion-row>
         <ion-col style="color:white; font-family: 'Lucida Sans'; font-size:medium">
@@ -27,22 +32,22 @@
         </ion-col>
       </ion-row>
     </ion-card>
-                
+
     <ion-list>
       <!--<button ion-item menuClose class="side-button">
-      <ion-icon name="build"></ion-icon>
-      Edit Profile
-    </button>-->
+        <ion-icon name="build"></ion-icon>
+        Edit Profile
+      </button>-->
       <!--<button ion-item menuClose (click)="addContact()" class="side-button">
-      <ion-icon name="person-add"></ion-icon>
-      Add Contact
-    </button>-->
+        <ion-icon name="person-add"></ion-icon>
+        Add Contact
+      </button>-->
       <button ion-item menuClose (click)="editContacts()" class="side-button">
         <ion-icon name="contacts"></ion-icon>
         Emergency Contacts
       </button>
       <button ion-item menuClose (click)="editAccount()" class="side-button">
-        <ion-icon name ="finger-print"></ion-icon>
+        <ion-icon name="finger-print"></ion-icon>
         Edit Account
       </button>
       <button ion-item menuClose (click)="logout()" class="side-button" style="color:red">Logout</button>
@@ -64,7 +69,7 @@
   <ion-row style="margin-bottom: -52px;">
     <ion-col> </ion-col>
     <ion-col>
-      <button ion-button (click)="Refresh()" style="background-color:transparent"><ion-icon name="refresh"></ion-icon></button>
+      
       <ion-card *ngIf="CurrentEventExists" class="event-card">
         <ion-row style="background-color:rgb(92, 138, 109); " class="event-card-header">
           <ion-col></ion-col>

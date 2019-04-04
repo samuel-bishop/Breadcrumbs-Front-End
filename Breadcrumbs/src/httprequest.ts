@@ -5,6 +5,7 @@ import 'rxjs/add/operator/map';
 import { AlertController, LoadingController } from 'ionic-angular';
 import { UserService } from '../service/user.service';
 import { appGlobals } from './app/file';
+import { HomePage } from './pages/home/home';
 /*
   Generated class for the httprequest provider.
   See https://angular.io/docs/ts/latest/guide/dependency-injection.html
@@ -251,29 +252,27 @@ export class httprequest {
   }
 
   StartWatchTest(eventID, endTime, contacts, name) {//c1FName, c1LName, c1Phone, c1Email, c2FName, c2LName, c2Phone, c2Email, c3FName, c3LName, c3Phone, c3Email) {
-    /*
-    var body = {
-      'eventID': eventID, 'endTime': endTime,
-      'c1FName': c1FName, 'c1LName': c1LName, 'c1Phone': c1Phone, 'c1Email': c1Email,
-      'c2FName': c2FName, 'c2LName': c2LName, 'c2Phone': c2Phone, 'c2Email': c2Email,
-      'c3FName': c3FName, 'c3LName': c3LName, 'c3Phone': c3Phone, 'c3Email': c3Email
-    }
-    */
     var body = [];
     var contacts_array = [];
-
     for (let c of contacts) {
       contacts_array.push({ 'fname': c.ContactFirstName, 'lname': c.ContactLastName, 'phone': c.ContactPhoneNumber, 'email': c.ContactEmailAddress });
     }
     body.push({ 'eventID': eventID, 'endTime': endTime });
     body.push(contacts_array);
     body.push(name);
-    this.http.post(aws_tts_url + '/startwatch/', body)
+    return new Promise(resolve => {
+      this.http.post(aws_tts_url + '/startwatch/', body)
       .subscribe(data => {
         console.log(data['_body']);
-      }, error => {
-        console.log(error);
+        location.reload();
+       }
+        , error => {
+          console.log(error);
+          location.reload();
       });
+      resolve();
+      
+    });
   }
 
   CancelWatch(eventID) {
