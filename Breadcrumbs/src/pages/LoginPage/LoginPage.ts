@@ -78,12 +78,12 @@ export class LoginPagePage {
           });
           alert.present();
         } else
-          if (this.phonenumber.value == "") {
-            let alert = this.alertCtrl.create({
-              title: "Attention", subTitle: "Phone number field is empty", buttons: ["Ok"]
-            });
-            alert.present();
-          } else
+          //if (this.phonenumber.value == "") {
+          //  let alert = this.alertCtrl.create({
+          //    title: "Attention", subTitle: "Phone number field is empty", buttons: ["Ok"]
+          //  });
+          //  alert.present();
+          //} else
             if (this.username.value == "") {
               let alert = this.alertCtrl.create({
                 title: "Attention", subTitle: "Username field is empty", buttons: ["Ok"]
@@ -111,20 +111,25 @@ export class LoginPagePage {
                 loading.present().then(() => {
                   this.request.CreateUser(data2).then(() => {
                     location.reload();
-                  });
+                  }).catch(() => { location.reload(); });
                 });
               }
   }
 
 
   GetUser(loading) {
-    this.request.GetUser(this.username.value).then((user) => {
-      this.storage.set('user', user['recordset'][0]).then(() => {
-        this.storage.set('userID', user['recordset'][0].UserID).then(() => {
-          this.navCtrl.setRoot(HomePage);
+    this.request.GetAuth(this.username.value.toLowerCase()).then((auth) => {
+      this.storage.set('auth', auth['recordset'][0].Auth).then(() => {
+        this.request.GetUser(this.username.value.toLowerCase()).then((user) => {
+          this.storage.set('user', user['recordset'][0]).then(() => {
+            this.storage.set('userID', user['recordset'][0].UserID).then(() => {
+              loading.dismiss();
+              this.navCtrl.setRoot(HomePage);
+            })
+          });
         })
-      });
-    }).then(() => { loading.dismiss() });
+      })
+    });
   }
 
   signUp() {
@@ -146,14 +151,17 @@ export class LoginPagePage {
 
   validateUser() {
     let user = {
-      username: this.username.value,
+      username: this.username.value.toLowerCase(),
       password: this.password.value
     }
     let loading = this.loadingCtrl.create({
       content: 'Retrieving account information...'
     });
     loading.present().then(() => {
-      this.request.GetUser(user.username).then((data) => {
+
+      //need to look over this logic later
+      //(why get users information before validating user?)
+      this.request.GetUserID(user.username).then((data) => {
         if (data['recordset'][0].UserID > 0) {
           this.request.SignIn(user).then((isValid) => {
             if (isValid) this.GetUser(loading);
@@ -166,7 +174,7 @@ export class LoginPagePage {
             }
           });
         }
-        else {
+        else {  
           let alert = this.alertCtrl.create({
             title: "Attention", subTitle: `Wrong Username`, buttons: ["Ok"]
           });

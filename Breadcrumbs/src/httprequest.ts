@@ -6,6 +6,7 @@ import { AlertController, LoadingController } from 'ionic-angular';
 import { UserService } from '../service/user.service';
 import { appGlobals } from './app/file';
 import { HomePage } from './pages/home/home';
+import { Observable } from 'rxjs/Observable';
 /*
   Generated class for the httprequest provider.
   See https://angular.io/docs/ts/latest/guide/dependency-injection.html
@@ -27,34 +28,70 @@ export class httprequest {
     console.log('Hello httprequest Provider');
   }
 
+  GetAuth(username) {
+    return new Promise(resolve => {
+      var header = new Headers();
+      header.append('SessionID', 'getauth');
+      header.append('username', username);
+      const requestOpts = new RequestOptions({ headers: header });
+      this.http.get(aws_url + '/getData/', requestOpts)
+        .map(res => res.json())
+        .subscribe(data => {
+          this.data = data;
+          resolve(this.data);
+        },
+          //On Error
+        (error) => {
+          var alert = this.alertCtrl.create({ title: 'Error!', subTitle: `${error}`, buttons: ['Radical!'] });
+          alert.present();
+          });
+    })
+
+  }
+
   //Load Active Event 
   RequestActiveEvent() {
     return new Promise(resolve => {
       this.storage.get('userID').then((userid) => {
-        this.http.get(aws_url + '/api/activeEvent/' + userid)
-          .map(res => res.json())
-          .subscribe(data => {
-            this.data = data;
-            resolve(this.data);
-          },
-            //On Error
-          (error) => {
-          });
-      });
+        //var body = { 'userID': userid };
+        var header = new Headers();
+        this.storage.get('auth').then((auth) => {
+          header.append('AuthToken', auth);
+          header.append('SessionID', 'getactiveevent');
+          header.append('userID', userid);
+          const requestOpts = new RequestOptions({ headers: header });
+          this.http.get(aws_url + '/getData/', requestOpts)
+            .map(res => res.json())
+            .subscribe(data => {
+              this.data = data;
+              resolve(this.data);
+            },
+              //On Error
+              (error) => {
+              });
+        });
+      })
     })
   }
 
   RequestInactiveEvents() {
     return new Promise(resolve => {
       this.storage.get('userID').then((userid) => {
-        this.http.get(aws_url + '/api/inactiveEvents/' + userid)
-          .subscribe(data => {
-            data = data.json();
-            resolve(data);
-          }, (error) => {
-
-          });
-      });
+        var header = new Headers();
+        //var body = { 'userID': userid };
+        this.storage.get('auth').then((auth) => {
+          header.append('AuthToken', auth);
+          header.append('SessionID', 'getinactiveevents');
+          header.append('userID', userid);
+          const requestOpts = new RequestOptions({ headers: header });
+          this.http.get(aws_url + '/getData/', requestOpts)
+            .subscribe(data => {
+              data = data.json();
+              resolve(data);
+            }, (error) => {
+            });
+        });
+      })
     })
   }
 
@@ -63,27 +100,36 @@ export class httprequest {
     var header = new Headers();
     header.append("Accept", 'application/json');
     header.append('Content-Type', 'application/json');
-    const requestOpts = new RequestOptions({ headers: header });
-    this.http.post(aws_url + '/api/updatecontact', contactData, requestOpts)
-      .subscribe(data => {
-        console.log(data['_body']);
-      }, error => {
-        console.log(error);
-      });
+    this.storage.get('auth').then((auth) => {
+      header.append('AuthToken', auth);
+      header.append('SessionID', 'updatecontact');
+      const requestOpts = new RequestOptions({ headers: header });
+      this.http.post(aws_url + '/updateData/', contactData, requestOpts)
+        .subscribe(data => {
+          console.log(data['_body']);
+        }, error => {
+          console.log(error);
+        });
+    });
   }
 
   DeleteContact(contactid) {
     var header = new Headers();
     header.append("Accept", 'application/json');
     header.append('Content-Type', 'application/json');
-    const requestOpts = new RequestOptions({ headers: header });
-    let contact = { id: contactid }
-    this.http.post(aws_url + '/api/deletecontact', contact, requestOpts)
-      .subscribe(data => {
-        console.log(data['_body']);
-      }, error => {
-        console.log(error);
-      });
+    this.storage.get('auth').then((auth) => {
+      header.append('AuthToken', auth);
+      header.append('SessionID', 'deletecontact');
+      const requestOpts = new RequestOptions({ headers: header });
+      let contact = { id: contactid }
+      this.http.post(aws_url + '/updateData/', contact, requestOpts)
+        .subscribe(data => {
+          console.log(data['_body']);
+        }, error => {
+          console.log(error);
+        });
+    })
+
   }
 
   //Load contacts
@@ -95,17 +141,24 @@ export class httprequest {
     //Return a new promise
     return new Promise(resolve => { //Get the userid from storage
       this.storage.get('userID').then(userid => { //Create a GET call to the API servers contacts page
-        this.http.get(aws_url + '/api/contacts/' + userid)
-          .map(res => res.json()) //Map the response as a JSON object
-          .subscribe(data => { //Handle the returned value from .map
-            this.data = data;
-            resolve(this.data);
-          },
-            //On error
-            (error) => {
+        let body = { 'userid': userid };
+        this.storage.get('auth').then((auth) => {
+          var header = new Headers();
+          header.append('AuthToken', auth);
+          header.append('SessionID', 'getcontacts')
+          header.append('userID', userid);
+          var requestOpts = new RequestOptions({ headers: header });
+          this.http.get(aws_url + '/getData/', requestOpts)
+            .map(res => res.json()) //Map the response as a JSON object
+            .subscribe(data => { //Handle the returned value from .map
+              this.data = data;
+              resolve(this.data);
+            },//On error
+              (error) => {
 
-            });
-      });
+              });
+        });
+      })
     })
   }
 
@@ -115,12 +168,20 @@ export class httprequest {
     }
     return new Promise(resolve => {
       this.storage.get('userID').then((userid) => {
-        this.http.get(aws_url + '/api/events/' + userid)
-          .map(res => res.json())
-          .subscribe(data => {
-            this.data = data;
-            resolve(this.data);
-          });
+        //var body = { 'userID': userid };
+        this.storage.get('auth').then((auth) => {
+          var header = new Headers();
+          header.append('AuthToken', auth);
+          header.append('SessionID', 'getinactiveevents')
+          header.append('userID', userid);
+          var requestOpts = new RequestOptions({ headers: header });
+          this.http.get(aws_url + '/getData/', requestOpts)
+            .map(res => res.json())
+            .subscribe(data => {
+              this.data = data;
+              resolve(this.data);
+            });
+        });
       });
     })
   }
@@ -129,15 +190,19 @@ export class httprequest {
     return new Promise(resolve => {
       var header = new Headers();
       header.append("Accept", 'application/json');
-      header.append('Content-Type', 'application/json')
-      const requestOpts = new RequestOptions({ headers: header });
-      this.http.post(aws_url + '/api/newevent/', eventData, requestOpts)
-        .subscribe(data => {
-          console.log(data['_body']);
-        }, error => {
-          console.log(error);
-        });
-      resolve('Success');
+      header.append('Content-Type', 'application/json');
+      this.storage.get('auth').then((auth) => {
+        header.append('AuthToken', auth);
+        header.append('SessionID', 'newevent')
+        const requestOpts = new RequestOptions({ headers: header });
+        this.http.post(aws_url + '/updateData/', eventData, requestOpts)
+          .subscribe(data => {
+            console.log(data['_body']);
+          }, error => {
+            console.log(error);
+          });
+        resolve('Success');
+      });
     });
   }
 
@@ -145,110 +210,174 @@ export class httprequest {
     var header = new Headers();
     header.append("Accept", 'application/json');
     header.append('Content-Type', 'application/json');
-    const requestOpts = new RequestOptions({ headers: header });
-    this.http.post(aws_url + '/api/newContact/', contactData, requestOpts)
-      .subscribe(data => {
-        console.log(data['_body']);
-      }, error => {
-        console.log(error);
-      });
-  }
-
-  RequestEventContacts(eventID) {
-    return new Promise(resolve => {
-      this.http.get(aws_url + '/api/eventContacts/' + eventID)
-        .map(res => res.json())
-        .subscribe(data => {
-          this.data = data;
-          resolve(this.data);
-        });
-    })
-  }
-
-  DisableEvent(eventID) {
-    return new Promise(resolve => {
+    var body = {
+      'userid': userid,
+      'firstName': contactData.firstName,
+      'lastName': contactData.lastName,
+      'phoneNumber': contactData.phoneNumber,
+      'emailAddress': contactData.emailAddress
+    };
+    this.storage.get('auth').then((auth) => {
+      header.append('AuthToken', auth);
+      header.append('SessionID', 'newcontact');
       const requestOpts = new RequestOptions({ headers: header });
-      var header = new Headers();
-      header.append("Accept", 'application/json');
-      header.append('Content-Type', 'application/json')
-      var body = { 'eventID': eventID }
-      this.http.post(aws_url + '/api/disableEvent/', body)
+      this.http.post(aws_url + '/updateData/', body, requestOpts)
         .subscribe(data => {
           console.log(data['_body']);
         }, error => {
           console.log(error);
         });
-      resolve("Success");
+    });
+  }
+
+  RequestEventContacts(eventID) {
+    return new Promise(resolve => {
+      var header = new Headers();
+      var body = { 'eventid': eventID };
+      this.storage.get('auth').then((auth) => {
+        header.append('AuthToken', auth);
+        header.append('SessionID', 'geteventcontacts');
+        header.append('eventid', eventID);
+        const requestOpts = new RequestOptions({ headers: header });
+        this.http.get(aws_url + '/getData/', requestOpts)
+          .map(res => res.json())
+          .subscribe(data => {
+            this.data = data;
+            resolve(this.data);
+          });
+      })
+    })
+  }
+
+  DisableEvent(eventID) {
+    return new Promise(resolve => {
+      var header = new Headers();
+      header.append("Accept", 'application/json');
+      header.append('Content-Type', 'application/json')
+      this.storage.get('auth').then((auth) => {
+        header.append('AuthToken', auth);
+        header.append('SessionID', 'disableevent');
+        const requestOpts = new RequestOptions({ headers: header });
+        var body = { 'eventID': eventID }
+        this.http.post(aws_url + '/updateData/', body, requestOpts)
+          .subscribe(data => {
+            console.log(data['_body']);
+          }, error => {
+            console.log(error);
+          });
+        resolve("Success");
+      })
     })
   }
 
   //Create User Account
   CreateUser(data) {
     return new Promise(resolve => {
-      var headers = new Headers();
-      headers.append("Accept", 'application/json');
-      headers.append('Content-Type', 'application/json');
-      const requestOptions = new RequestOptions({ headers: headers });
-      this.http.post(aws_url + '/api/createUser/', data)
-        .subscribe(data => {
-          console.log(data['_body']);
-        });
-      resolve("Success");
+      var header = new Headers();
+      header.append("Accept", 'application/json');
+      header.append('Content-Type', 'application/json');
+      this.storage.get('auth').then((auth) => {
+        header.append('AuthToken', auth);
+        header.append('SessionID', 'createuser');
+        const requestOpts = new RequestOptions({ headers: header });
+        this.http.post(aws_url + '/updateData/', data, requestOpts)
+          .subscribe(data => {
+            resolve("success");
+          })
+      });
     });
   }
 
   GetUser(user: string) {
     return new Promise(resolve => {
-      this.http.get(`${aws_url}/api/getUser/${user}`)
-        .map(res => res.json())
-        .subscribe(data => {
-          this.data = data;
-          resolve(this.data);
-        }, (error) => {
+      var header = new Headers();
+      this.storage.get('auth').then((auth) => {
+        header.append('AuthToken', auth);
+        header.append('SessionID', 'getuser');
+        header.append('un-content', user);
+        const requestOpts = new RequestOptions({ headers: header });
+        this.http.get(aws_url + '/getData/', requestOpts)
+          .map(res => res.json())
+          .subscribe(data => {
+            this.data = data;
+            resolve(this.data);
+          },
+            (error) => {
 
-        });
+            });
+      })
     })
   }
 
   GetUserID(username) {
     return new Promise(resolve => {
-      this.http.get(aws_url + '/api/getUserID/' + username)
-        .map(res => res.json())
-        .subscribe(data => {
-          this.data = data;
-          resolve(this.data);
-        },
-          (error) => {
+      var body = { 'username': username };
+      var header = new Headers();
+      this.storage.get('auth').then((auth) => {
+        header.append('AuthToken', auth);
+        header.append('SessionID', 'getuserid');
+        header.append('un-content', username);
+        const requestOpts = new RequestOptions({ headers: header });
+        this.http.get(aws_url + '/getData/', requestOpts)
+          .map(res => res.json())
+          .subscribe(data => {
+            this.data = data;
+            resolve(this.data);
+          },
+            (error) => {
 
-          });
-    });
+            });
+      });
+    })
   }
 
   SignIn(user) {
     return new Promise(resolve => {
+      var header = new Headers();
+      var body = { 'user': user.username, 'password': user.password };
       let isValid;
-      this.http.get(aws_url + '/api/confirmUser/' + user.username + '/' + user.password)
-        .map(res => res.json())
-        .subscribe(data => {
-          isValid = data;
-          resolve(isValid);
-          //console.log(data['_body'], "this is correct ");
-        });
-    });
+      this.storage.get('auth').then((auth) => {
+        header.append('AuthToken', auth);
+        header.append('SessionID', 'confirmuser');
+        header.append('pw-content', user.password);
+        header.append('un-content', user.username);
+        const requestOpts = new RequestOptions({ headers: header });
+        this.http.get(aws_url + '/getData/', requestOpts)
+          .map(res => res.json())
+          .subscribe(data => {
+            isValid = data;
+            resolve(isValid);
+            //console.log(data['_body'], "this is correct ");
+          });
+      });
+    })
   }
 
 
   InsertContactInfo(userid, contactData) {
     var header = new Headers();
+    var body = {
+      'userid': userid,
+      'firstName': contactData.firstName,
+      'lastName': contactData.lastName,
+      'phoneNumber': contactData.phoneNumber,
+      'emailAddress': contactData.emailAddress,
+      'username': contactData.username
+    };
     header.append("Accept", 'application/json');
     header.append('Content-Type', 'application/json');
-    const requestOpts = new RequestOptions({ headers: header });
-    this.http.post(aws_url + '/createContactInfo/', contactData, requestOpts)
-      .subscribe(data => {
-        console.log(data['_body']);
-      }, error => {
-        console.log(error);
-      });
+    this.storage.get('auth').then((auth) => {
+      header.append('AuthToken', auth);
+      header.append('SessionID', 'createcontactinfo')
+      const requestOpts = new RequestOptions({ headers: header });
+      this.http.post(aws_url + '/updateData/', body, requestOpts)
+        .subscribe(data => {
+          console.log(data['_body']);
+        }, error => {
+          console.log(error);
+        });
+    })
+
   }
 
   StartWatchTest(eventID, endTime, contacts, name) {//c1FName, c1LName, c1Phone, c1Email, c2FName, c2LName, c2Phone, c2Email, c3FName, c3LName, c3Phone, c3Email) {
@@ -262,16 +391,16 @@ export class httprequest {
     body.push(name);
     return new Promise(resolve => {
       this.http.post(aws_tts_url + '/startwatch/', body)
-      .subscribe(data => {
-        console.log(data['_body']);
-        location.reload();
-       }
-        , error => {
-          console.log(error);
+        .subscribe(data => {
+          console.log(data['_body']);
           location.reload();
-      });
+        }
+          , error => {
+            console.log(error);
+            location.reload();
+          });
       resolve();
-      
+
     });
   }
 
@@ -285,18 +414,21 @@ export class httprequest {
       });
   }
 
-
   ResetPassword(user) {
-    var headers = new Headers();
-    headers.append("Accept", 'application/json');
-    headers.append('Content-Type', 'application/json');
-    const requestOptions = new RequestOptions({ headers: headers });
+    var header = new Headers();
+    header.append("Accept", 'application/json');
+    header.append('Content-Type', 'application/json');
+    this.storage.get('auth').then((auth) => {
+      header.append('AuthToken', auth);
+      header.append('SessionID', 'resetpassword');
+      const requestOpts = new RequestOptions({ headers: header });
+      this.http.post(aws_url + '/updateData/', user, requestOpts)
+        .subscribe(data => {
+          console.log(data['body']);
+        }, (error) => {
+        });
+    })
 
-    this.http.post(aws_url + '/api/resetPassword/', user)
-      .subscribe(data => {
-        console.log(data['body']);
-      }, (error) => {
-      });
   }
 
   AccountInfo() {
@@ -304,20 +436,25 @@ export class httprequest {
     if (this.data) {
       return Promise.resolve(this.data);
     }
-    let accountInfo;
     return new Promise(resolve => {
-      this.storage.get('userID').then(userid => {
-        this.http.get(aws_url + '/api/accountInfo/' + userid)
-          .map(res => res.json())
-          .subscribe(data => {
-            accountInfo = data;
-            resolve(accountInfo);
-          },
-            //On error
-            (error) => {
+      var header = new Headers();
+      this.storage.get('userID').then((userid) => {
+        this.storage.get('auth').then((auth) => {
+          header.append('AuthToken', auth);
+          header.append('SessionID', 'getaccount');
+          header.append('userID', userid);
+          const requestOpts = new RequestOptions({ headers: header });
+          this.http.get(aws_url + '/getData/', requestOpts)
+            .map(res => res.json())
+            .subscribe(data => {
+              resolve(data);
+            },
+              //On error
+              (error) => {
 
-            });
-      });
+              });
+        });
+      })
     })
   }
 
@@ -325,12 +462,16 @@ export class httprequest {
     var header = new Headers();
     header.append("Accept", 'application/json');
     header.append('Content-Type', 'application/json');
-    const requestOpts = new RequestOptions({ headers: header });
-    this.http.post(aws_url + '/api/updateAccount', accountData, requestOpts)
-      .subscribe(data => {
-        console.log(data['_body']);
-      }, error => {
-        console.log(error);
-      });
+    this.storage.get('auth').then((auth) => {
+      header.append('AuthToken', auth);
+      header.append('SessionID', 'updateaccount');
+      const requestOpts = new RequestOptions({ headers: header });
+      this.http.post(aws_url + '/updateData/', accountData, requestOpts)
+        .subscribe(data => {
+          console.log(data['_body']);
+        }, error => {
+          console.log(error);
+        });
+    })
   }
- }
+}
