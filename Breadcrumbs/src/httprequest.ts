@@ -283,6 +283,8 @@ export class httprequest {
         this.http.post(aws_url + '/updateData/', data, requestOpts)
           .subscribe(data => {
             resolve("success");
+          }, (error) => {
+            throw error;
           })
       });
     });
