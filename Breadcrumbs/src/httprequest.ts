@@ -15,8 +15,8 @@ import { Observable } from 'rxjs/Observable';
 
 
 //var aws_url = 'http://ec2-18-235-156-238.compute-1.amazonaws.com:4604'
-var aws_url = 'http://18.235.156.238:4604'
-//var aws_url = 'http://breadcrumbsapp.net:4604'
+//var aws_url = 'http://18.235.156.238:4604'
+var aws_url = 'http://breadcrumbsapp.net:4604'
 //var aws_url = 'http://18.214.215.136:4604'
 var aws_tts_url = 'http://35.174.49.106:4605'
 
@@ -273,19 +273,23 @@ export class httprequest {
   //Favorite Event
   FavoriteEvent(eventID) {
     return new Promise(resolve => {
-      const requestOpts = new RequestOptions({ headers: header });
       var header = new Headers();
       header.append("Accept", 'application/json');
       header.append('Content-Type', 'application/json')
-      var body = { 'eventID': eventID }
-      this.http.post(aws_url + '/api/favoriteEvent/', body)
-        .subscribe(data => {
-          console.log(data['_body']);
-        }, error => {
-          console.log(error);
-        });
-      resolve("Success");
-    });
+      this.storage.get('auth').then((auth) => {
+        header.append('AuthToken', auth);
+        header.append('SessionID', 'favoriteevent');
+        const requestOpts = new RequestOptions({ headers: header });
+        var body = { 'eventID': eventID }
+        this.http.post(aws_url + '/updateData/', body, requestOpts)
+          .subscribe(data => {
+            console.log(data['_body']);
+          }, error => {
+            console.log(error);
+          });
+        resolve("Success");
+      })
+    })
   }
 
   //Create User Account

@@ -262,7 +262,7 @@ export class HomePage {
   }
 
   favoriteEvent() {
-    this.request.FavoriteEvent(4);
+    this.request.FavoriteEvent(this.CurrentEvent.EventID);
   }
 }
 
