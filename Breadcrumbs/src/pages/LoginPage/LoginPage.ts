@@ -6,7 +6,7 @@ import { Storage } from '@ionic/storage';
 import { BCWorker } from '../../worker';
 import { LatLng } from '@ionic-native/google-maps';
 import { Event } from '../../datastructs';
-import { passwordPage } from '../password/password';
+import { forgotPasswordPage } from '../forgotPassword/forgotPassword';
 
 function GetEvents(worker, request, storage) {
   return new Promise(function (resolve, reject) {
@@ -141,7 +141,7 @@ export class LoginPagePage {
   }
 
   forgotPassword() {
-    this.navCtrl.push(passwordPage);
+    this.navCtrl.push(forgotPasswordPage);
   }
 
   validateUser() {
