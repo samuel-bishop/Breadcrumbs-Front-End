@@ -11,6 +11,7 @@ import {
 } from '@ionic-native/google-maps';
 import { Event } from '../../datastructs';
 import { Geolocation } from '@ionic-native/geolocation';
+import { HomePage } from '../home/home';
 
 declare var google;
 var AddEventMap;
@@ -152,33 +153,30 @@ export class addeventPage {
         "participants": this.event.value.participants
       }
       //CurrentEvent stores the last submitted event's data
-      this.storage.set('LastState', 'EventSubmit').then(() => {
-        this.request.InsertEvent(eventData).then(() => {
-          setTimeout(this.waitToInsertActiveEvent, 1000, this.request, this.alertCtrl, this.navCtrl, this.loadingCtrl, this.storage);
-        });
+      this.request.InsertEvent(eventData).then(() => {
+        setTimeout(this.waitToInsertActiveEvent, 1000, this.request, this.alertCtrl, this.navCtrl, this.loadingCtrl, this.storage);
+
       });
     }
   }
+
+  fuckthisstupidwaitshit() { location.reload();}
 
   waitToInsertActiveEvent(request, alertCtrl, navCtrl, loadingCtrl, storage) {
     let loading = loadingCtrl.create({
       content: 'Creating Event...'
     });
+
     loading.present().then(() => {
       request.RequestActiveEvent().then((data) => {
         let e = data['recordset'][0];
         request.RequestEventContacts(data['recordset'][0].EventID).then((contactData) => {
           let contacts = contactData['recordset'];
           storage.get('user').then((user) => {
-            let fname = user.FirstName + ' ' + user.LastName[0] + '.'; 
-            return new Promise(resolve => {
-              request.StartWatchTest(e.EventID, e.EndDate, contacts, fname);
-              resolve();
-            }).then(() => {
+            let fname = user.FirstName + ' ' + user.LastName[0] + '.';
+            request.StartWatchTest(e.EventID, e.EndDate, contacts, fname).then(() => {
               loading.dismiss();
-              navCtrl.pop({ animate: false });
-              location.reload();
-            });
+            })
           });
         });
       })
