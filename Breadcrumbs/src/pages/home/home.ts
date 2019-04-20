@@ -258,6 +258,10 @@ export class HomePage {
   editAccount() {
     this.navCtrl.push(editAccountPage);
   }
+
+  favoriteEvent() {
+    this.request.FavoriteEvent(4);
+  }
 }
 
 
