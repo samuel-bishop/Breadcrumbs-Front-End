@@ -59,72 +59,93 @@ export class LoginPagePage {
   }
 
   Register() {
-    //check fields to see if they are valid
-    if (this.firstName.value == "") {
-      let alert = this.alertCtrl.create({
-        title: "Attention", subTitle: "First Name field is empty", buttons: ["Ok"]
-      });
-      alert.present();
-    } else
-      if (this.lastName.value == "") {
+    this.request.GetUserID(this.username.value).then((data) => {
+      if (data['recordset'][0] != undefined && data['recordset'][0].UserID > 0) {
         let alert = this.alertCtrl.create({
-          title: "Attention", subTitle: "Last Name field is empty", buttons: ["Ok"]
+          title: "Attention", subTitle: "This username already exists", buttons: ["Ok"]
         });
         alert.present();
-      } else
-        if (this.email.value == "") {
+      }
+      else {
+        //check fields to see if they are valid
+        if (this.firstName.value == "") {
           let alert = this.alertCtrl.create({
-            title: "Attention", subTitle: "Email field is empty", buttons: ["Ok"]
+            title: "Attention", subTitle: "First Name field is empty", buttons: ["Ok"]
           });
           alert.present();
         } else
-          if (this.phonenumber.value == "") {
+          if (this.lastName.value == "") {
             let alert = this.alertCtrl.create({
-              title: "Attention", subTitle: "Phone number field is empty", buttons: ["Ok"]
+              title: "Attention", subTitle: "Last Name field is empty", buttons: ["Ok"]
             });
             alert.present();
           } else
-            if (this.username.value == "") {
+            if (this.email.value == "") {
               let alert = this.alertCtrl.create({
-                title: "Attention", subTitle: "Username field is empty", buttons: ["Ok"]
+                title: "Attention", subTitle: "Email field is empty", buttons: ["Ok"]
               });
               alert.present();
             } else
-              if (this.password.value == "") {
+              //if (this.phonenumber.value == "") {
+              //  let alert = this.alertCtrl.create({
+              //    title: "Attention", subTitle: "Phone number field is empty", buttons: ["Ok"]
+              //  });
+              //  alert.present();
+              //} else
+              if (this.username.value == "") {
                 let alert = this.alertCtrl.create({
-                  title: "Attention", subTitle: "Password field is empty", buttons: ["Ok"]
+                  title: "Attention", subTitle: "Username field is empty", buttons: ["Ok"]
                 });
                 alert.present();
-              } else { //submit data if all feilds are valid 
-    
-                let data2 = {
-                  username: this.username.value,
-                  password: this.password.value,
-                  email: this.email.value,
-                  firstname: this.firstName.value,
-                  lastname: this.lastName.value,
-                  userID: -1
-                }
-                let loading = this.loadingCtrl.create({
-                  content: 'Registering..'
-                });
-                loading.present().then(() => {
-                  this.request.CreateUser(data2).then(() => {
-                    location.reload();
+              } else
+                if (this.password.value == "") {
+                  let alert = this.alertCtrl.create({
+                    title: "Attention", subTitle: "Password field is empty", buttons: ["Ok"]
                   });
-                });
-              }
+                  alert.present();
+                } else { //submit data if all feilds are valid 
+
+                  let data2 = {
+                    username: this.username.value,
+                    password: this.password.value,
+                    email: this.email.value,
+                    firstname: this.firstName.value,
+                    lastname: this.lastName.value,
+                    userID: -1
+                  }
+                  let loading = this.loadingCtrl.create({
+                    content: 'Registering..'
+                  });
+                  loading.present().then(() => {
+                    this.request.CreateUser(data2).then(() => {
+                      location.reload();
+                    }).catch(() => {
+                      let alert = this.alertCtrl.create({
+                        title: "Attention", subTitle: "Something went wrong", buttons: ["ok"]
+                      });
+                      alert.present();
+
+                    });
+                  });
+                }
+      }
+      });
   }
 
 
   GetUser(loading) {
-    this.request.GetUser(this.username.value).then((user) => {
-      this.storage.set('user', user['recordset'][0]).then(() => {
-        this.storage.set('userID', user['recordset'][0].UserID).then(() => {
-          this.navCtrl.setRoot(HomePage);
+    this.request.GetAuth(this.username.value.toLowerCase()).then((auth) => {
+      this.storage.set('auth', auth['recordset'][0].Auth).then(() => {
+        this.request.GetUser(this.username.value.toLowerCase()).then((user) => {
+          this.storage.set('user', user['recordset'][0]).then(() => {
+            this.storage.set('userID', user['recordset'][0].UserID).then(() => {
+              loading.dismiss();
+              this.navCtrl.setRoot(HomePage);
+            })
+          });
         })
-      });
-    }).then(() => { loading.dismiss() });
+      })
+    });
   }
 
   signUp() {
@@ -146,23 +167,43 @@ export class LoginPagePage {
 
   validateUser() {
     let user = {
-      username: this.username.value,
+      username: this.username.value.toLowerCase(),
       password: this.password.value
     }
     let loading = this.loadingCtrl.create({
       content: 'Retrieving account information...'
     });
     loading.present().then(() => {
-      this.request.SignIn(user).then((isValid) => {
-        if (isValid) this.GetUser(loading);
-        else {
+
+      //need to look over this logic later
+      //(why get users information before validating user?)
+      this.request.GetUserID(user.username).then((data) => {
+        if (data['recordset'][0].UserID > 0) {
+          this.request.SignIn(user).then((isValid) => {
+            if (isValid) this.GetUser(loading);
+            else {
+              let alert = this.alertCtrl.create({
+                title: "Attention", subTitle: `Wrong Password`, buttons: ["Ok"]
+              });
+              alert.present();
+              loading.dismiss();
+            }
+          });
+        }
+        else {  
           let alert = this.alertCtrl.create({
-            title: "Attention", subTitle: `Wrong Password`, buttons: ["Ok"]
+            title: "Attention", subTitle: `Wrong Username`, buttons: ["Ok"]
           });
           alert.present();
           loading.dismiss();
         }
-      });
+      }).catch(() => {
+        let alert = this.alertCtrl.create({
+          title: "Attention", subTitle: `Wrong Username`, buttons: ["Ok"]
+        });
+        alert.present();
+        loading.dismiss();
+        });
     });
   }
 }

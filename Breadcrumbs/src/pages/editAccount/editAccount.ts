@@ -76,6 +76,7 @@ export class editAccountPage {
         {
           text: 'Confirm',
           handler: () => {
+
             let editAccountData = {
               "userID": this.userid,
               "firstName": this.editAccount.value.firstName,
@@ -83,6 +84,16 @@ export class editAccountPage {
               "phoneNumber": this.editAccount.value.phoneNumber,
               "emailAddress": this.editAccount.value.emailAddress
             }
+
+            this.storage.get('user').then((user) => {
+              this.storage.set('user', {
+                "UserName": user.UserName,
+                "FirstName": editAccountData.firstName,
+                "LastName": editAccountData.lastName,
+                "Email": editAccountData.emailAddress
+              });
+            });
+            
             this.request.UpdateAccount(editAccountData);
             this.navCtrl.pop({ animate: false });
             var alert = this.alertCtrl.create({ title: 'Success!', subTitle: 'Account has been updated.', buttons: ['Radical!'] });

@@ -51,12 +51,12 @@ export class RegisterPage {
           });
           alert.present();
         } else
-          if (this.phonenumber.value == "") {
-            let alert = this.alertCtrl.create({
-              title: "Attention", subTitle: "Phone number field is empty", buttons: ["Ok"]
-            });
-            alert.present();
-          } else
+          //if (this.phonenumber.value == "") {
+          //  let alert = this.alertCtrl.create({
+          //    title: "Attention", subTitle: "Phone number field is empty", buttons: ["Ok"]
+          //  });
+          //  alert.present();
+          //} else
             if (this.username.value == "") {
               let alert = this.alertCtrl.create({
                 title: "Attention", subTitle: "Username field is empty", buttons: ["Ok"]
@@ -77,7 +77,7 @@ export class RegisterPage {
                   "firstName": this.firstName.value,
                   "lastName": this.lastName.value,
                   "emailAddress": this.email.value,
-                  "phoneNumber": this.phonenumber.value
+                  //"phoneNumber": this.phonenumber.value
                 }
 
                 this.request.CreateUser(data2);
