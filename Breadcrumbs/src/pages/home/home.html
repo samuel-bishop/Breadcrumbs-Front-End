@@ -50,6 +50,12 @@
         <ion-icon name="finger-print"></ion-icon>
         Edit Account
       </button>
+
+      <!--<button ion-item (click)="favoriteEvent()" class="side-button">
+        <ion-icon name ="finget-print"></ion-icon>
+        Favorite Event
+      </button>-->
+
       <button ion-item menuClose (click)="logout()" class="side-button" style="color:red">Logout</button>
     </ion-list>
   </ion-content>
@@ -96,16 +102,11 @@
         <!--Buttons-->
         <ion-row>
           <ion-col style="padding-left:20px">
-            <button ion-button class="share-event-button" (click)="editEvent()">
-              <ion-icon name="create">
-              </ion-icon>
-            </button>
+            <button ion-button class="favorite-event-button" (click)="favoriteEvent()" type="button"><ion-icon name="star"></ion-icon></button>
           </ion-col>
           <ion-col></ion-col>
-          <ion-col> <button ion-button class="end-event-button" (click)="checkIn()" type="button">End Event</button></ion-col>
-          <ion-col>
-
-          </ion-col>
+          <ion-col><button ion-button class="end-event-button" (click)="checkIn()" type="button">End Event</button></ion-col>
+          <ion-col></ion-col>
           <ion-col style="padding-right:20px">
             <!--<button ion-button class="share-event-button" type="button" style="font-size:16px; font-family:'Lucida Sans'; ">
           <ion-icon name="share" style="font-size:20px">

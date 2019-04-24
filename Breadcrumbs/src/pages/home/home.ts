@@ -260,6 +260,10 @@ export class HomePage {
     this.navCtrl.push(editAccountPage);
 
   }
+
+  favoriteEvent() {
+    this.request.FavoriteEvent(this.CurrentEvent.EventID);
+  }
 }
 
 
