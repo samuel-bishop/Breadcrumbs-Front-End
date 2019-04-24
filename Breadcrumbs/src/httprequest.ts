@@ -470,10 +470,83 @@ export class httprequest {
       const requestOpts = new RequestOptions({ headers: header });
       this.http.post(aws_url + '/updateData/', accountData, requestOpts)
         .subscribe(data => {
-          console.log(data['_body']);
+          //console.log(data['_body']);
         }, error => {
           console.log(error);
         });
     })
+  }
+
+  ForgotPassword(data) {
+    return new Promise(resolve => {
+      var header = new Headers();
+      header.append("Accept", 'application/json');
+      header.append('Content-Type', 'application/json');
+      this.storage.get('auth').then((auth) => {
+        header.append('AuthToken', auth);
+        header.append('SessionID', 'forgotpassword');
+        const requestOpts = new RequestOptions({ headers: header });
+        this.http.post(aws_url + '/updateData/', data, requestOpts)
+          .subscribe(data => {
+            this.data = data;
+            //console.log("here", this.data);
+            resolve(this.data);
+          }, (error) => {
+            throw error;
+          })
+      });
+    });
+  }
+  GetUserName(data) {
+    return new Promise(resolve => {
+      var header = new Headers();
+      header.append("Accept", 'application/json');
+      header.append('Content-Type', 'application/json');
+      this.storage.get('auth').then((auth) => {
+        header.append('AuthToken', auth);
+        header.append('SessionID', 'getusername');
+        const requestOpts = new RequestOptions({ headers: header });
+        this.http.post(aws_url + '/updateData/', data, requestOpts)
+          .subscribe(data => {
+            this.data = data;
+            //console.log(this.data.toString);
+
+            resolve(this.data);
+          }, (error) => {
+            throw error;
+          })
+      });
+    });
+  }
+
+  passwordEmail(data) {
+    var header = new Headers();
+      this.http.post(aws_tts_url + '/passwordEmail/', data)
+        .subscribe(result => {
+          //console.log(result);
+
+        }, error => {
+          console.log(error);
+        });
+  }
+
+  confirmCode(data) {
+    return new Promise(resolve => {
+      var header = new Headers();
+      header.append("Accept", 'application/json');
+      header.append('Content-Type', 'application/json');
+      this.storage.get('auth').then((auth) => {
+        header.append('AuthToken', auth);
+        header.append('SessionID', 'getcode');
+        const requestOpts = new RequestOptions({ headers: header });
+        this.http.post(aws_url + '/updateData/', data, requestOpts)
+          .subscribe(data => {
+            this.data = data
+            resolve(this.data);
+          }, (error) => {
+            throw error;
+          })
+      });
+    });
   }
 }

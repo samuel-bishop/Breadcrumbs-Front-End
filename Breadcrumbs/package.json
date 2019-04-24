@@ -20,6 +20,7 @@
     "@angular/platform-browser-dynamic": "2.2.1",
     "@angular/platform-server": "2.2.1",
     "@ionic-native/core": "^4.20.0",
+    "@ionic-native/deeplinks": "^5.5.0",
     "@ionic-native/geolocation": "^4.19.0",
     "@ionic-native/google-maps": "^4.15.1",
     "@ionic/angular": "^4.0.1",
@@ -41,6 +42,7 @@
     "express": "4.16.4",
     "ionic-angular": "2.0.1",
     "ionic-native": "2.4.1",
+    "ionic-plugin-deeplinks": "1.0.19",
     "ionic-plugin-keyboard": "~2.2.1",
     "ionicons": "3.0.0",
     "moment": "^2.23.0",
@@ -87,7 +89,25 @@
       "cordova-plugin-ionic-webview": {},
       "cordova-plugin-ionic-keyboard": {},
       "cordova-plugin-console": {},
-      "ionic-plugin-keyboard": {}
+      "ionic-plugin-keyboard": {},
+      "ionic-plugin-deeplinks": {
+        "URL_SCHEME": "breadcrumbsapp",
+        "DEEPLINK_SCHEME": "https",
+        "DEEPLINK_HOST": "breadcrumpsapp.net",
+        "ANDROID_PATH_PREFIX": "/",
+        "ANDROID_2_PATH_PREFIX": "/",
+        "ANDROID_3_PATH_PREFIX": "/",
+        "ANDROID_4_PATH_PREFIX": "/",
+        "ANDROID_5_PATH_PREFIX": "/",
+        "DEEPLINK_2_SCHEME": " ",
+        "DEEPLINK_2_HOST": " ",
+        "DEEPLINK_3_SCHEME": " ",
+        "DEEPLINK_3_HOST": " ",
+        "DEEPLINK_4_SCHEME": " ",
+        "DEEPLINK_4_HOST": " ",
+        "DEEPLINK_5_SCHEME": " ",
+        "DEEPLINK_5_HOST": " "
+      }
     },
     "platforms": [
       "windows",
