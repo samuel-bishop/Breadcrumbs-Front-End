@@ -16,6 +16,7 @@ export class Event {
   public EventStartLatLng: LatLng;
   public EventEndLatLng: LatLng;
   public EventContacts: any;
+  public IsFavorite: boolean;
   public IsActive: boolean;
 
   constructor(id, name, desc, part, startdate, enddate, startlatlng, endlatlng, isActive) {

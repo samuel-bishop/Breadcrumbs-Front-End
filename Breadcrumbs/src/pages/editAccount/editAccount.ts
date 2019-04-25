@@ -27,7 +27,6 @@ export class editAccountPage {
   constructor(public navCtrl: NavController, public navParams: NavParams, public request: httprequest,
     public formBuilder: FormBuilder, public storage: Storage, public loadingCtrl: LoadingController
     , public alertCtrl: AlertController) {
-    console.log("editAccountPage loaded");
     storage.get('userID').then((data) => { this.userid = data; console.log(this.userid); });
     this.getAccountInfo();
     this.editAccount = this.formBuilder.group({
@@ -51,13 +50,11 @@ export class editAccountPage {
       //set variables from returned information
       this.accFirstName = data['recordset'][0].FirstName;
       this.accLastName = data['recordset'][0].LastName;
-      this.accPhoneNumber = data['recordset'][0].ContactPhoneNumber;
       this.accEmail = data['recordset'][0].Email;
     }).then(() => {
       loading.dismiss(); //turn off loading page
     }).catch((data) => {
       //on error
-      this.navCtrl.pop({ animate: false });
       loading.dismiss();
     });
   }
