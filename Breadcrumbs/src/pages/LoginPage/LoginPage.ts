@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, NavParams, AlertController, LoadingController, Nav, Alert } from 'ionic-angular';
+import { NavController, NavParams, AlertController, LoadingController, Nav, Alert, Platform } from 'ionic-angular';
 import { HomePage } from '../home/home';
 import { httprequest } from '../../httprequest';
 import { Storage } from '@ionic/storage';
@@ -34,8 +34,13 @@ export class LoginPagePage {
   //userValidation: User; 
   data: string;
   shouldHeight: any = document.body.clientHeight + 'px';
-
-  constructor(public navCtrl: NavController, public request: httprequest, public navParams: NavParams, public alertCtrl: AlertController, public storage: Storage, public loadingCtrl: LoadingController) { }
+  isMobile: boolean;
+  constructor(public navCtrl: NavController, public request: httprequest, public navParams: NavParams, public platform: Platform, public alertCtrl: AlertController, public storage: Storage, public loadingCtrl: LoadingController) {
+    if (platform.is('mobile')) {
+      this.isMobile = true;
+    }
+    else this.isMobile = false;
+  }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad LoginPagePage');
