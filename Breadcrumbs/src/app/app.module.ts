@@ -13,6 +13,8 @@ import { editcontactPage } from '../pages/editcontact/editcontact';
 import { passwordPage } from '../pages/password/password';
 import { editAccountPage } from '../pages/editAccount/editAccount';
 import { forgotPasswordPage } from '../pages/forgotPassword/forgotPassword';
+import { LocalNotifications } from 'ionic-native';
+
 
 @NgModule({
   declarations: [
@@ -47,6 +49,6 @@ import { forgotPasswordPage } from '../pages/forgotPassword/forgotPassword';
     editAccountPage,
     forgotPasswordPage
   ],
-  providers: [{ provide: ErrorHandler, useClass: IonicErrorHandler}, Storage]
+  providers: [{ provide: ErrorHandler, useClass: IonicErrorHandler}, Storage, LocalNotifications]
 })
 export class AppModule {}
