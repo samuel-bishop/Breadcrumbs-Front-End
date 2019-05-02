@@ -23,6 +23,7 @@
         </ion-col>
         <ion-col></ion-col>
         <ion-col><button ion-button (click)="Refresh()" style="background-color:transparent"><ion-icon name="refresh"></ion-icon></button></ion-col>
+        <ion-col><button ion-button (click)="scheduleNotification()" style="background-color:transparent">T</button></ion-col>
       </ion-row>
       <ion-row>
         <ion-col style="color:white; font-family: 'Lucida Sans'; font-size:medium">
@@ -63,7 +64,7 @@
 </ion-menu>
 <ion-nav #sidebar></ion-nav>
 
-<ion-content class="forest">
+<ion-content [class.forest]="!isMobile" [class.white]="isMobile">
 
   <ion-row *ngIf="CurrentEventExists" class="past-events-card-header">
     <ion-col></ion-col>
@@ -168,7 +169,7 @@
   </ion-row>
 
 
-    <ion-row *ngIf="PastEventExists" class="past-events-card-header">
+    <ion-row class="past-events-card-header">
       <ion-col></ion-col>
       <ion-col width-80><h1 style="text-anchor:middle; background-color:white; opacity:.7; font-size:30px; text-align:center; color:black; margin-top:-3px; margin-bottom:-3px"> Past Events </h1></ion-col>
       <ion-col></ion-col>
@@ -201,12 +202,12 @@
           </ion-row>
           <ion-row>
             <ion-col style="padding-left:20px">
-              <button ion-button class="favorite-event-button" (click)="favoriteEvent(event)" type="button"><ion-icon name="star"></ion-icon></button>
+              <button ion-button  [class.favorite-event-button]="!event.IsFavorite" [class.favorite-event-logo]="event.IsFavorite"  (click)="favoriteEvent(event)" type="button"><ion-icon name="star"></ion-icon></button>
             </ion-col>
             <ion-col></ion-col>
             <ion-col></ion-col>
             <ion-col style="padding-left:20px">
-              <button ion-button class="favorite-event-button" (click)="viewEvent(event)" type="button"><ion-icon name="information-circle"></ion-icon></button>
+              <button ion-button class.favorite-event-button="!event.IsFavorite" (click)="viewEvent(event)" type="button"><ion-icon name="information-circle"></ion-icon></button>
             </ion-col>
           </ion-row>
         </ion-card>

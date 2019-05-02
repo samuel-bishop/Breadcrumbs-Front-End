@@ -18,6 +18,8 @@ import { editAccountPage } from '../editAccount/editAccount';
 import { extractPlaceholderToIds } from '@angular/compiler/src/i18n/serializers/serializer';
 import { Location, LocationStrategy } from '@angular/common';
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
+import { LocalNotifications } from 'ionic-native';
+
 
 @Component({
   selector: 'page-home',
@@ -56,13 +58,43 @@ export class HomePage {
   LastName: any;
   Email: any;
   PastEventExists: boolean;
-
+  isMobile: boolean;
   //Constructor (called on page creation)
   constructor(public alertCtrl: AlertController, private menu: MenuController, private platform: Platform, public loadingCtrl: LoadingController, public navCtrl: NavController, public request: httprequest, public storage: Storage) {
-     
+    //check if the platform is mobile
+    if (platform.is('mobile')) {
+      this.isMobile = true;
+      //if mobile, check permissions 
+      LocalNotifications.hasPermission().then((granted) => {
+        if (!granted) {
+          LocalNotifications.registerPermission();
+        }
+      })
+      
+      // displays an alert on click of local notification
+      //LocalNotifications.on("click", (notification, state) => {
+      //  let alert = this.alertCtrl.create({
+      //    title: "Notification Clicked",
+      //    subTitle: "You just clicked the scheduled notification",
+      //    buttons: ["OK"]
+      //  });
+      //  alert.present();
+      //})
+    }
+  }
+
+  public scheduleNotification() {
+    if (this.CurrentEventExists) {
+      LocalNotifications.schedule({
+        title: `${this.CurrentEvent.EventName}`,
+        text: `${this.CurrentEvent.EventEndDate}`, 
+        at: new Date(new Date().getTime() + 5 * 1000)
+      });
+      }
   }
 
   ionViewWillLoad() {
+    
     this.storage.get('user').then((user) => {
       this.username = user.UserName;
       this.FirstName = user.FirstName;
@@ -70,6 +102,7 @@ export class HomePage {
       this.Email = user.Email;
     });
 
+  
 
 
     this.storage.get('CurrentEventExists').then((doesExists) => {
