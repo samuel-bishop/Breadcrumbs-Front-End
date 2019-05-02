@@ -174,7 +174,7 @@ export class addeventPage {
           let contacts = contactData['recordset'];
           storage.get('user').then((user) => {
             let fname = user.FirstName + ' ' + user.LastName[0] + '.';
-            request.StartWatchTest(e.EventID, e.EndDate, contacts, fname).then(() => {
+            request.StartWatchTest(e.EventID, contacts, fname, e.EndDate, e.EventName, e.EventStartDate, e.StartLat, e.StartLon, e.EndLat, e.EndLon, e.EventParticipants, e.EventDescription).then(() => {
               loading.dismiss();
             })
           });
