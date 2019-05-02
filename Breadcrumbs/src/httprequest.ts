@@ -312,6 +312,30 @@ export class httprequest {
     });
   }
 
+  DisableUser() {
+    return new Promise(resolve => {
+      this.storage.get('userID').then((userid) => {
+        //var body = { 'userID': userid };
+        var header = new Headers();
+        this.storage.get('auth').then((auth) => {
+          header.append('AuthToken', auth);
+          header.append('SessionID', 'disableuser');
+          header.append('userID', userid);
+          const requestOpts = new RequestOptions({ headers: header });
+          this.http.get(aws_url + '/updateData/', requestOpts)
+            .map(res => res.json())
+            .subscribe(data => {
+              this.data = data;
+              resolve(this.data);
+            },
+              //On Error
+              (error) => {
+              });
+        });
+      })
+    })
+  }
+
   GetUser(user: string) {
     return new Promise(resolve => {
       var header = new Headers();
