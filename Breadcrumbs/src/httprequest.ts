@@ -404,13 +404,17 @@ export class httprequest {
 
   }
 
-  StartWatchTest(eventID, endTime, contacts, name) {//c1FName, c1LName, c1Phone, c1Email, c2FName, c2LName, c2Phone, c2Email, c3FName, c3LName, c3Phone, c3Email) {
+  StartWatchTest(eventID, contacts, name, endTime, EventName, EventStartDate, StartLat, StartLon, EndLat, EndLon, EventParticipants, EventDescription) {
     var body = [];
     var contacts_array = [];
     for (let c of contacts) {
       contacts_array.push({ 'fname': c.ContactFirstName, 'lname': c.ContactLastName, 'phone': c.ContactPhoneNumber, 'email': c.ContactEmailAddress });
     }
-    body.push({ 'eventID': eventID, 'endTime': endTime });
+    body.push({
+      'eventID': eventID, 'endTime': endTime, 'eventName': EventName, 'startDate': EventStartDate,
+      'sLat': StartLat, 'sLon': StartLon, 'eLat': EndLat, 'eLon': EndLon, 'eParts': EventParticipants,
+      'eDesc': EventDescription
+    });
     body.push(contacts_array);
     body.push(name);
     return new Promise(resolve => {
