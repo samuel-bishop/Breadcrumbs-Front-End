@@ -2,7 +2,7 @@ import { Injectable, Component } from '@angular/core';
 import { Http, Headers, Request, RequestOptions } from '@angular/http';
 import { Storage } from '@ionic/storage';
 import 'rxjs/add/operator/map';
-import { AlertController, LoadingController } from 'ionic-angular';
+import { AlertController, LoadingController, Platform } from 'ionic-angular';
 import { UserService } from '../service/user.service';
 import { appGlobals } from './app/file';
 import { HomePage } from './pages/home/home';
@@ -16,7 +16,7 @@ import { Observable } from 'rxjs/Observable';
 
 //var aws_url = 'http://ec2-18-235-156-238.compute-1.amazonaws.com:4604'
 //var aws_url = 'http://18.235.156.238:4604'
-var aws_url = 'http://breadcrumbsapp.net:4604'
+var aws_url = 'https://18.214.215.136'
 //var aws_url = 'http://18.214.215.136:4604'
 var aws_tts_url = 'http://35.174.49.106:4605'
 
@@ -25,7 +25,7 @@ export class httprequest {
 
   data: Object;
 
-  constructor(public alertCtrl: AlertController, public loadingCtrl: LoadingController, public http: Http, public storage: Storage) {
+  constructor(public alertCtrl: AlertController, private platform: Platform, public loadingCtrl: LoadingController, public http: Http, public storage: Storage) {
     console.log('Hello httprequest Provider');
   }
 
