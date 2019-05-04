@@ -3,6 +3,7 @@ import { NavController, NavParams, LoadingController, AlertController, Alert } f
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { httprequest } from '../../httprequest';
 import { Storage } from '@ionic/storage';
+import { passwordPage } from '../password/password';
 
 
 /*
@@ -106,6 +107,10 @@ export class editAccountPage {
 
   cancelClick() {
     this.navCtrl.pop();
+  }
+
+  resetPassword() {
+    this.navCtrl.push(passwordPage);
   }
 
 }
