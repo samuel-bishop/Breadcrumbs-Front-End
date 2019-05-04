@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, LoadingController, AlertController, MenuController } from 'ionic-angular';
+import { NavController, LoadingController, AlertController, MenuController, Platform } from 'ionic-angular';
 import { addeventPage } from '../addevent/addevent';
 import { addcontactPage } from '../addcontact/addcontact';
 import { vieweventsPage } from '../viewevents/viewevents';
@@ -10,11 +10,16 @@ import { editeventPage } from '../editevent/editevent';
 import { editcontactPage } from '../editcontact/editcontact';
 import { LoginPagePage } from '../LoginPage/LoginPage';
 import { Event } from '../../datastructs';
-import { LatLng } from '@ionic-native/google-maps';
+import { LatLng, LocationService } from '@ionic-native/google-maps';
 import { BCWorker } from '../../worker';
 import { viewEventPage } from '../viewEvent/viewEvent';
 import { isUndefined } from 'ionic-angular/umd/util/util';
 import { editAccountPage } from '../editAccount/editAccount';
+import { extractPlaceholderToIds } from '@angular/compiler/src/i18n/serializers/serializer';
+import { Location, LocationStrategy } from '@angular/common';
+import { Diagnostic } from '@ionic-native/diagnostic/ngx';
+import { LocalNotifications } from 'ionic-native';
+
 
 @Component({
   selector: 'page-home',
@@ -42,6 +47,8 @@ export class HomePage {
 
   /* Variables */
   activeEvent: any;
+  favoriteEvents: any;
+  favoriteEventsExist: any;
   inactiveEvents: any; //A list of inactive events
   userID: any = 0; //The userid of the currently signed in user
   newEventSubmit: boolean; //A boolean to check if an event has recently been submitted
@@ -50,20 +57,53 @@ export class HomePage {
   FirstName: any;
   LastName: any;
   Email: any;
-    PastEventExists: boolean;
-
+  PastEventExists: boolean;
+  isMobile: boolean;
   //Constructor (called on page creation)
-  constructor(public alertCtrl: AlertController, private menu: MenuController, public loadingCtrl: LoadingController, public navCtrl: NavController, public request: httprequest, public storage: Storage) {
-    
+  constructor(public alertCtrl: AlertController, private menu: MenuController, private platform: Platform, public loadingCtrl: LoadingController, public navCtrl: NavController, public request: httprequest, public storage: Storage) {
+    //check if the platform is mobile
+    if (platform.is('mobile')) {
+      this.isMobile = true;
+      //if mobile, check permissions 
+      LocalNotifications.hasPermission().then((granted) => {
+        if (!granted) {
+          LocalNotifications.registerPermission();
+        }
+      })
+      
+      // displays an alert on click of local notification
+      //LocalNotifications.on("click", (notification, state) => {
+      //  let alert = this.alertCtrl.create({
+      //    title: "Notification Clicked",
+      //    subTitle: "You just clicked the scheduled notification",
+      //    buttons: ["OK"]
+      //  });
+      //  alert.present();
+      //})
+    }
+  }
+
+  public scheduleNotification() {
+    if (this.CurrentEventExists) {
+      LocalNotifications.schedule({
+        title: `${this.CurrentEvent.EventName}`,
+        text: `${this.CurrentEvent.EventEndDate}`, 
+        at: new Date(new Date().getTime() + 5 * 1000)
+      });
+      }
   }
 
   ionViewWillLoad() {
+    
     this.storage.get('user').then((user) => {
       this.username = user.UserName;
       this.FirstName = user.FirstName;
       this.LastName = user.LastName;
       this.Email = user.Email;
     });
+
+  
+
 
     this.storage.get('CurrentEventExists').then((doesExists) => {
       if (doesExists == true) {
@@ -81,6 +121,20 @@ export class HomePage {
       }
     });
 
+    this.storage.get('favoriteEvents').then((favoriteEvents) => {
+      this.favoriteEvents = [];
+      if (favoriteEvents.length != 0) {
+        for (let event of favoriteEvents) {
+          if (event != null) {
+            this.favoriteEvents.push(event);
+            this.favoriteEventsExist = true;
+          }
+        }
+      }
+    }).catch(() => {
+        this.favoriteEventsExist = false;
+    });
+
     this.storage.get('inactiveEvents').then((EventsList) => {
       this.inactiveEvents = [];
       this.PastEventExists = true;
@@ -90,6 +144,7 @@ export class HomePage {
             this.inactiveEvents.unshift(event);
           }
         }
+        this.storage.set('inactiveEvents', this.inactiveEvents);
       }
     }).catch(() => {
       this.GetInactiveEvents();
@@ -150,14 +205,14 @@ export class HomePage {
           false);
         this.inactiveEvents.unshift(newEvent);
       }
-      this.storage.set('inactiveEvents', this.inactiveEvents).then(() => { this.PastEventExists = false; location.reload(); });
+      this.storage.set('inactiveEvents', this.inactiveEvents).then(() => { this.PastEventExists = false;  });
     });
   }
 
   Refresh() {
     this.storage.remove('activeEvent');
     this.CurrentEventExists = false;
-    this.GetActiveEvent();  
+    this.GetActiveEvent();
   }
 
   FormatTime(datetime): string {
@@ -196,6 +251,7 @@ export class HomePage {
         });
       });
     });
+    LocalNotifications.cancelAll();
   }
 
   toggleExists() {
@@ -261,8 +317,24 @@ export class HomePage {
 
   }
 
-  favoriteEvent() {
-    this.request.FavoriteEvent(this.CurrentEvent.EventID);
+  arrayRemove(arr, value) {
+  return arr.filter(function (ele) {
+    return ele != value;
+  });
+
+  }
+
+  toggleBool(bool) {
+    return (bool ? false : true);
+  }
+
+  favoriteEvent(event) {
+    this.request.FavoriteEvent(event.EventID);
+    event.IsFavorite = this.toggleBool(event.IsFavorite);
+    event.IsFavorite ? this.favoriteEvents.push(event) : this.favoriteEvents = this.arrayRemove(this.favoriteEvents, event);
+    if (this.favoriteEvents.length == 0) this.favoriteEventsExist = false;
+    else this.favoriteEventsExist = true;
+    this.storage.set('favoriteEvents', this.favoriteEvents);
   }
 }
 

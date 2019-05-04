@@ -14,6 +14,11 @@ page-home {
     background-repeat: no-repeat;
   }
 
+  .white {
+    background-color: darkgrey;
+    background-size: cover;
+  }
+
   .bold {
     font-weight: bolder;
   }
@@ -43,6 +48,22 @@ page-home {
     -webkit-border-radius: 100%;
     -moz-animation: spin 2s infinite linear;
     -webkit-animation: spin 2s infinite linear;
+  }
+
+  .favorite-event-logo {
+    padding-left: 20px;
+    background-color: gold;
+    color: black;
+    font-size: 16px;
+    font-family: 'Lucida Sans';
+    box-shadow: inherit;
+    text-shadow: initial;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .ionic-logo:after {

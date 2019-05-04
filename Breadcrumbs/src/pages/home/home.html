@@ -23,6 +23,7 @@
         </ion-col>
         <ion-col></ion-col>
         <ion-col><button ion-button (click)="Refresh()" style="background-color:transparent"><ion-icon name="refresh"></ion-icon></button></ion-col>
+        <ion-col><button ion-button (click)="scheduleNotification()" style="background-color:transparent">T</button></ion-col>
       </ion-row>
       <ion-row>
         <ion-col style="color:white; font-family: 'Lucida Sans'; font-size:medium">
@@ -63,9 +64,9 @@
 </ion-menu>
 <ion-nav #sidebar></ion-nav>
 
-<ion-content class="forest">
+<ion-content [class.forest]="!isMobile" [class.white]="isMobile">
 
-  <ion-row *ngIf="CurrentEventExists"  class="past-events-card-header">
+  <ion-row *ngIf="CurrentEventExists" class="past-events-card-header">
     <ion-col></ion-col>
     <ion-col width-80><h1 style="text-anchor:middle; font-size:30px; text-align:center; color:black; margin-top:-3px; margin-bottom:-3px; background-color:white; opacity:.7"> Active Event </h1></ion-col>
     <ion-col></ion-col>
@@ -75,7 +76,7 @@
   <ion-row style="margin-bottom: -52px;">
     <ion-col> </ion-col>
     <ion-col>
-      
+
       <ion-card *ngIf="CurrentEventExists" class="event-card">
         <ion-row style="background-color:rgb(92, 138, 109); " class="event-card-header">
           <ion-col></ion-col>
@@ -102,17 +103,12 @@
         <!--Buttons-->
         <ion-row>
           <ion-col style="padding-left:20px">
-            <button ion-button class="favorite-event-button" (click)="favoriteEvent()" type="button"><ion-icon name="star"></ion-icon></button>
+            <button ion-button class="favorite-event-button" (click)="favoriteEvent(CurrentEvent)" type="button"><ion-icon name="star"></ion-icon></button>
           </ion-col>
           <ion-col></ion-col>
           <ion-col><button ion-button class="end-event-button" (click)="checkIn()" type="button">End Event</button></ion-col>
           <ion-col></ion-col>
-          <ion-col style="padding-right:20px">
-            <!--<button ion-button class="share-event-button" type="button" style="font-size:16px; font-family:'Lucida Sans'; ">
-          <ion-icon name="share" style="font-size:20px">
-          </ion-icon>
-        </button>-->
-          </ion-col>
+          <ion-col style="padding-right:20px"><button ion-button class="favorite-event-button" (click)="editEvent()" type="button"><ion-icon name="create"></ion-icon></button></ion-col>
         </ion-row>
 
       </ion-card>
@@ -129,25 +125,22 @@
     <ion-col width-10></ion-col>
   </ion-row>
 
-
-  <ion-row *ngIf="PastEventExists" class="past-events-card-header">
+  <ion-row *ngIf="favoriteEventsExist" class="past-events-card-header">
     <ion-col></ion-col>
-    <ion-col width-80><h1 style="text-anchor:middle; background-color:white; opacity:.7; font-size:30px; text-align:center; color:black; margin-top:-3px; margin-bottom:-3px"> Past Events </h1></ion-col>
+    <ion-col width-80><h1 style="text-anchor:middle; background-color:white; opacity:.7; font-size:30px; text-align:center; color:black; margin-top:-3px; margin-bottom:-3px"> Favorite Events </h1></ion-col>
     <ion-col></ion-col>
   </ion-row>
 
 
-  <ion-row *ngFor="let event of inactiveEvents">
+  <ion-row *ngFor="let event of favoriteEvents">
     <ion-col></ion-col>
     <ion-col>
-      <ion-card class="past-event-card" (click)="viewEvent(event)">
+      <ion-card class="past-event-card">
         <ion-card-header style="background-color:rgb(130, 86, 126); text-anchor:middle; color:white; font-weight:bolder; font-family:'Lucida Sans'; height:40px">
           {{event.EventName}}
         </ion-card-header>
         <ion-row>
-          <ion-col>
-            
-          </ion-col>
+          <ion-col> </ion-col>
         </ion-row>
         <ion-row style="text-align:center; font-family:'Lucida Sans'; font-size:20px; text-align:left">
           <ion-col>
@@ -161,8 +154,64 @@
             </p>
           </ion-col>
         </ion-row>
+        <ion-row>
+          <ion-col style="padding-left:20px">
+            <button ion-button class="favorite-event-button" style="background-color:gold; color: black" (click)="favoriteEvent(event)" type="button"><ion-icon name="star"></ion-icon></button>
+          </ion-col>
+          <ion-col></ion-col>
+          <ion-col></ion-col>
+          <ion-col style="padding-left:20px"><button ion-button class="favorite-event-button" (click)="editEvent()" type="button"><ion-icon name="create"></ion-icon></button></ion-col>
+
+        </ion-row>
       </ion-card>
     </ion-col>
     <ion-col></ion-col>
   </ion-row>
+
+
+    <ion-row class="past-events-card-header">
+      <ion-col></ion-col>
+      <ion-col width-80><h1 style="text-anchor:middle; background-color:white; opacity:.7; font-size:30px; text-align:center; color:black; margin-top:-3px; margin-bottom:-3px"> Past Events </h1></ion-col>
+      <ion-col></ion-col>
+    </ion-row>
+
+
+    <ion-row *ngFor="let event of inactiveEvents">
+      <ion-col></ion-col>
+      <ion-col>
+        <ion-card class="past-event-card">
+          <ion-card-header style="background-color:grey; text-anchor:middle; color:white; font-weight:bolder; font-family:'Lucida Sans'; height:40px">
+            {{event.EventName}}
+          </ion-card-header>
+          <ion-row>
+            <ion-col>
+
+            </ion-col>
+          </ion-row>
+          <ion-row style="text-align:center; font-family:'Lucida Sans'; font-size:20px; text-align:left">
+            <ion-col>
+              <h2 class="bold"> Description: </h2>
+              <p style="font-size: 16px; font-family:'Lucida Sans'; text-align:left">
+                {{event.EventDesc}}
+              </p>
+              <h2 class="bold">Participants</h2>
+              <p style="font-size: 16px; font-family:'Lucida Sans'; text-align:left">
+                {{event.EventParticipants}}
+              </p>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col style="padding-left:20px">
+              <button ion-button  [class.favorite-event-button]="!event.IsFavorite" [class.favorite-event-logo]="event.IsFavorite"  (click)="favoriteEvent(event)" type="button"><ion-icon name="star"></ion-icon></button>
+            </ion-col>
+            <ion-col></ion-col>
+            <ion-col></ion-col>
+            <ion-col style="padding-left:20px">
+              <button ion-button class.favorite-event-button="!event.IsFavorite" (click)="viewEvent(event)" type="button"><ion-icon name="information-circle"></ion-icon></button>
+            </ion-col>
+          </ion-row>
+        </ion-card>
+      </ion-col>
+      <ion-col></ion-col>
+    </ion-row>
 </ion-content>

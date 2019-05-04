@@ -12,6 +12,7 @@ import {
 import { Event } from '../../datastructs';
 import { Geolocation } from '@ionic-native/geolocation';
 import { HomePage } from '../home/home';
+import { LocalNotifications } from 'ionic-native';
 
 declare var google;
 var AddEventMap;
@@ -151,36 +152,77 @@ export class addeventPage {
         "endDate": EndDateISO,
         "contactsList": contactsListString,
         "participants": this.event.value.participants
-      }
+      }      
       //CurrentEvent stores the last submitted event's data
       this.request.InsertEvent(eventData).then(() => {
-        setTimeout(this.waitToInsertActiveEvent, 1000, this.request, this.alertCtrl, this.navCtrl, this.loadingCtrl, this.storage);
-
+        setTimeout(this.waitToInsertActiveEvent, 1000, this.request, this.alertCtrl, this.navCtrl, this.loadingCtrl, this.storage, this.event.value.name, endDate);
       });
     }
   }
 
+  public set_notifications(endDate: Date, eventName: String) {
+
+
+    }
+
   fuckthisstupidwaitshit() { location.reload();}
 
-  waitToInsertActiveEvent(request, alertCtrl, navCtrl, loadingCtrl, storage) {
+  waitToInsertActiveEvent(request, alertCtrl, navCtrl, loadingCtrl, storage, eventName, endDate: Date) {
     let loading = loadingCtrl.create({
       content: 'Creating Event...'
     });
 
     loading.present().then(() => {
       request.RequestActiveEvent().then((data) => {
-        let e = data['recordset'][0];
-        request.RequestEventContacts(data['recordset'][0].EventID).then((contactData) => {
+        let event = data['recordset'][0];
+        request.RequestEventContacts(event.EventID).then((contactData) => {
           let contacts = contactData['recordset'];
           storage.get('user').then((user) => {
             let fname = user.FirstName + ' ' + user.LastName[0] + '.';
-            request.StartWatchTest(e.EventID, e.EndDate, contacts, fname).then(() => {
+            request.StartWatchTest(event.EventID, event.EndDate, contacts, fname).then(() => {
+              //let date = new Date(endDate.getTime() - 18000 * 1000);
+              let date = new Date(endDate.setHours(endDate.getHours() + 7));
+              //set a 5 minute reminder
+              LocalNotifications.schedule({
+                title: `${eventName}`,
+                text: `${endDate}`,
+                at: new Date(date.getTime() - 300 * 1000)
+              });
               loading.dismiss();
+            }).catch(() => {
+              location.reload();
             })
           });
         });
-      })
+      }).catch(() => {
+        request.RequestActiveEvent().then((data2) => {
+          let event = data2['recordset'][0];
+          request.RequestEventContacts(event.EventID).then((contactData) => {
+            let contacts = contactData['recordset'];
+            storage.get('user').then((user) => {
+              let fname = user.FirstName + ' ' + user.LastName[0] + '.';
+              request.StartWatchTest(event.EventID, event.EndDate, contacts, fname).then(() => {
+                //let date = new Date(endDate.getTime() - 18000 * 1000);
+                let date = new Date(endDate.setHours(endDate.getHours() + 7));
+                //set a 5 minute reminder
+                LocalNotifications.schedule({
+                  title: `${eventName}`,
+                  text: `${endDate}`,
+                  at: new Date(date.getTime() - 300 * 1000)
+                });
+                loading.dismiss();
+              }).catch(() => {
+                location.reload();
+              })
+            });
+          });
+        });
+      });
     });
+  }
+
+  SetupWatch(loading, event, request, alertCtrl, navCtrl, loadingCtrl, storage, eventName, endDate: Date) {
+   
   }
 
   selectSearchResult(item) {
