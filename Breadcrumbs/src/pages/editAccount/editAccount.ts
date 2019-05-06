@@ -101,8 +101,11 @@ export class editAccountPage {
     alert.present();
   }
 
+  disableUser() {
+    this.request.DisableUser();
+  }
+
   cancelClick() {
     this.navCtrl.pop();
   }
-
 }
