@@ -174,20 +174,14 @@ export class addeventPage {
 
     loading.present().then(() => {
       request.RequestActiveEvent().then((data) => {
-        let e = data['recordset'][0];
-        request.RequestEventContacts(data['recordset'][0].EventID).then((contactData) => {
+        let event = data['recordset'][0];
+        request.RequestEventContacts(event.EventID).then((contactData) => {
           let contacts = contactData['recordset'];
-          //let d3 = new Date(endDate);
-          //d3.setMinutes(d3.getMinutes() - 5);
           storage.get('user').then((user) => {
             let fname = user.FirstName + ' ' + user.LastName[0] + '.';
-            request.StartWatchTest(e.EventID, e.EndDate, contacts, fname).then(() => {
+            request.StartWatchTest(event.EventID, event.EndDate, contacts, fname).then(() => {
               //let date = new Date(endDate.getTime() - 18000 * 1000);
               let date = new Date(endDate.setHours(endDate.getHours() + 7));
-              let alert = alertCtrl.create({
-                title: "Attention", subTitle: `end: ${date}, current: ${new Date()}, new_d: ${new Date(date.getTime() - 300 * 1000)} `, buttons: ["Ok"]
-              });
-              alert.present();
               //set a 5 minute reminder
               LocalNotifications.schedule({
                 title: `${eventName}`,
@@ -195,11 +189,40 @@ export class addeventPage {
                 at: new Date(date.getTime() - 300 * 1000)
               });
               loading.dismiss();
+            }).catch(() => {
+              location.reload();
             })
           });
         });
-      })
+      }).catch(() => {
+        request.RequestActiveEvent().then((data2) => {
+          let event = data2['recordset'][0];
+          request.RequestEventContacts(event.EventID).then((contactData) => {
+            let contacts = contactData['recordset'];
+            storage.get('user').then((user) => {
+              let fname = user.FirstName + ' ' + user.LastName[0] + '.';
+              request.StartWatchTest(event.EventID, event.EndDate, contacts, fname).then(() => {
+                //let date = new Date(endDate.getTime() - 18000 * 1000);
+                let date = new Date(endDate.setHours(endDate.getHours() + 7));
+                //set a 5 minute reminder
+                LocalNotifications.schedule({
+                  title: `${eventName}`,
+                  text: `${endDate}`,
+                  at: new Date(date.getTime() - 300 * 1000)
+                });
+                loading.dismiss();
+              }).catch(() => {
+                location.reload();
+              })
+            });
+          });
+        });
+      });
     });
+  }
+
+  SetupWatch(loading, event, request, alertCtrl, navCtrl, loadingCtrl, storage, eventName, endDate: Date) {
+   
   }
 
   selectSearchResult(item) {

@@ -251,6 +251,7 @@ export class HomePage {
         });
       });
     });
+    LocalNotifications.cancelAll();
   }
 
   toggleExists() {

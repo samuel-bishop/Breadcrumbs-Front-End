@@ -94,7 +94,6 @@
     <plugin name="cordova-plugin-console" spec="~1.0.5" />
     <plugin name="ionic-plugin-keyboard" spec="~2.2.1" />
     <engine name="windows" spec="^6.0.1" />
-    <engine name="browser" spec="5.0.4" />
     <plugin name="ionic-plugin-deeplinks" spec="1.0.19">
         <variable name="URL_SCHEME" value="breadcrumbsapp" />
         <variable name="DEEPLINK_SCHEME" value="https" />
@@ -115,4 +114,5 @@
     </plugin>
     <plugin name="cordova-plugin-android-permissions" spec="~1.0.0" />
     <plugin name="cordova-plugin-app-event" spec="~1.2.1" />
+    <engine name="browser" spec="~5.0.4" />
 </widget>
