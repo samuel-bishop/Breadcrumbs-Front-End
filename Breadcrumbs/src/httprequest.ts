@@ -16,7 +16,8 @@ import { Observable } from 'rxjs/Observable';
 
 //var aws_url = 'http://ec2-18-235-156-238.compute-1.amazonaws.com:4604'
 //var aws_url = 'http://18.235.156.238:4604'
-var aws_url = 'https://18.214.215.136'
+//var aws_url = 'https://18.214.215.136'
+var aws_url = 'https://www.breadcrumbsapp.net'
 //var aws_url = 'http://18.214.215.136:4604'
 var aws_tts_url = 'http://35.174.49.106:4605'
 
@@ -313,28 +314,70 @@ export class httprequest {
   }
 
   DisableUser() {
-    return new Promise(resolve => {
-      this.storage.get('userID').then((userid) => {
-        //var body = { 'userID': userid };
-        var header = new Headers();
-        this.storage.get('auth').then((auth) => {
-          header.append('AuthToken', auth);
-          header.append('SessionID', 'disableuser');
-          header.append('userID', userid);
-          const requestOpts = new RequestOptions({ headers: header });
-          this.http.get(aws_url + '/updateData/', requestOpts)
-            .map(res => res.json())
-            .subscribe(data => {
-              this.data = data;
-              resolve(this.data);
-            },
-              //On Error
-              (error) => {
-              });
-        });
+    var header = new Headers();
+    header.append("Accept", 'application/json');
+    header.append('Content-Type', 'application/json');
+    this.storage.get('userID').then((userid) => {
+      this.storage.get('auth').then((auth) => {
+        header.append('AuthToken', auth);
+        header.append('SessionID', 'disableuser');
+        const requestOpts = new RequestOptions({ headers: header });
+        let user = { userid: userid }
+        this.http.post(aws_url + '/updateData/', user, requestOpts)
+          .subscribe(data => {
+            console.log(data['_body']);
+          }, error => {
+            console.log(error);
+          });
       })
     })
   }
+
+  //DisableUser() {
+  //  return new Promise(resolve => {
+  //    var header = new Headers();
+  //    this.storage.get('userID').then((userid) => {
+  //      this.storage.get('auth').then((auth) => {
+  //        header.append('AuthToken', auth);
+  //        header.append('SessionID', 'disableevent');
+  //        header.append('userID', userid);
+  //        const requestOpts = new RequestOptions({ headers: header });
+  //        var body = { 'userID': this.storage.get('userID') }
+  //        this.http.post(aws_url + '/updateData/', requestOpts)
+  //          .subscribe(data => {
+  //            console.log(data['_body']);
+  //          }, error => {
+  //            console.log(error);
+  //          });
+  //        resolve("Success");
+  //      });
+  //    })
+  //  })
+  //}
+
+  //DisableUser() {
+  //  return new Promise(resolve => {
+  //    this.storage.get('userID').then((userid) => {
+  //      //var body = { 'userID': userid };
+  //      var header = new Headers();
+  //      this.storage.get('auth').then((auth) => {
+  //        header.append('AuthToken', auth);
+  //        header.append('SessionID', 'disableuser');
+  //        header.append('userID', userid);
+  //        const requestOpts = new RequestOptions({ headers: header });
+  //        this.http.get(aws_url + '/updateData/', requestOpts)
+  //          .map(res => res.json())
+  //          .subscribe(data => {
+  //            this.data = data;
+  //            resolve(this.data);
+  //          },
+  //            //On Error
+  //            (error) => {
+  //            });
+  //      });
+  //    })
+  //  })
+  //}
 
   GetUser(user: string) {
     return new Promise(resolve => {
