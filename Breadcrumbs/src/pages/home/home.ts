@@ -58,12 +58,17 @@ export class HomePage {
 
   //Constructor (called on page creation)
   constructor(public alertCtrl: AlertController, public modalCtrl: ModalController, private menu: MenuController, private platform: Platform, public loadingCtrl: LoadingController, public navCtrl: NavController, public request: httprequest, public storage: Storage) {
-    
+    let loading = loadingCtrl.create({
+      content: 'Loading event information..'
+    });
+    loading.present();
     //check if there is a network connection
     this.GetInactiveEvents();
-
+    this.GetFavoriteEvents(loading);
     //check if the platform is mobile
-    if (platform.is('mobile')) {
+    if (platform.is('mobile'))
+    {
+
       this.isMobile = true;
       //if mobile, check permissions 
       LocalNotifications.hasPermission().then((granted) => {
@@ -84,6 +89,7 @@ export class HomePage {
       //  alert.present();
       //})
     }
+    
   }
 
   public scheduleNotification() {
@@ -132,6 +138,7 @@ export class HomePage {
     });
 
     this.storage.get('favoriteEvents').then((favoriteEvents) => {
+      this.favoriteEventsExist = false;
       this.favoriteEvents = [];
       if (favoriteEvents.length != 0) {
         for (let event of favoriteEvents) {
@@ -142,7 +149,7 @@ export class HomePage {
         }
       }
     }).catch(() => {
-        this.favoriteEventsExist = false;
+      this.GetFavoriteEvents();
     });
 
   }
@@ -203,9 +210,34 @@ export class HomePage {
           new LatLng(event.StartLat, event.Startlon), 
           new LatLng(event.EndLat, event.EndLon),
           false);
+        newEvent.IsFavorite = event.IsFavorite;
         this.inactiveEvents.unshift(newEvent);
       }
       this.storage.set('inactiveEvents', this.inactiveEvents).then(() => { this.PastEventExists = false;  });
+    });
+  }
+
+  GetFavoriteEvents(loading) {
+    this.request.RequestFavoriteEvents().then((data) => {
+      this.favoriteEvents = [];
+      let dataset = data['recordset'];
+      for (let event of dataset) {
+        let newEvent = new Event
+          (event.EventID,
+          event.EventName,
+          event.EventDescription,
+          event.EventParticipants,
+          event.EventStartDate,
+          event.EndDate,
+          new LatLng(event.StartLat, event.Startlon),
+          new LatLng(event.EndLat, event.EndLon),
+          false);
+        newEvent.IsFavorite = event.IsFavorite;
+        this.favoriteEvents.unshift(newEvent);
+      }
+      this.storage.set('favoriteEvents', this.favoriteEvents).then(() => {
+      this.favoriteEventsExist = false; loading.dismiss();
+   });
     });
   }
 

@@ -162,6 +162,30 @@ export class httprequest {
     })
   }
 
+  RequestFavoriteEvents() {
+    if (this.data) {
+      return Promise.resolve(this.data);
+    }
+    return new Promise(resolve => {
+      this.storage.get('userID').then((userid) => {
+        //var body = { 'userID': userid };
+        this.storage.get('auth').then((auth) => {
+          var header = new Headers();
+          header.append('AuthToken', auth);
+          header.append('SessionID', 'getfavoriteevents')
+          header.append('userID', userid);
+          var requestOpts = new RequestOptions({ headers: header });
+          this.http.get(aws_url + '/getData/', requestOpts)
+            .map(res => res.json())
+            .subscribe(data => {
+              this.data = data;
+              resolve(this.data);
+            });
+        });
+      });
+    })
+  }
+
   RequestEvents() {
     if (this.data) {
       return Promise.resolve(this.data);
@@ -249,6 +273,25 @@ export class httprequest {
     })
   }
 
+  DisableUser() {
+    var header = new Headers();
+    header.append("Accept", 'application/json');
+    header.append('Content-Type', 'application/json');
+    this.storage.get('userID').then((userid) => {
+      this.storage.get('auth').then((auth) => {
+        header.append('AuthToken', auth);
+        header.append('SessionID', 'disableuser');
+        const requestOpts = new RequestOptions({ headers: header });
+        let user = { userid: userid }
+        this.http.post(aws_url + '/updateData/', user, requestOpts)
+          .subscribe(data => {
+            console.log(data['_body']);
+          }, error => {
+            console.log(error);
+          });
+      })
+    })
+  }
   DisableEvent(eventID) {
     return new Promise(resolve => {
       var header = new Headers();

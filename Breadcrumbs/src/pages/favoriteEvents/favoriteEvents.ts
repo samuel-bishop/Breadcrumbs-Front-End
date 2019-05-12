@@ -64,10 +64,23 @@ export class favoriteEventsPage {
 
   favoriteEvent(event) {
     this.storage.get('activeEvent').then((currentEvent) => {
-      if (event.EventID == currentEvent.EventID) {
-        currentEvent.IsFavorite = this.toggleBool(currentEvent.IsFavorite);
-        this.request.FavoriteEvent(event.EventID);
-        this.storage.set('activeEvent', currentEvent);
+      if (currentEvent != null) {
+        if (event.EventID == currentEvent.EventID) {
+          currentEvent.IsFavorite = this.toggleBool(currentEvent.IsFavorite);
+          this.request.FavoriteEvent(event.EventID);
+          this.storage.set('activeEvent', currentEvent);
+        }
+        else {
+          this.request.FavoriteEvent(event.EventID);
+          event.IsFavorite = this.toggleBool(event.IsFavorite);
+          this.inactiveEvents = this.arrayRemove(this.inactiveEvents, event);
+          this.inactiveEvents.push(event);
+          event.IsFavorite ? this.favoriteEvents.push(event) : this.favoriteEvents = this.arrayRemove(this.favoriteEvents, event);
+          if (this.favoriteEvents.length == 0) this.favoriteEventsExist = false;
+          else this.favoriteEventsExist = true;
+          this.storage.set('inactiveEvents', this.inactiveEvents);
+          this.storage.set('favoriteEvents', this.favoriteEvents);
+        }
       }
       else {
         this.request.FavoriteEvent(event.EventID);
