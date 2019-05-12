@@ -1,24 +1,18 @@
-import { Component, ViewChild } from '@angular/core';
-import { NavController, LoadingController, AlertController, MenuController, Platform } from 'ionic-angular';
+import { Component, ViewChild, ElementRef } from '@angular/core';
+import { NavController, LoadingController, AlertController, MenuController, Platform, ModalController } from 'ionic-angular';
 import { addeventPage } from '../addevent/addevent';
 import { addcontactPage } from '../addcontact/addcontact';
 import { vieweventsPage } from '../viewevents/viewevents';
 import { httprequest } from '../../httprequest';
 import { Storage } from '@ionic/storage';
-import { Response, Request } from '@angular/http';
-import { editeventPage } from '../editevent/editevent';
 import { editcontactPage } from '../editcontact/editcontact';
 import { LoginPagePage } from '../LoginPage/LoginPage';
 import { Event } from '../../datastructs';
-import { LatLng, LocationService } from '@ionic-native/google-maps';
-import { BCWorker } from '../../worker';
+import { LatLng, GoogleMap } from '@ionic-native/google-maps';
 import { viewEventPage } from '../viewEvent/viewEvent';
-import { isUndefined } from 'ionic-angular/umd/util/util';
 import { editAccountPage } from '../editAccount/editAccount';
-import { extractPlaceholderToIds } from '@angular/compiler/src/i18n/serializers/serializer';
-import { Location, LocationStrategy } from '@angular/common';
-import { Diagnostic } from '@ionic-native/diagnostic/ngx';
-import { LocalNotifications } from 'ionic-native';
+import { LocalNotifications, Network } from 'ionic-native';
+import { favoriteEventsPage } from '../favoriteEvents/favoriteEvents';
 
 
 @Component({
@@ -40,11 +34,9 @@ export class HomePage {
   EventDescription: any;
   EventParticipants: any;
   EventEndDate: any;
-  PastEvent: any;
-  PastEventName: any;
-  PastEventDescription: any;
-  PastEventParticipants: any;
-
+  EventStartDate: any;
+  EventEndDateFormatted: any;
+  EventStartDateFormatted: any;
   /* Variables */
   activeEvent: any;
   favoriteEvents: any;
@@ -54,13 +46,22 @@ export class HomePage {
   newEventSubmit: boolean; //A boolean to check if an event has recently been submitted
   CurrentEvent: Event; //A local store of the newly created event
   CurrentEventExists: boolean; //A boolean for the UI to know if theres an Active Event
+  CurrentEventIsFavorited: boolean;
   FirstName: any;
   LastName: any;
   Email: any;
   PastEventExists: boolean;
   isMobile: boolean;
+  gmap: GoogleMap;
+
+  @ViewChild('EventMap') EventMapRef: ElementRef;
+
   //Constructor (called on page creation)
-  constructor(public alertCtrl: AlertController, private menu: MenuController, private platform: Platform, public loadingCtrl: LoadingController, public navCtrl: NavController, public request: httprequest, public storage: Storage) {
+  constructor(public alertCtrl: AlertController, public modalCtrl: ModalController, private menu: MenuController, private platform: Platform, public loadingCtrl: LoadingController, public navCtrl: NavController, public request: httprequest, public storage: Storage) {
+    
+    //check if there is a network connection
+    this.GetInactiveEvents();
+
     //check if the platform is mobile
     if (platform.is('mobile')) {
       this.isMobile = true;
@@ -70,6 +71,8 @@ export class HomePage {
           LocalNotifications.registerPermission();
         }
       })
+
+
       
       // displays an alert on click of local notification
       //LocalNotifications.on("click", (notification, state) => {
@@ -94,16 +97,12 @@ export class HomePage {
   }
 
   ionViewWillLoad() {
-    
     this.storage.get('user').then((user) => {
       this.username = user.UserName;
       this.FirstName = user.FirstName;
       this.LastName = user.LastName;
       this.Email = user.Email;
     });
-
-  
-
 
     this.storage.get('CurrentEventExists').then((doesExists) => {
       if (doesExists == true) {
@@ -114,6 +113,17 @@ export class HomePage {
           this.EventDescription = this.CurrentEvent.EventDesc;
           this.EventParticipants = this.CurrentEvent.EventParticipants;
           this.EventEndDate = this.CurrentEvent.EventEndDate;
+          this.EventStartDate = this.CurrentEvent.EventStartDate;
+          let EndDate = new Date(this.EventEndDate);
+          //this.EventEndDateFormatted = new Date(EndDate.getTime() - EndDate.getTimezoneOffset() * 60000);
+          this.EventEndDateFormatted = this.FormatTime(EndDate);
+          let StartDate = new Date(this.EventStartDate);
+          this.EventStartDateFormatted = this.FormatTime(StartDate);
+          //this.EventStartDateFormatted= new Date((StartDate.getTime() - StartDate.getTimezoneOffset() * 60000)).toISOString();
+
+          this.storage.get('currentEventIsFavorited').then((bool) => {
+            this.CurrentEventIsFavorited = bool;
+          })
         })
       }
       else {
@@ -135,20 +145,6 @@ export class HomePage {
         this.favoriteEventsExist = false;
     });
 
-    this.storage.get('inactiveEvents').then((EventsList) => {
-      this.inactiveEvents = [];
-      this.PastEventExists = true;
-      if (EventsList.length != 0) {
-        for (let event of EventsList) {
-          if (event != null) {
-            this.inactiveEvents.unshift(event);
-          }
-        }
-        this.storage.set('inactiveEvents', this.inactiveEvents);
-      }
-    }).catch(() => {
-      this.GetInactiveEvents();
-    });
   }
 
   GetActiveEvent() {
@@ -164,17 +160,21 @@ export class HomePage {
           event.EventName,
           event.EventDescription,
           event.EventParticipants,
-          this.FormatTime(StartDateISO),
-          this.FormatTime(EndDateISO),
+          //this.FormatTime(StartDateISO),
+          //this.FormatTime(EndDateISO),
+          event.EventStartDate,
+          event.EndDate,
           new LatLng(event.StartLat, event.StartLon),
           new LatLng(event.EndLat, event.EndLon),
           true);
-
+        newEvent.IsFavorite = event.IsFavorite;
+        this.CurrentEventIsFavorited = event.IsFavorite;
         this.CurrentEvent = newEvent;
         this.EventName = this.CurrentEvent.EventName;
         this.EventDescription = this.CurrentEvent.EventDesc;
         this.EventParticipants = this.CurrentEvent.EventParticipants;
         this.EventEndDate = this.CurrentEvent.EventEndDate;
+        this.CurrentEventIsFavorited = this.CurrentEvent.IsFavorite;
         this.storage.set('activeEvent', newEvent).then(() => {
           this.storage.set('CurrentEventExists', true);
           this.CurrentEventExists = true;
@@ -200,7 +200,7 @@ export class HomePage {
           event.EventParticipants,
           event.EventStartDate,
           event.EndDate,
-          new LatLng(event.StartLat, event.Startlon),
+          new LatLng(event.StartLat, event.Startlon), 
           new LatLng(event.EndLat, event.EndLon),
           false);
         this.inactiveEvents.unshift(newEvent);
@@ -275,6 +275,10 @@ export class HomePage {
     })
   }
 
+  viewFavoriteEvents() {
+    this.navCtrl.push(favoriteEventsPage);
+  }
+
   viewPastEvents() {
     this.navCtrl.push(vieweventsPage, {}, { animate: false });
   }
@@ -318,10 +322,9 @@ export class HomePage {
   }
 
   arrayRemove(arr, value) {
-  return arr.filter(function (ele) {
-    return ele != value;
-  });
-
+    return arr.filter(function (ele) {
+      return ele.EventID != value.EventID;
+    });
   }
 
   toggleBool(bool) {
@@ -329,13 +332,30 @@ export class HomePage {
   }
 
   favoriteEvent(event) {
-    this.request.FavoriteEvent(event.EventID);
-    event.IsFavorite = this.toggleBool(event.IsFavorite);
-    event.IsFavorite ? this.favoriteEvents.push(event) : this.favoriteEvents = this.arrayRemove(this.favoriteEvents, event);
-    if (this.favoriteEvents.length == 0) this.favoriteEventsExist = false;
-    else this.favoriteEventsExist = true;
-    this.storage.set('favoriteEvents', this.favoriteEvents);
+    this.storage.get('activeEvent').then((currentEvent) => {
+      if (event.EventID == currentEvent.EventID) {
+        currentEvent.IsFavorite = this.toggleBool(currentEvent.IsFavorite);
+        this.request.FavoriteEvent(currentEvent.EventID);
+        this.storage.set('activeEvent', currentEvent);
+        this.CurrentEventIsFavorited = this.toggleBool(this.CurrentEventIsFavorited);
+        this.storage.set('currentEventIsFavorited', this.CurrentEventIsFavorited);
+        this.CurrentEventIsFavorited ? this.favoriteEvents.push(this.CurrentEvent) : this.favoriteEvents = this.arrayRemove(this.favoriteEvents, this.CurrentEvent);
+        this.storage.set('favoriteEvents', this.favoriteEvents);
+      }
+      else {
+        this.request.FavoriteEvent(event.EventID);
+        event.IsFavorite = this.toggleBool(event.IsFavorite);
+        this.inactiveEvents = this.arrayRemove(this.inactiveEvents, event);
+        this.inactiveEvents.push(event);
+        event.IsFavorite ? this.favoriteEvents.push(event) : this.favoriteEvents = this.arrayRemove(this.favoriteEvents, event);
+        if (this.favoriteEvents.length == 0) this.favoriteEventsExist = false;
+        else this.favoriteEventsExist = true;
+        this.storage.set('inactiveEvents', this.inactiveEvents);
+        this.storage.set('favoriteEvents', this.favoriteEvents);
+      }
+    });
   }
+
 }
 
 

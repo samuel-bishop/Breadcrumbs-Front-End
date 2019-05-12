@@ -14,6 +14,7 @@ import { passwordPage } from '../pages/password/password';
 import { editAccountPage } from '../pages/editAccount/editAccount';
 import { forgotPasswordPage } from '../pages/forgotPassword/forgotPassword';
 import { LocalNotifications } from 'ionic-native';
+import { favoriteEventsPage } from '../pages/favoriteEvents/favoriteEvents';
 
 
 @NgModule({
@@ -29,7 +30,8 @@ import { LocalNotifications } from 'ionic-native';
     RegisterPage,
     passwordPage,
     editAccountPage,
-    forgotPasswordPage
+    forgotPasswordPage,
+    favoriteEventsPage
   ],
   imports: [
     IonicModule.forRoot(MyApp),
@@ -47,7 +49,8 @@ import { LocalNotifications } from 'ionic-native';
     editcontactPage,
     passwordPage,
     editAccountPage,
-    forgotPasswordPage
+    forgotPasswordPage,
+    favoriteEventsPage
   ],
   providers: [{ provide: ErrorHandler, useClass: IonicErrorHandler}, Storage, LocalNotifications]
 })
