@@ -23,6 +23,11 @@ page-home {
     background-size: cover;
   }
 
+  .bridge {
+    background-image: linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.4)),url(../../assets/bridge.jpeg);
+    background-size: cover;
+  }
+
   .button-float-right {
     z-index: 12;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);

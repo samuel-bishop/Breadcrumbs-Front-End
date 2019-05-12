@@ -137,7 +137,8 @@ export class HomePage {
       }
     });
 
-    this.storage.get('favoriteEvents').then((favoriteEvents) => {
+    let loading = this.loadingCtrl.create({ content: 'Loading favorite events..' });
+    this.storage.get('favoriteEvents').then((favoriteEvents) => { 
       this.favoriteEventsExist = false;
       this.favoriteEvents = [];
       if (favoriteEvents.length != 0) {
@@ -149,7 +150,8 @@ export class HomePage {
         }
       }
     }).catch(() => {
-      this.GetFavoriteEvents();
+      //loading.present();
+      this.GetFavoriteEvents(loading);
     });
 
   }

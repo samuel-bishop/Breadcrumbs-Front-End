@@ -1,4 +1,4 @@
-import { NavController, NavParams, LoadingController, AlertController } from 'ionic-angular';
+import { NavController, NavParams, LoadingController, AlertController, Platform } from 'ionic-angular';
 import { Component } from '@angular/core';
 import { httprequest } from '../../httprequest';
 import { Storage } from '@ionic/storage';
@@ -14,11 +14,16 @@ export class vieweventsPage {
   inactiveEvents: any;
   inactiveEventsContacts: any;
     favoriteEvents: any;
-    favoriteEventsExist: boolean;
-  constructor(public loadingCtrl: LoadingController, public navCtrl: NavController, public navParams: NavParams, public request: httprequest, public storage: Storage, public alertCtrl: AlertController) {
+  favoriteEventsExist: boolean;
+  isMobile: boolean;
+  constructor(public loadingCtrl: LoadingController, public navCtrl: NavController, public platform: Platform, public navParams: NavParams, public request: httprequest, public storage: Storage, public alertCtrl: AlertController) {
   }
 
   ionViewWillEnter() {
+    if (this.platform.is('mobile')) {
+      this.isMobile = true;      
+    }
+    else this.isMobile = false;
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     //Put the user's inactive events into local storage
