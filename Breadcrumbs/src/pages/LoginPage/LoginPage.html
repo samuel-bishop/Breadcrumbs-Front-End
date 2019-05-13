@@ -62,14 +62,14 @@
       </ion-col>
       <ion-col>
         <!--4x3-->
-        <button *ngIf="isRegister" ion-button full (click)="Register()">Confirm</button>
-        <button *ngIf="!isRegister" ion-button full (click)="initialClick()">Sign In</button>
+        <button *ngIf="isRegister && isConnected" ion-button full (click)="Register()">Confirm</button>
+        <button *ngIf="!isRegister && isConnected" ion-button full (click)="initialClick()">Sign In</button>
         <button class="forgot-pwd">forgot username?</button>
       </ion-col>
       <ion-col>
         <!--4x4-->
-        <button *ngIf="isRegister" ion-button full (click)="cancelRegister()">Cancel</button>
-        <button *ngIf="!isRegister" ion-button full (click)="signUp()">Register</button>
+        <button *ngIf="isRegister && isConnected" ion-button full (click)="cancelRegister()">Cancel</button>
+        <button *ngIf="!isRegister && isConnected" ion-button full (click)="signUp()">Register</button>
         <button class="forgot-pwd" (click)="forgotPassword()">forgot password?</button>
       </ion-col>
       <ion-col>

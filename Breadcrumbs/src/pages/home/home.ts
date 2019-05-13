@@ -53,17 +53,30 @@ export class HomePage {
   PastEventExists: boolean;
   isMobile: boolean;
   gmap: GoogleMap;
-
+  isConnected: boolean = false;
   @ViewChild('EventMap') EventMapRef: ElementRef;
 
   //Constructor (called on page creation)
   constructor(public alertCtrl: AlertController, public modalCtrl: ModalController, private menu: MenuController, private platform: Platform, public loadingCtrl: LoadingController, public navCtrl: NavController, public request: httprequest, public storage: Storage) {
+    this.isConnected = false;
+    this.request.CheckConnection().then((data) => {
+      if (data != undefined) {
+        this.isConnected = data['active'];
+      }
+    }).catch(() => {
+      let alert = this.alertCtrl.create({
+        title: "Error", subTitle: `Something went wrong, we can not establish connection to our servers, please refresh the page or try again later..`, buttons: ["Ok"]
+      });
+      alert.present();
+      this.isConnected = false;
+      });
+   
     let loading = loadingCtrl.create({
       content: 'Loading event information..'
     });
     loading.present();
     //check if there is a network connection
-    this.GetInactiveEvents();
+    this.GetInactiveEvents(loading);
     this.GetFavoriteEvents(loading);
     //check if the platform is mobile
     if (platform.is('mobile'))
@@ -89,7 +102,6 @@ export class HomePage {
       //  alert.present();
       //})
     }
-    
   }
 
   public scheduleNotification() {
@@ -153,7 +165,12 @@ export class HomePage {
       //loading.present();
       this.GetFavoriteEvents(loading);
     });
+  }
 
+  test() {
+    for (let i = 0; i < 1000; i++) {
+      this.request.FavoriteEvent(i);
+    }
   }
 
   GetActiveEvent() {
@@ -196,7 +213,7 @@ export class HomePage {
     });
   }
 
-  GetInactiveEvents() {
+  GetInactiveEvents(loading) {
     this.request.RequestInactiveEvents().then((data) => {
       this.inactiveEvents = [];
       let dataset = data['recordset'];
@@ -209,14 +226,21 @@ export class HomePage {
           event.EventParticipants,
           event.EventStartDate,
           event.EndDate,
-          new LatLng(event.StartLat, event.Startlon), 
+          new LatLng(event.StartLat, event.Startlon),
           new LatLng(event.EndLat, event.EndLon),
           false);
         newEvent.IsFavorite = event.IsFavorite;
         this.inactiveEvents.unshift(newEvent);
       }
-      this.storage.set('inactiveEvents', this.inactiveEvents).then(() => { this.PastEventExists = false;  });
+      this.storage.set('inactiveEvents', this.inactiveEvents).then(() => { this.PastEventExists = false; loading.dismiss(); });
     });
+    if (this.inactiveEvents == null) {
+      //let alert = this.alertCtrl.create({
+      //  title: "Error", subTitle: `Something went wrong, please refresh the page or try again later..`, buttons: ["Ok"]
+      //});
+      //alert.present();
+    }
+    loading.dismiss();
   }
 
   GetFavoriteEvents(loading) {
