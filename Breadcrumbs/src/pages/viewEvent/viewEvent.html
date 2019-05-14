@@ -6,39 +6,40 @@
 
 <ion-content>
 
-    <ion-item>
-      <ion-label stacked>Start Time</ion-label>
-      <ion-label style="padding-bottom:15px">{{EventStartDate}}</ion-label>
-    </ion-item>
+  <ion-item>
+    <ion-label stacked>Start Time</ion-label>
+    <ion-label style="padding-bottom:15px">{{EventStartDate}}</ion-label>
+  </ion-item>
 
-    <ion-item>
-      <ion-label stacked>End Time</ion-label>
-      <ion-label style="padding-bottom:15px">{{EventEndDate}}</ion-label>
-    </ion-item>
+  <ion-item>
+    <ion-label stacked>End Time</ion-label>
+    <ion-label style="padding-bottom:15px">{{EventEndDate}}</ion-label>
+  </ion-item>
 
-    <ion-item>
-      <ion-label stacked>Destination Latitude</ion-label>
-      <ion-label style="padding-bottom:15px">{{EventEndLat}}</ion-label>
-    </ion-item>
+  <ion-item>
+    <ion-label stacked>Destination Latitude</ion-label>
+    <ion-label style="padding-bottom:15px">{{EventEndLat}}</ion-label>
+  </ion-item>
 
-    <ion-item>
-      <ion-label stacked>Destination Longitude</ion-label>
-      <ion-label style="padding-bottom:15px">{{EventEndLng}}</ion-label>
-    </ion-item>
+  <ion-item>
+    <ion-label stacked>Destination Longitude</ion-label>
+    <ion-label style="padding-bottom:15px">{{EventEndLng}}</ion-label>
+  </ion-item>
 
-    <ion-item>
-      <ion-label stacked>Participants</ion-label>
-      <ion-label style="padding-bottom:15px" >{{EventParticipants}}</ion-label>
-    </ion-item>
+  <ion-item>
+    <ion-label stacked>Participants</ion-label>
+    <ion-label style="padding-bottom:15px">{{EventParticipants}}</ion-label>
+  </ion-item>
 
-    <ion-item>
-      <ion-label stacked>Description</ion-label>
-      <ion-label style="padding-bottom:15px">{{EventDesc}}</ion-label>
-    </ion-item>
+  <ion-item>
+    <ion-label stacked>Description</ion-label>
+    <ion-label style="padding-bottom:15px">{{EventDesc}}</ion-label>
+  </ion-item>
 
-    <ion-item *ngFor="let contact of Contacts">
-      <ion-label stacked>Emergency Contacts</ion-label>
-      <ion-label style="padding-bottom:15px">{{contact.ContactFirstName}} {{contact.ContactLastName}}</ion-label>
-    </ion-item>
+  <ion-item *ngFor="let contact of Contacts">
+    <ion-label stacked>Emergency Contacts</ion-label>
+    <ion-label style="padding-bottom:15px">{{contact.ContactFirstName}} {{contact.ContactLastName}}</ion-label>
+  </ion-item>
+  <button ion-button round outline block (click)="Delete()">Delete</button>
 
 </ion-content>

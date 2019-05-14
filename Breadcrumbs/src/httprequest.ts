@@ -16,7 +16,7 @@ import { Observable } from 'rxjs/Observable';
 
 //var aws_url = 'http://ec2-18-235-156-238.compute-1.amazonaws.com:4604'
 //var aws_url = 'http://18.235.156.238:4604'
-var aws_url = 'https://18.214.215.136'
+var aws_url = 'https://breadcrumbsapp.net'
 //var aws_url = 'http://18.214.215.136:4604'
 var aws_tts_url = 'http://35.174.49.106:4605'
 
@@ -574,5 +574,23 @@ export class httprequest {
           })
       });
     });
+  }
+
+  DeleteEvent(eventID) {
+    var header = new Headers();
+    header.append("Accept", 'application/json');
+    header.append('Content-Type', 'application/json');
+    this.storage.get('auth').then((auth) => {
+      header.append('AuthToken', auth);
+      header.append('SessionID', 'deleteevent');
+      const requestOpts = new RequestOptions({ headers: header });
+      var body = { 'id': eventID }
+      this.http.post(aws_url + '/updateData/', body, requestOpts)
+        .subscribe(data => {
+          console.log(data['_body']);
+        }, error => {
+          console.log(error);
+        });
+    })
   }
 }

@@ -163,7 +163,6 @@ export class LoginPagePage {
 
   initialClick() {
     this.signIn();
-    console.log(this.validUser, "its true");
   }
 
   forgotPassword() {

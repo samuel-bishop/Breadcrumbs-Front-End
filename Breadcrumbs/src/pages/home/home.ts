@@ -93,6 +93,8 @@ export class HomePage {
       }
   }
 
+
+
   ionViewWillLoad() {
     
     this.storage.get('user').then((user) => {
@@ -336,6 +338,8 @@ export class HomePage {
     else this.favoriteEventsExist = true;
     this.storage.set('favoriteEvents', this.favoriteEvents);
   }
+
+
 }
 
 
