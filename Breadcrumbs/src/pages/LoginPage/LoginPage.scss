@@ -2,7 +2,7 @@ page-LoginPage {
 
   .content-background {
     background-image: linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.3)),url(../../assets/mountainsigned.png);
-    background-size:cover;
+    background-size: cover;
   }
 
   .mobile-background {
@@ -10,6 +10,9 @@ page-LoginPage {
     background-size: cover;
   }
 
+  .scroll-content {
+    overflow-y: auto !important;
+  }
 
 
   .login-forms {
@@ -30,7 +33,6 @@ page-LoginPage {
   .forgot-pwd {
     background-color: transparent;
     color: white;
-    margin-left: 40px;
     font-family: 'Lucida Sans'
   }
 
@@ -65,11 +67,7 @@ page-LoginPage {
     border-bottom-right-radius: 10px;
     margin-left: auto;
     margin-right: auto;
-    /*border: solid medium grey;
-    background-color: white;
-    color: black;
-   
-    font-family: 'Lucida Sans'*/
+    width: 100px;
   }
 
   .center {

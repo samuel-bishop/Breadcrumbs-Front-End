@@ -7,6 +7,7 @@ import { BCWorker } from '../../worker';
 import { LatLng } from '@ionic-native/google-maps';
 import { Event } from '../../datastructs';
 import { forgotPasswordPage } from '../forgotPassword/forgotPassword';
+import { infoPromptPage } from '../infoPrompt/infoPrompt'
 
 function GetEvents(worker, request, storage) {
   return new Promise(function (resolve, reject) {
@@ -168,6 +169,10 @@ export class LoginPagePage {
 
   forgotPassword() {
     this.navCtrl.push(forgotPasswordPage);
+  }
+
+  infoPrompt() {
+    this.navCtrl.push(infoPromptPage);
   }
 
   validateUser() {

@@ -1,0 +1,35 @@
+<ion-header class="banner">
+  <ion-title> <label style="color:white">What is Breadcrumbs? </label>  </ion-title>
+</ion-header>
+<ion-content padding [class.content-background]="!isMobile" [class.mobile-background]="isMobile" [style.background-size]="'100% ' + shouldHeight">
+  <ion-content class="block" padding [style.background-size]="'100% ' + shouldHeight">
+
+    <h4 class="Text" style="font-family:'Times New Roman', Times, serif; margin-right:auto; text-anchor:middle">
+      Breadcrumbs allows for easy, discrete creation of emergency contacts. You can finally have emergency contacts without needing to utter a word!
+    </h4>
+
+    <h4 class="Text" style="font-family:'Times New Roman', Times, serif; margin-right:auto; text-anchor:middle">
+      The app allows you to tell your emergancy contacts where you are, who you're with, and what your doing if you're in trouble. All automatically if you can't check in by the specified time.
+    </h4>
+
+    <h4 class="Text" style="font-family:'Times New Roman', Times, serif; margin-right:auto; text-anchor:middle">
+      If you receive an alert, you're an emergancy contact. This means that your contact could be in trouble. 
+    </h4>
+
+    <ion-row>
+      <ion-col></ion-col>
+      <ion-col></ion-col>
+      <ion-col>
+        <button ion-button full (click)="login()">Back</button>
+      </ion-col>
+      <ion-col></ion-col>
+      <ion-col></ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col></ion-col>
+      <ion-img class="logo-logo" width="200" height="200" src="../../assets/icon.png"></ion-img>
+      <ion-col></ion-col>
+    </ion-row>
+
+  </ion-content>
+</ion-content>
