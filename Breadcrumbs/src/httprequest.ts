@@ -1,34 +1,27 @@
-import { Injectable, Component } from '@angular/core';
-import { Http, Headers, Request, RequestOptions } from '@angular/http';
+import { Injectable } from '@angular/core';
+import { Http, Headers, RequestOptions } from '@angular/http';
 import { Storage } from '@ionic/storage';
 import 'rxjs/add/operator/map';
 import { AlertController, LoadingController, Platform } from 'ionic-angular';
-import { UserService } from '../service/user.service';
-import { appGlobals } from './app/file';
-import { HomePage } from './pages/home/home';
-import { Observable } from 'rxjs/Observable';
-/*
-  Generated class for the httprequest provider.
-  See https://angular.io/docs/ts/latest/guide/dependency-injection.html
-  for more info on providers and Angular 2 DI.
-*/
 
 
-//var aws_url = 'http://ec2-18-235-156-238.compute-1.amazonaws.com:4604'
-//var aws_url = 'http://18.235.156.238:4604'
-var aws_url = 'https://18.214.215.136'
-//var aws_url = 'http://18.214.215.136:4604'
+var aws_url = 'https://www.breadcrumbsapp.net'
 var aws_tts_url = 'http://35.174.49.106:4605'
+
+/***************************************************
+ * Overview: This class is a helper class for
+ * connecting to Breadcrumbs API server as well as 
+ * its Timer server
+ **************************************************/
 
 @Injectable()
 export class httprequest {
-
   data: Object;
-
   constructor(public alertCtrl: AlertController, private platform: Platform, public loadingCtrl: LoadingController, public http: Http, public storage: Storage) {
-    console.log('Hello httprequest Provider');
   }
 
+
+  //Get the authentication token given a username
   GetAuth(username) {
     return new Promise(resolve => {
       var header = new Headers();
@@ -43,8 +36,7 @@ export class httprequest {
         },
           //On Error
         (error) => {
-          var alert = this.alertCtrl.create({ title: 'Error!', subTitle: `${error}`, buttons: ['Radical!'] });
-          alert.present();
+          throw error;
           });
     })
 
@@ -68,13 +60,15 @@ export class httprequest {
               resolve(this.data);
             },
               //On Error
-              (error) => {
+            (error) => {
+              throw error;
               });
         });
       })
     })
   }
 
+  //Get the top 10 inactive events from the database
   RequestInactiveEvents() {
     return new Promise(resolve => {
       this.storage.get('userID').then((userid) => {
@@ -90,12 +84,14 @@ export class httprequest {
               data = data.json();
               resolve(data);
             }, (error) => {
+              throw error;
             });
         });
       })
     })
   }
 
+  //Update a contacts information with newly created info
   UpdateContact(contactData) {
     var header = new Headers();
     header.append("Accept", 'application/json');
@@ -108,11 +104,12 @@ export class httprequest {
         .subscribe(data => {
           console.log(data['_body']);
         }, error => {
-          console.log(error);
+          throw error;
         });
     });
   }
 
+  //Delete a contact from the a users list of contacts
   DeleteContact(contactid) {
     var header = new Headers();
     header.append("Accept", 'application/json');
@@ -126,7 +123,7 @@ export class httprequest {
         .subscribe(data => {
           console.log(data['_body']);
         }, error => {
-          console.log(error);
+          throw error;
         });
     })
 
@@ -155,13 +152,42 @@ export class httprequest {
               resolve(this.data);
             },//On error
               (error) => {
-
+                throw error;
               });
         });
       })
     })
   }
 
+  //Retrieve all the favorite events from a user
+  RequestFavoriteEvents() {
+    if (this.data) {
+      return Promise.resolve(this.data);
+    }
+    return new Promise(resolve => {
+      this.storage.get('userID').then((userid) => {
+        //var body = { 'userID': userid };
+        this.storage.get('auth').then((auth) => {
+          var header = new Headers();
+          header.append('AuthToken', auth);
+          header.append('SessionID', 'getfavoriteevents')
+          header.append('userID', userid);
+          var requestOpts = new RequestOptions({ headers: header });
+          this.http.get(aws_url + '/getData/', requestOpts)
+            .map(res => res.json())
+            .subscribe(data => {
+              this.data = data;
+              resolve(this.data);
+            }, (error) => {
+              throw error;
+            });
+        });
+      });
+    })
+  }
+
+
+  //Request inactive events
   RequestEvents() {
     if (this.data) {
       return Promise.resolve(this.data);
@@ -180,12 +206,16 @@ export class httprequest {
             .subscribe(data => {
               this.data = data;
               resolve(this.data);
+            }, (error) => {
+              throw error;
             });
         });
       });
     })
   }
 
+  //Add a new event to the database for a user, setting any
+  //current event to inactive
   InsertEvent(eventData) {
     return new Promise(resolve => {
       var header = new Headers();
@@ -199,13 +229,14 @@ export class httprequest {
           .subscribe(data => {
             console.log(data['_body']);
           }, error => {
-            console.log(error);
+            throw error;
           });
         resolve('Success');
       });
     });
   }
 
+  //Insert a new contact for a user
   InsertContact(userid, contactData) {
     var header = new Headers();
     header.append("Accept", 'application/json');
@@ -225,11 +256,12 @@ export class httprequest {
         .subscribe(data => {
           console.log(data['_body']);
         }, error => {
-          console.log(error);
+          throw error;
         });
     });
   }
 
+  //Get all contacts for a users specific event
   RequestEventContacts(eventID) {
     return new Promise(resolve => {
       var header = new Headers();
@@ -244,11 +276,62 @@ export class httprequest {
           .subscribe(data => {
             this.data = data;
             resolve(this.data);
+          }, (error) => {
+            throw error;
           });
       })
     })
   }
 
+  //Disable a user, deleting them from use but keeping them in
+  //the database
+  DisableUser() {
+    var header = new Headers();
+    header.append("Accept", 'application/json');
+    header.append('Content-Type', 'application/json');
+    this.storage.get('userID').then((userid) => {
+      this.storage.get('auth').then((auth) => {
+        header.append('AuthToken', auth);
+        header.append('SessionID', 'disableuser');
+        const requestOpts = new RequestOptions({ headers: header });
+        let user = { userid: userid }
+        this.http.post(aws_url + '/updateData/', user, requestOpts)
+          .subscribe(data => {
+            console.log(data['_body']);
+          }, error => {
+            throw error;
+          });
+      })
+    })
+  }
+
+  //Check the connection to the api server, returning true if valid connection
+  //is made
+  CheckConnection() {
+    return new Promise(resolve => {
+      var header = new Headers();
+      header.append("Accept", 'application/json');
+      header.append('Content-Type', 'application/json');
+      header.append('AuthToken', '0');
+      header.append('SessionID', 'checkconnection');
+      const requestOpts = new RequestOptions({ headers: header });
+      this.http.get(aws_url + '/getData/', requestOpts)
+        .map(res => res.json())
+        .subscribe(data => {
+          this.data = data;
+          resolve(this.data);
+        },
+        (error) => {
+          let alert = this.alertCtrl.create({
+            title: "Error", subTitle: `Something went wrong, we can not establish connection to our servers, please refresh the page or try again later..`, buttons: ["Ok"]
+          });
+          alert.present();
+            throw error;
+          });
+    })
+  }
+
+  //Disable an event for a user
   DisableEvent(eventID) {
     return new Promise(resolve => {
       var header = new Headers();
@@ -263,7 +346,7 @@ export class httprequest {
           .subscribe(data => {
             console.log(data['_body']);
           }, error => {
-            console.log(error);
+            throw error;
           });
         resolve("Success");
       })
@@ -285,7 +368,7 @@ export class httprequest {
           .subscribe(data => {
             console.log(data['_body']);
           }, error => {
-            console.log(error);
+            throw error;
           });
         resolve("Success");
       })
@@ -312,6 +395,7 @@ export class httprequest {
     });
   }
 
+  //Get a users account information, passing in their username
   GetUser(user: string) {
     return new Promise(resolve => {
       var header = new Headers();
@@ -327,12 +411,13 @@ export class httprequest {
             resolve(this.data);
           },
             (error) => {
-
+              throw error;
             });
       })
     })
   }
 
+  //Get just a users id from their username
   GetUserID(username) {
     return new Promise(resolve => {
       var body = { 'username': username };
@@ -349,12 +434,13 @@ export class httprequest {
             resolve(this.data);
           },
             (error) => {
-
+              throw error;
             });
       });
     })
   }
 
+  //Validate a users log in attempt
   SignIn(user) {
     return new Promise(resolve => {
       var header = new Headers();
@@ -372,12 +458,14 @@ export class httprequest {
             isValid = data;
             resolve(isValid);
             //console.log(data['_body'], "this is correct ");
+          }, (error) => {
+            throw error;
           });
       });
     })
   }
 
-
+  //Add a new contact for a user
   InsertContactInfo(userid, contactData) {
     var header = new Headers();
     var body = {
@@ -398,12 +486,13 @@ export class httprequest {
         .subscribe(data => {
           console.log(data['_body']);
         }, error => {
-          console.log(error);
+          throw error;
         });
     })
-
   }
 
+
+  //Start a timer
   StartWatchTest(eventID, contacts, name, endTime, EventName, EventStartDate, StartLat, StartLon, EndLat, EndLon, EventParticipants, EventDescription) {
     var body = [];
     var contacts_array = [];
@@ -424,7 +513,7 @@ export class httprequest {
           location.reload();
         }
           , error => {
-            console.log(error);
+            //throw error;
             location.reload();
           });
       resolve();
@@ -432,6 +521,8 @@ export class httprequest {
     });
   }
 
+
+  //Cancels a timer
   CancelWatch(eventID) {
     var body = { 'eventID': eventID }
     this.http.post(aws_tts_url + '/cancelwatch/', body)
@@ -442,6 +533,7 @@ export class httprequest {
       });
   }
 
+  //Reset a users a password
   ResetPassword(user) {
     var header = new Headers();
     header.append("Accept", 'application/json');
@@ -454,11 +546,14 @@ export class httprequest {
         .subscribe(data => {
           console.log(data['body']);
         }, (error) => {
+          throw error;
         });
     })
 
   }
 
+
+  //Get a users account info (redundant)
   AccountInfo() {
     //Check if the data has already be created
     if (this.data) {
@@ -479,13 +574,14 @@ export class httprequest {
             },
               //On error
               (error) => {
-
+                throw error;
               });
         });
       })
     })
   }
 
+  //Update a users account information
   UpdateAccount(accountData) {
     var header = new Headers();
     header.append("Accept", 'application/json');
@@ -498,11 +594,12 @@ export class httprequest {
         .subscribe(data => {
           //console.log(data['_body']);
         }, error => {
-          console.log(error);
+          throw error;
         });
     })
   }
 
+  //????
   ForgotPassword(data) {
     return new Promise(resolve => {
       var header = new Headers();
@@ -515,7 +612,6 @@ export class httprequest {
         this.http.post(aws_url + '/updateData/', data, requestOpts)
           .subscribe(data => {
             this.data = data;
-            //console.log("here", this.data);
             resolve(this.data);
           }, (error) => {
             throw error;
@@ -523,6 +619,8 @@ export class httprequest {
       });
     });
   }
+
+  //Retrieve a username 
   GetUserName(data) {
     return new Promise(resolve => {
       var header = new Headers();
@@ -545,17 +643,18 @@ export class httprequest {
     });
   }
 
+  //Send an email prompting a user to change their password
   passwordEmail(data) {
     var header = new Headers();
       this.http.post(aws_tts_url + '/passwordEmail/', data)
         .subscribe(result => {
           //console.log(result);
-
         }, error => {
-          console.log(error);
+          throw error;
         });
   }
 
+  //Validates a password reset code
   confirmCode(data) {
     return new Promise(resolve => {
       var header = new Headers();
@@ -574,5 +673,23 @@ export class httprequest {
           })
       });
     });
+  }
+
+  DeleteEvent(eventID) {
+    var header = new Headers();
+    header.append("Accept", 'application/json');
+    header.append('Content-Type', 'application/json');
+    this.storage.get('auth').then((auth) => {
+      header.append('AuthToken', auth);
+      header.append('SessionID', 'deleteevent');
+      const requestOpts = new RequestOptions({ headers: header });
+      var body = { 'id': eventID }
+      this.http.post(aws_url + '/updateData/', body, requestOpts)
+        .subscribe(data => {
+          console.log(data['_body']);
+        }, error => {
+          console.log(error);
+        });
+    })
   }
 }

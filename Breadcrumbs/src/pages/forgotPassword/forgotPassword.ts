@@ -60,8 +60,6 @@ export class forgotPasswordPage {
           if (result) {
             
             this.request.passwordEmail(user);
-
-            //console.log(user);
           }
         });
       });

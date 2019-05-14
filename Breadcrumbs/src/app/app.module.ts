@@ -14,7 +14,8 @@ import { passwordPage } from '../pages/password/password';
 import { editAccountPage } from '../pages/editAccount/editAccount';
 import { forgotPasswordPage } from '../pages/forgotPassword/forgotPassword';
 import { LocalNotifications } from 'ionic-native';
-import { infoPromptPage } from '../pages/infoPrompt/infoPrompt';
+import { favoriteEventsPage } from '../pages/favoriteEvents/favoriteEvents';
+
 
 @NgModule({
   declarations: [
@@ -30,7 +31,7 @@ import { infoPromptPage } from '../pages/infoPrompt/infoPrompt';
     passwordPage,
     editAccountPage,
     forgotPasswordPage,
-    infoPromptPage
+    favoriteEventsPage
   ],
   imports: [
     IonicModule.forRoot(MyApp),
@@ -49,7 +50,7 @@ import { infoPromptPage } from '../pages/infoPrompt/infoPrompt';
     passwordPage,
     editAccountPage,
     forgotPasswordPage,
-    infoPromptPage
+    favoriteEventsPage
   ],
   providers: [{ provide: ErrorHandler, useClass: IonicErrorHandler}, Storage, LocalNotifications]
 })
