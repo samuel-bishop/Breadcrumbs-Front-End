@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-navbar>
+    <h1 style="font-family:'Lucida Sans'; margin-right:auto; text-anchor:middle">Favorites</h1>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-row *ngFor="let event of favoriteEvents">
+    <ion-card class="event-card" style="font-size:24px">
+      <ion-row>
+        <ion-col style="font-size:20px; font-weight: bold;">
+          {{event.EventName}}
+        </ion-col>
+        <ion-col style="font-size:20px">
+          {{FormatTime(event.EventStartDate)}}
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-icon name="create"></ion-icon>
+          {{event.EventDescription}}
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-icon *ngIf="event.EventParticipants" name="people"></ion-icon>
+          {{event.EventParticipants}}
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-icon name="stopwatch"></ion-icon>
+          Will be back: {{FormatTime(event.EventEndDate)}}
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col style="text-align:right">
+          <button (click)="favoriteEvent(event)" [class.favorite-event-button]="!event.IsFavorite" [class.favorite-event-logo]="event.IsFavorite" ion-button>
+            <ion-icon name="star" style="font-size:30px; left:40px"></ion-icon>
+          </button>
+        </ion-col>
+      </ion-row>
+    </ion-card>
+  </ion-row>
+</ion-content>

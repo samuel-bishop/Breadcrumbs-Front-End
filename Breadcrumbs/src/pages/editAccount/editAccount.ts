@@ -3,8 +3,9 @@ import { NavController, NavParams, LoadingController, AlertController, Alert } f
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { httprequest } from '../../httprequest';
 import { Storage } from '@ionic/storage';
+import { LoginPagePage } from '../LoginPage/LoginPage';
+import { LocalNotifications } from 'ionic-native';
 import { passwordPage } from '../password/password';
-
 
 /*
   Generated class for the editUser page.
@@ -24,6 +25,8 @@ export class editAccountPage {
   accPhoneNumber: any;
   accEmail: any;
   private editAccount: FormGroup;
+  inactiveEvents: any;
+  CurrentEventExists: boolean;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public request: httprequest,
     public formBuilder: FormBuilder, public storage: Storage, public loadingCtrl: LoadingController
@@ -100,6 +103,24 @@ export class editAccountPage {
         }]
     });
     alert.present();
+  }
+
+  disableUser() {
+    //Disable User
+    this.request.DisableUser();
+
+    this.storage.get('activeEvent').then((Event) => {
+      if (Event != null) {
+        this.request.CancelWatch(Event.eventid);
+        LocalNotifications.cancelAll();
+      }
+    });
+
+    //Logout
+    this.storage.clear().then(() => {
+      this.storage.set('userID', 0);
+    })
+    this.navCtrl.setRoot(LoginPagePage);
   }
 
   cancelClick() {

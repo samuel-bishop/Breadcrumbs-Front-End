@@ -29,6 +29,7 @@ export class LoginPagePage {
   @ViewChild("username") username;
   @ViewChild("password") password;
   isRegister: boolean = false;
+  isConnected: boolean;
   userID: any;
   validUser: any;
   //userValidation: User; 
@@ -36,6 +37,18 @@ export class LoginPagePage {
   shouldHeight: any = document.body.clientHeight + 'px';
   isMobile: boolean;
   constructor(public navCtrl: NavController, public request: httprequest, public navParams: NavParams, public platform: Platform, public alertCtrl: AlertController, public storage: Storage, public loadingCtrl: LoadingController) {
+    this.isConnected = false;
+    this.request.CheckConnection().then((data) => {
+      if (data != undefined) {
+        this.isConnected = data['active'];
+      }
+    }).catch(() => {
+      let alert = this.alertCtrl.create({
+        title: "Error", subTitle: `Something went wrong, we can not establish connection to our servers, please refresh the page or try again later..`, buttons: ["Ok"]
+      });
+      alert.present();
+      this.isConnected = false;
+    });
     if (platform.is('mobile')) {
       this.isMobile = true;
     }

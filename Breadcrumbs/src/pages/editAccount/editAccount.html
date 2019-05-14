@@ -1,13 +1,7 @@
-<!--
-  Generated template for the NewPage page.
-
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header>
 
   <ion-navbar>
-    <ion-title>Edit Account</ion-title>
+    <h1 style="font-family:'Lucida Sans'; margin-right:auto; text-anchor:middle">Edit Account</h1>
   </ion-navbar>
 
 </ion-header>
@@ -34,20 +28,21 @@
       </ion-col>
     </ion-row>
   </form>
+
   <ion-row>
-    <button ion-button type="button" (click)="resetPassword()" >Reset Password</button>
+    <ion-col></ion-col>
+    <ion-col></ion-col>
+    <ion-col>
+      <button ion-button type="button" (click)="editAccountForm()" style=" text-align:center; line-height:50%">Submit</button>
+    </ion-col>
+    <ion-col>
+      <button ion-button type="button" (click)="disableUser()" style=" text-align:center; line-height:50%; ">Disable</button>
+    </ion-col>
+    <ion-col>
+      <button ion-button type="button" (click)="cancelClick()" style=" text-align:center; line-height:50%; ">Cancel</button>
+    </ion-col>
+    <ion-col></ion-col>
+    <ion-col></ion-col>
   </ion-row>
-    <ion-row>
-      <ion-col></ion-col>
-      <ion-col></ion-col>
-      <ion-col>
-        <button ion-button type="button" (click)="editAccountForm()" style=" text-align:center; line-height:50%">Submit</button>
-      </ion-col>
-      <ion-col>
-        <button ion-button type="button" (click)="cancelClick()" style=" text-align:center; line-height:50%; ">Cancel</button>
-      </ion-col>
-      <ion-col></ion-col>
-      <ion-col></ion-col>
-    </ion-row>
 
 </ion-content>

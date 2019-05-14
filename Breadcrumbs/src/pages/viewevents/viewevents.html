@@ -1,0 +1,53 @@
+  <ion-header>
+  <ion-navbar>
+    <ion-row class="past-events-card-header">
+      <h1 style="font-family:'Lucida Sans'; margin-right:auto; text-anchor:middle">History</h1>
+    </ion-row>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-row *ngFor="let event of inactiveEvents">
+
+    <!-- Mobile Version -->
+    <ion-card *ngIf="isMobile" class="event-card">
+      <ion-row>
+        <ion-col style="font-size:20px; font-weight: bold;">
+          {{event.EventName}}
+        </ion-col>
+        <ion-col style="font-size:20px">
+          {{FormatTime(event.EventStartDate)}}
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <button (click)="favoriteEvent(event)" [class.favorite-event-button]="!event.IsFavorite" [class.favorite-event-logo]="event.IsFavorite" ion-button>
+            <ion-icon name="star" style="font-size:30px; left:40px"></ion-icon>
+          </button>
+        </ion-col>
+        <ion-col>
+          <button (click)="viewEvent(event)" class="favorite-event-button" ion-button>
+            <ion-icon name="information-circle" style="font-size:30px; left:40px"></ion-icon>
+          </button>
+        </ion-col>
+      </ion-row>
+    </ion-card>
+
+    <!-- Website version -->
+    <ion-card *ngIf="!isMobile" (click)="viewEvent(event)" class="event-card">
+      <ion-row>
+        <ion-col style="font-size:20px; font-weight: bold;">
+          {{event.EventName}}
+        </ion-col>
+        <ion-col style="font-size:20px">
+          {{FormatTime(event.EventStartDate)}}
+        </ion-col>
+      </ion-row>
+    </ion-card>
+    <ion-col>
+      <button *ngIf="!isMobile" (click)="favoriteEvent(event)" [class.favorite-event-button]="!event.IsFavorite" [class.favorite-event-logo]="event.IsFavorite" ion-button>
+        <ion-icon name="star" style="font-size:30px; left:40px"></ion-icon>
+      </button>
+    </ion-col>
+  </ion-row>
+</ion-content>
