@@ -179,7 +179,8 @@ export class addeventPage {
           let contacts = contactData['recordset'];
           storage.get('user').then((user) => {
             let fname = user.FirstName + ' ' + user.LastName[0] + '.';
-            request.StartWatchTest(event.EventID, event.EndDate, contacts, fname).then(() => {
+             
+            request.StartWatchTest(event.EventID, contacts, fname, event.EndDate, event.EventName, event.StartDate, event.StartLat, event.StartLon, event.EndLat, event.EndLon, event.Participants, event.Description).then(() => {
               //let date = new Date(endDate.getTime() - 18000 * 1000);
               let date = new Date(endDate.setHours(endDate.getHours() + 7));
               //set a 5 minute reminder
