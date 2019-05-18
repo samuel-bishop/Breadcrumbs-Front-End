@@ -226,8 +226,7 @@ export class httprequest {
         header.append('SessionID', 'newevent')
         const requestOpts = new RequestOptions({ headers: header });
         this.http.post(aws_url + '/updateData/', eventData, requestOpts)
-          .subscribe(data => {
-            console.log(data['_body']);
+          .subscribe(data => {            
           }, error => {
             throw error;
           });
@@ -493,7 +492,7 @@ export class httprequest {
 
 
   //Start a timer
-  StartWatchTest(eventID, contacts, name, endTime, EventName, EventStartDate, StartLat, StartLon, EndLat, EndLon, EventParticipants, EventDescription) {
+  StartWatchTimer(eventID, contacts, name, endTime, EventName, EventStartDate, StartLat, StartLon, EndLat, EndLon, EventParticipants, EventDescription) {
     var body = [];
     var contacts_array = [];
     for (let c of contacts) {
@@ -506,18 +505,16 @@ export class httprequest {
     });
     body.push(contacts_array);
     body.push(name);
+
     return new Promise(resolve => {
       this.http.post(aws_tts_url + '/startwatch/', body)
         .subscribe(data => {
-          console.log(data['_body']);
           location.reload();
-        }
-          , error => {
-            //throw error;
-            location.reload();
+        }, error => {
+            throw error;
+            //location.reload();
           });
       resolve();
-
     });
   }
 
@@ -526,10 +523,9 @@ export class httprequest {
   CancelWatch(eventID) {
     var body = { 'eventID': eventID }
     this.http.post(aws_tts_url + '/cancelwatch/', body)
-      .subscribe(data => {
-        console.log(data['_body']);
+      .subscribe(data => {        
       }, error => {
-        console.log(error);
+        throw error;
       });
   }
 

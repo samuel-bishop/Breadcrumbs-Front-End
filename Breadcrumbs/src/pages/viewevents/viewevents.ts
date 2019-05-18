@@ -3,6 +3,8 @@ import { Component } from '@angular/core';
 import { httprequest } from '../../httprequest';
 import { Storage } from '@ionic/storage';
 import { viewEventPage } from '../viewEvent/viewEvent';
+import { Event } from '../../datastructs';
+import { LatLng } from '@ionic-native/google-maps';
 
 @Component({
     selector: 'page-viewevents',
@@ -49,7 +51,7 @@ export class vieweventsPage {
         //function to convert SQL Server smalldatetime to a more human readable string
       }
       else {
-        this.getInactiveEvents();
+        this.GetInactiveEvents();
         this.storage.get('inactiveEvents').then((events) => {
           this.inactiveEvents.events;
         })
@@ -104,12 +106,34 @@ export class vieweventsPage {
     return result;
   }
 
-getInactiveEvents() {
-  this.request.RequestInactiveEvents().then((data) => {
-    this.storage.set('inactiveEvents', data['recordset']);
-    this.storage.set('newEventSubmit', false);
-  });
-}
+  GetInactiveEvents() {
+    this.request.RequestInactiveEvents().then((data) => {
+      this.inactiveEvents = [];
+      let dataset = data['recordset'];
+      for (let event of dataset) {
+        let newEvent = new Event
+          (event.EventID,
+          event.EventName,
+          event.EventDescription,
+          event.EventParticipants,
+          event.EventStartDate,
+          event.EndDate,
+          new LatLng(event.StartLat, event.Startlon),
+          new LatLng(event.EndLat, event.EndLon),
+          false);
+        newEvent.IsFavorite = event.IsFavorite;
+        this.inactiveEvents.unshift(newEvent);
+      }
+      this.storage.set('inactiveEvents', this.inactiveEvents).then(() => {
+      });
+    });
+    if (this.inactiveEvents == null) {
+      //let alert = this.alertCtrl.create({
+      //  title: "Error", subTitle: `Something went wrong, please refresh the page or try again later..`, buttons: ["Ok"]
+      //});
+      //alert.present();
+    }
+  }
 
   //When ViewEvent gets called, push viewEventPage onto stack.
   viewEvent(e: any) {
