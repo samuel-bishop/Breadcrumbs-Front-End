@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, NavParams, AlertController } from 'ionic-angular';
+import { NavController, NavParams, AlertController, Platform } from 'ionic-angular';
 import { httprequest } from '../../httprequest';
-
+import { LoginPagePage } from '../LoginPage/LoginPage';
 
 /*
   Generated class for the forgotPassword page.
@@ -24,9 +24,14 @@ export class forgotPasswordPage {
   @ViewChild("confirmPassword") confirmPassword;
   @ViewChild("code") code;
   gotCode: boolean  =false;
-
-  constructor(public navCtrl: NavController, public navParams: NavParams, public request: httprequest, public alertCtrl: AlertController) { }
-
+  shouldHeight: any = document.body.clientHeight + 'px';
+  isMobile: boolean;
+  constructor(public navCtrl: NavController, public navParams: NavParams, public request: httprequest, public alertCtrl: AlertController, private platform: Platform) {
+  if(platform.is('mobile')) {
+  this.isMobile = true;
+}
+    else this.isMobile = false;
+}
     ionViewDidLoad() {
         console.log('ionViewDidLoad forgotPasswordPage');
     }
@@ -71,6 +76,10 @@ export class forgotPasswordPage {
 
   gotCodeIf() {
     this.gotCode = !this.gotCode;
+  }
+
+  back() {
+    this.navCtrl.push(LoginPagePage);
   }
 
   submitReset() {

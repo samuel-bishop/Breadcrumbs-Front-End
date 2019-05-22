@@ -108,7 +108,7 @@
       </ion-col>
       <ion-col></ion-col>
       <ion-col style="text-align:right">
-        <button  (click)="favoriteEvent(CurrentEvent)" [class.favorite-event-button]="!CurrentEventIsFavorited" [class.favorite-event-logo]="CurrentEventIsFavorited" ion-button >
+        <button (click)="favoriteEvent(CurrentEvent)" [class.favorite-event-button]="!CurrentEventIsFavorited" [class.favorite-event-logo]="CurrentEventIsFavorited" ion-button>
           <ion-icon name="star" style="font-size:30px; left:40px"></ion-icon>
         </button>
       </ion-col>
@@ -118,6 +118,15 @@
 
     </ion-row>
   </ion-card>
+
+  <<ion-row *ngIf="!CurrentEventExists && isConnected" style="margin-top:40px">
+    <ion-col width-10></ion-col>
+    <ion-col width-80>
+      <button ion-button class="add-event-button" (click)="addEvent()"> + Event   <ion-icon name="bicycle"></ion-icon> </button>
+    </ion-col>
+    <ion-col width-10></ion-col>
+  </ion-row>
+
   <div #EventMap id="EventMap"> </div>
   <!-- Floating Nav Buttons -->
   <button round ion-button *ngIf="isConnected" class="button-float-right">
