@@ -12,8 +12,6 @@
 </ion-header>
 
 <ion-menu [content]="sidebar" type="overlay">
-
-
   <ion-content style="margin-top:10px">
 
     <!-- Profile card -->
@@ -38,12 +36,12 @@
 
     <!-- Side bar items -->
     <ion-list>
-      <button ion-item menuClose *ngIf="isConnected" (click)="editContacts()" class="side-button">
+      <button ion-item menuClose [disabled]="!isConnected" (click)="editContacts()" class="side-button">
         <ion-icon name="contacts"></ion-icon>
         Emergency Contacts
       </button>
 
-      <button ion-item menuClose *ngIf="isConnected" (click)="editAccount()" class="side-button">
+      <button ion-item menuClose [disabled]="!isConnected"(click)="editAccount()" class="side-button">
         <ion-icon name="finger-print"></ion-icon>
         Edit Account
       </button>
@@ -102,13 +100,13 @@
       </ion-col>
     </ion-row>
     <!-- Favorite/Edit Event -->
-    <ion-row *ngIf="isConnected">
+    <ion-row>
       <ion-col>
-        <button (click)="checkIn()" round ion-button class="end-event-button"> Check In  </button>
+        <button (click)="checkIn()" [disabled]="!isConnected" round ion-button class="end-event-button"> Check In  </button>
       </ion-col>
       <ion-col></ion-col>
       <ion-col style="text-align:right">
-        <button (click)="favoriteEvent(CurrentEvent)" [class.favorite-event-button]="!CurrentEventIsFavorited" [class.favorite-event-logo]="CurrentEventIsFavorited" ion-button>
+        <button  (click)="favoriteEvent(CurrentEvent)" [disabled]="!isConnected" [class.favorite-event-button]="!CurrentEventIsFavorited" [class.favorite-event-logo]="CurrentEventIsFavorited" ion-button >
           <ion-icon name="star" style="font-size:30px; left:40px"></ion-icon>
         </button>
       </ion-col>
@@ -129,10 +127,10 @@
 
   <div #EventMap id="EventMap"> </div>
   <!-- Floating Nav Buttons -->
-  <button round ion-button *ngIf="isConnected" class="button-float-right">
+  <button round ion-button [disabled]="!isConnected" class="button-float-right">
     <ion-icon (click)="viewFavoriteEvents()" style="font-size:60px" name="star"> </ion-icon>
   </button>
-  <button round ion-button *ngIf="isConnected" class="button-float-left">
+  <button round ion-button [disabled]="!isConnected"  class="button-float-left">
     <ion-icon (click)="viewPastEvents()" style="font-size:60px" name="clock"> </ion-icon>
   </button>
 </ion-content>

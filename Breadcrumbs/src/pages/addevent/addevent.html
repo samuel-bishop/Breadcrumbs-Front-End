@@ -19,7 +19,7 @@
 
 <ion-content>
   <div #AddEventMap id="AddEventMap"></div>
-  <form [formGroup]="event" (ngSubmit)="eventForm()">
+  <form [formGroup]="event" (ngSubmit)="AddEvent()">
     <ion-row>
       <ion-item>
         <ion-input placeholder="Event Name (required)" [(ngModel)]="eventName" formControlName="name" type="text" id="name"></ion-input>

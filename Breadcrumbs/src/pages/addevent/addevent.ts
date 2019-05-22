@@ -90,18 +90,28 @@ export class addeventPage {
         });
       }
       else {
-        this.eventName = "Event Name";
-        this.eventDesc = "Event Description";
-        this.eventPart = "Event Participants";
+        this.eventName = "";
+        this.eventDesc = "";
+        this.eventPart = "";
       }
     });
   }
 
   ionViewWillEnter() {
-    this.loadContacts();
+    this.contacts = null;
+    let loading = this.loadingCtrl.create({
+      content: 'Loading Contacts...'
+    });
+    loading.present().then(() => {
+      this.request.RequestContacts().then((data) => {
+        this.isVisible = true;
+        this.contacts = data['recordset'];
+        loading.dismiss();
+      });
+    });
   }
 
-  eventForm() {
+  AddEvent() {
     let endDate = new Date(this.event.value.endDate);
     if (this.event.value.contactsList == null) {
       var alert = this.alertCtrl.create({ title: 'Error: No Contacts Selected', subTitle: 'Please select at least one contact', buttons: ['ok'] });
@@ -139,7 +149,6 @@ export class addeventPage {
       let EndDate = new Date(this.event.value.endDate);
       let EndDateISO = new Date((EndDate.getTime() + EndDate.getTimezoneOffset() * 60000)).toISOString();
 
-
       let eventData = {
         "userid": this.userid,
         "name": this.event.value.name,
@@ -155,19 +164,12 @@ export class addeventPage {
       }      
       //CurrentEvent stores the last submitted event's data
       this.request.InsertEvent(eventData).then(() => {
-        setTimeout(this.waitToInsertActiveEvent, 1000, this.request, this.alertCtrl, this.navCtrl, this.loadingCtrl, this.storage, this.event.value.name, endDate);
-      });
+        setTimeout(this.waitToInsertActiveEvent, 4000, this.request, this.loadingCtrl, this.storage, eventData.name, eventData.endDate)
+      })
     }
   }
 
-  public set_notifications(endDate: Date, eventName: String) {
-
-
-    }
-
-  fuckthisstupidwaitshit() { location.reload();}
-
-  waitToInsertActiveEvent(request, alertCtrl, navCtrl, loadingCtrl, storage, eventName, endDate: Date) {
+  waitToInsertActiveEvent(request, loadingCtrl, storage, eventName, endDate: Date) {
     let loading = loadingCtrl.create({
       content: 'Creating Event...'
     });
@@ -179,8 +181,7 @@ export class addeventPage {
           let contacts = contactData['recordset'];
           storage.get('user').then((user) => {
             let fname = user.FirstName + ' ' + user.LastName[0] + '.';
-            request.StartWatchTest(event.EventID, event.EndDate, contacts, fname).then(() => {
-              //let date = new Date(endDate.getTime() - 18000 * 1000);
+            request.StartWatchTimer(event.EventID, contacts, fname, event.EndDate, event.EventName, event.StartDate, event.StartLat, event.StartLon, event.EndLat, event.EndLon, event.Participants, event.Description).then(() => {
               let date = new Date(endDate.setHours(endDate.getHours() + 7));
               //set a 5 minute reminder
               LocalNotifications.schedule({
@@ -190,7 +191,7 @@ export class addeventPage {
               });
               loading.dismiss();
             }).catch(() => {
-              location.reload();
+              setTimeout(location.reload(), 2000);
             })
           });
         });
@@ -201,8 +202,7 @@ export class addeventPage {
             let contacts = contactData['recordset'];
             storage.get('user').then((user) => {
               let fname = user.FirstName + ' ' + user.LastName[0] + '.';
-              request.StartWatchTest(event.EventID, event.EndDate, contacts, fname).then(() => {
-                //let date = new Date(endDate.getTime() - 18000 * 1000);
+              request.StartWatchTimer(event.EventID, contacts, fname, event.EndDate, event.EventName, event.StartDate, event.StartLat, event.StartLon, event.EndLat, event.EndLon, event.Participants, event.Description).then(() => {
                 let date = new Date(endDate.setHours(endDate.getHours() + 7));
                 //set a 5 minute reminder
                 LocalNotifications.schedule({
@@ -212,7 +212,7 @@ export class addeventPage {
                 });
                 loading.dismiss();
               }).catch(() => {
-                location.reload();
+                setTimeout(location.reload(), 2000);
               })
             });
           });
@@ -356,22 +356,6 @@ export class addeventPage {
     }
     return AddEventMap.addMarker(markerOptions);
   }
-
-  loadContacts() {
-    this.contacts = null;
-    let loading = this.loadingCtrl.create({
-      content: 'Loading Contacts...'
-    });
-    loading.present().then(() => {
-      this.request.RequestContacts().then((data) => {
-        this.isVisible = true;
-        this.contacts = data['recordset'];
-      });
-      loading.dismiss();
-    });
-  } 
-
-
 
   cancelClick() {
     this.navCtrl.pop({ animate: false });

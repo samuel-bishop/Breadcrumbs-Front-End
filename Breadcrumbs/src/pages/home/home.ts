@@ -124,7 +124,6 @@ export class HomePage {
 
     this.storage.get('CurrentEventExists').then((doesExists) => {
       if (doesExists == true) {
-        this.CurrentEventExists = true;
         this.storage.get('activeEvent').then((ActiveEvent) => {
           this.CurrentEvent = ActiveEvent;
           this.EventName = this.CurrentEvent.EventName;
@@ -133,16 +132,14 @@ export class HomePage {
           this.EventEndDate = this.CurrentEvent.EventEndDate;
           this.EventStartDate = this.CurrentEvent.EventStartDate;
           let EndDate = new Date(this.EventEndDate);
-          //this.EventEndDateFormatted = new Date(EndDate.getTime() - EndDate.getTimezoneOffset() * 60000);
-          this.EventEndDateFormatted = this.FormatTime(EndDate);
           let StartDate = new Date(this.EventStartDate);
-          this.EventStartDateFormatted = this.FormatTime(StartDate);
-          //this.EventStartDateFormatted= new Date((StartDate.getTime() - StartDate.getTimezoneOffset() * 60000)).toISOString();
-
+          this.EventEndDateFormatted = this.FormatTime(new Date(EndDate.getTime() - EndDate.getTimezoneOffset() * 60000));
+          this.EventStartDateFormatted = this.FormatTime(new Date((StartDate.getTime() - StartDate.getTimezoneOffset() * 60000)).toISOString());
+          this.CurrentEventExists = true;
           this.storage.get('currentEventIsFavorited').then((bool) => {
             this.CurrentEventIsFavorited = bool;
           })
-        })
+        });
       }
       else {
         this.GetActiveEvent();
@@ -162,15 +159,8 @@ export class HomePage {
         }
       }
     }).catch(() => {
-      //loading.present();
       this.GetFavoriteEvents(loading);
     });
-  }
-
-  test() {
-    for (let i = 0; i < 1000; i++) {
-      this.request.FavoriteEvent(i);
-    }
   }
 
   GetActiveEvent() {
@@ -186,13 +176,12 @@ export class HomePage {
           event.EventName,
           event.EventDescription,
           event.EventParticipants,
-          //this.FormatTime(StartDateISO),
-          //this.FormatTime(EndDateISO),
           event.EventStartDate,
           event.EndDate,
           new LatLng(event.StartLat, event.StartLon),
           new LatLng(event.EndLat, event.EndLon),
           true);
+
         newEvent.IsFavorite = event.IsFavorite;
         this.CurrentEventIsFavorited = event.IsFavorite;
         this.CurrentEvent = newEvent;
@@ -200,6 +189,8 @@ export class HomePage {
         this.EventDescription = this.CurrentEvent.EventDesc;
         this.EventParticipants = this.CurrentEvent.EventParticipants;
         this.EventEndDate = this.CurrentEvent.EventEndDate;
+        this.EventEndDateFormatted = this.FormatTime(new Date(EndDate.getTime() - EndDate.getTimezoneOffset() * 60000));
+        this.EventStartDateFormatted = this.FormatTime(new Date((StartDate.getTime() - StartDate.getTimezoneOffset() * 60000)).toISOString());
         this.CurrentEventIsFavorited = this.CurrentEvent.IsFavorite;
         this.storage.set('activeEvent', newEvent).then(() => {
           this.storage.set('CurrentEventExists', true);
