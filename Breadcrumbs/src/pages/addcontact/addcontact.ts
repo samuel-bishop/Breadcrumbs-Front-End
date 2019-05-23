@@ -18,6 +18,8 @@ import { Storage } from '@ionic/storage';
 export class addcontactPage {
   userid: any;
   private contact: FormGroup;
+  shouldHeight: any = document.body.clientHeight + 'px';
+  isMobile: boolean;
   constructor(public navCtrl: NavController, public alertCtrl: AlertController, public navParams: NavParams, public request: httprequest, public formBuilder: FormBuilder, public storage: Storage)
   {
     this.contact = this.formBuilder.group({
