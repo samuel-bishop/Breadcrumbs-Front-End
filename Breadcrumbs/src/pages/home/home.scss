@@ -22,6 +22,11 @@ page-home {
     background-size: cover;
   }
 
+  .forest-mobile {
+    background-image: linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.4)),url(../assets/rsz_1forest.png);
+    background-size: cover;
+  }
+
   .bridge {
     background-image: linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.4)),url(../../assets/bridge.jpeg);
     background-size: cover;
@@ -38,15 +43,20 @@ page-home {
     border-radius: 50% !important;
   }
 
+  .mobile-header {
+    left: -20px;
+  }
+
   .button-float-middle {
     z-index: 12;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
     height: 80px;
     width: 80px;
-    position:fixed;
+    position: fixed;
     bottom: 15px;
-    left: 100px;
+    left: 165px;
     border-radius: 50% !important;
+    text-align: center;
   }
 
   .button-float-left {

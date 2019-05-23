@@ -27,6 +27,7 @@ export class viewEventPage {
 
   constructor(public loadingCtrl: LoadingController, public navCtrl: NavController, public navParams: NavParams, public request: httprequest, public storage: Storage, public alertCtrl: AlertController) {
     this.storage.get('viewedEvent').then((event) => {
+      this.EventID = event.EventID;
       this.request.RequestEventContacts(event.EventID).then((data) => {
         this.Contacts = data['recordset'];
       })
@@ -37,8 +38,8 @@ export class viewEventPage {
       this.EventEndLng = event.EventEndLatLng.lng;
       this.EventDesc = event.EventDesc;
       this.EventParticipants = event.EventParticipants;
-      this.EventID = event.EventID;
     });
+    this.storage.set('vieweventid', this.EventID);
   }
 
   Delete() {
@@ -51,8 +52,6 @@ export class viewEventPage {
 
   DeleteEvent() {
     this.request.DeleteEvent(this.EventID);
-    this.navCtrl.pop();
-    this.navCtrl.pop();
-    this.navCtrl.push(HomePage);
+    location.reload();
   }
 }

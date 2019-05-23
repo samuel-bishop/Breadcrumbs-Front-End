@@ -174,7 +174,7 @@ export class addeventPage {
           });
 
         //wait for the event to insert fully before scheduling a watch
-        setTimeout(function (request, loading, storage, name, endDate) {
+        setTimeout(function (request, loading, storage) {
           request.RequestActiveEvent().then((data) => {
             let event = data['recordset'][0];
             request.RequestEventContacts(event.EventID).then((contactData) => {
@@ -192,7 +192,7 @@ export class addeventPage {
               });
             });
           })
-        }, 4000, this.request, loading, this.storage, eventData.name, eventData.endDate);
+        }, 4000, this.request, loading, this.storage);
       })
     }
   }

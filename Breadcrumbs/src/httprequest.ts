@@ -493,12 +493,15 @@ export class httprequest {
 
   //Start a timer
   StartWatchTimer(eventID, contacts, name, endTime, EventName, EventStartDate, StartLat, StartLon, EndLat, EndLon, EventParticipants, EventDescription) {
-  return new Promise(resolve => {
+
     let body = [];
     let contacts_array = [];
     for (let c of contacts) {
       contacts_array.push({ 'fname': c.ContactFirstName, 'lname': c.ContactLastName, 'phone': c.ContactPhoneNumber, 'email': c.ContactEmailAddress });
     }
+    var header = new Headers();
+    header.append("Accept", 'application/json');
+    header.append('Content-Type', 'application/json');
     body.push({
       'eventID': eventID, 'endTime': endTime, 'eventName': EventName, 'startDate': EventStartDate,
       'sLat': StartLat, 'sLon': StartLon, 'eLat': EndLat, 'eLon': EndLon, 'eParts': EventParticipants,
@@ -506,7 +509,9 @@ export class httprequest {
     });
     body.push(contacts_array);
     body.push(name);
-      this.http.post(aws_tts_url + '/startwatch/', body)
+    const requestOpts = new RequestOptions({ headers: header });
+    return new Promise(resolve => {
+      this.http.post(aws_url + '/startwatch/', body, requestOpts)
         .subscribe(data => {
           location.reload();
         }, error => {
@@ -520,7 +525,7 @@ export class httprequest {
   //Cancels a timer
   CancelWatch(eventID) {
     var body = { 'eventID': eventID }
-    this.http.post(aws_tts_url + '/cancelwatch/', body)
+    this.http.post(aws_url + '/cancelwatch/', body)
       .subscribe(data => {        
       }, error => {
         throw error;
@@ -640,7 +645,7 @@ export class httprequest {
   //Send an email prompting a user to change their password
   passwordEmail(data) {
     var header = new Headers();
-      this.http.post(aws_tts_url + '/passwordEmail/', data)
+      this.http.post(aws_url + '/passwordEmail/', data)
         .subscribe(result => {
           //console.log(result);
         }, error => {
@@ -677,7 +682,7 @@ export class httprequest {
       header.append('AuthToken', auth);
       header.append('SessionID', 'deleteevent');
       const requestOpts = new RequestOptions({ headers: header });
-      var body = { 'id': eventID }
+      var body = { 'eventid': eventID }
       this.http.post(aws_url + '/updateData/', body, requestOpts)
         .subscribe(data => {
           console.log(data['_body']);

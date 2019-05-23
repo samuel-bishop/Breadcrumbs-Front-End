@@ -5,15 +5,15 @@
 <ion-header class="banner">
   <ion-navbar transparent>
     <button ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
+      <ion-icon style="color:white" name="menu"></ion-icon>
     </button>
-    <h1 style="font-family:'Lucida Sans'; margin-right:auto; text-anchor:middle">Breadcrumbs</h1>
+    <h1 [class.mobile-header]="isMobile"  style="font-family:'Lucida Sans'; margin-right:auto; text-anchor:middle">Breadcrumbs</h1>
   </ion-navbar>
 </ion-header>
 
 <ion-menu [content]="sidebar" type="overlay">
   <ion-content style="margin-top:10px">
-
+  
     <!-- Profile card -->
     <ion-card color="primary" style=" text-align:center; margin-bottom: 20px">
       <ion-row>
@@ -36,10 +36,6 @@
 
     <!-- Side bar items -->
     <ion-list>
-      <button ion-item menuClose [disabled]="!isConnected" (click)="editContacts()" class="side-button">
-        <ion-icon name="contacts"></ion-icon>
-        Emergency Contacts
-      </button>
 
       <button ion-item menuClose [disabled]="!isConnected"(click)="editAccount()" class="side-button">
         <ion-icon name="finger-print"></ion-icon>
@@ -53,7 +49,7 @@
 </ion-menu>
 <ion-nav #sidebar></ion-nav>
 
-<ion-content [class.forest]="!isMobile" [class.bridge]="isMobile">
+<ion-content [class.forest]="!isMobile" [class.forest-mobile]="isMobile">
 
   <!-- If No Active Event Exists -->
   <ion-row *ngIf="!CurrentEventExists && isConnected" style="margin-top:40px">
@@ -117,23 +113,26 @@
     </ion-row>
   </ion-card>
 
-  <<ion-row *ngIf="!CurrentEventExists && isConnected" style="margin-top:40px">
-    <ion-col width-10></ion-col>
-    <ion-col width-80>
-      <button ion-button class="add-event-button" (click)="addEvent()"> + Contact   <ion-icon name="body"></ion-icon> </button>
-    </ion-col>
-    <ion-col width-10></ion-col>
-  </ion-row>
-
   <div #EventMap id="EventMap"> </div>
   <!-- Floating Nav Buttons -->
-  <button round ion-button [disabled]="!isConnected" class="button-float-right">
-    <ion-icon (click)="viewFavoriteEvents()" style="font-size:60px" name="star"> </ion-icon>
-  </button>
-  <button round ion-button [disabled]="!isConnected" class="button-float-left">
-    <ion-icon (click)="viewPastEvents()" style="font-size:60px" name="clock"> </ion-icon>
-  </button>
-  <button round ion-button class="button-float-middle">
-    <ion-icon (click)="editContacts()"  style="font-size:60px" name="body"> </ion-icon>
-  </button>
+  <ion-row>
+    <ion-col>
+      <button round ion-button [disabled]="!isConnected" class="button-float-right">
+        <ion-icon (click)="viewFavoriteEvents()" style="font-size:60px" name="star"> </ion-icon>
+      </button>
+    </ion-col>
+    <ion-col>
+      <button round ion-button [disabled]="!isConnected" class="button-float-middle">
+        <ion-icon (click)="editContacts()" style="font-size:60px" name="body"> </ion-icon>
+      </button> 
+    </ion-col>
+    <ion-col>
+      <button round ion-button [disabled]="!isConnected" class="button-float-left">
+        <ion-icon (click)="viewPastEvents()" style="font-size:60px" name="clock"> </ion-icon>
+      </button>
+    </ion-col>
+  </ion-row>
+
+
+
 </ion-content>
