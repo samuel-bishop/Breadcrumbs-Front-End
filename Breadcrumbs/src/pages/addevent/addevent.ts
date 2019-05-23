@@ -134,6 +134,7 @@ export class addeventPage {
       let loading = this.loadingCtrl.create({
         content: 'Loading Event...'
       });
+      loading.present();
       var contactsListString = "";
       for (let i = 0; i < this.event.value.contactsList.length; i++) {
         if (i != 0) {
@@ -164,65 +165,78 @@ export class addeventPage {
       }      
       //CurrentEvent stores the last submitted event's data
       this.request.InsertEvent(eventData).then(() => {
-        setTimeout(this.waitToInsertActiveEvent, 4000, this.request, this.loadingCtrl, this.storage, eventData.name, eventData.endDate)
+        let date = new Date(endDate.setHours(endDate.getHours() + 7));
+          //set a 5 minute reminder
+          LocalNotifications.schedule({
+            title: `${eventData.name}`,
+            text: `${EndDateISO}`,
+            at: new Date(date.getTime() - 300 * 1000)
+          });
+
+        //wait for the event to insert fully before scheduling a watch
+        setTimeout(function (request, loading, storage, name, endDate) {
+          request.RequestActiveEvent().then((data) => {
+            let event = data['recordset'][0];
+            request.RequestEventContacts(event.EventID).then((contactData) => {
+              let contacts = contactData['recordset'];
+              storage.get('user').then((user) => {
+                let fname = user.FirstName + ' ' + user.LastName[0] + '.';
+                request.StartWatchTimer(event.EventID, contacts, fname, event.EndDate, event.EventName, event.StartDate, event.StartLat,
+                  event.StartLon, event.EndLat, event.EndLon, event.Participants, event.Description)
+                  .then(() => {
+                    loading.dismiss();
+                    location.reload();
+                  }).catch(() => {
+                    setTimeout(location.reload(), 1000);
+                  })
+              });
+            });
+          })
+        }, 4000, this.request, loading, this.storage, eventData.name, eventData.endDate);
       })
     }
   }
 
-  waitToInsertActiveEvent(request, loadingCtrl, storage, eventName, endDate: Date) {
-    let loading = loadingCtrl.create({
-      content: 'Creating Event...'
-    });
-
-    loading.present().then(() => {
-      request.RequestActiveEvent().then((data) => {
-        let event = data['recordset'][0];
-        request.RequestEventContacts(event.EventID).then((contactData) => {
-          let contacts = contactData['recordset'];
-          storage.get('user').then((user) => {
-            let fname = user.FirstName + ' ' + user.LastName[0] + '.';
-            request.StartWatchTimer(event.EventID, contacts, fname, event.EndDate, event.EventName, event.StartDate, event.StartLat, event.StartLon, event.EndLat, event.EndLon, event.Participants, event.Description).then(() => {
-              let date = new Date(endDate.setHours(endDate.getHours() + 7));
-              //set a 5 minute reminder
-              LocalNotifications.schedule({
-                title: `${eventName}`,
-                text: `${endDate}`,
-                at: new Date(date.getTime() - 300 * 1000)
-              });
-              loading.dismiss();
-            }).catch(() => {
-              setTimeout(location.reload(), 2000);
-            })
-          });
-        });
-      }).catch(() => {
-        request.RequestActiveEvent().then((data2) => {
-          let event = data2['recordset'][0];
-          request.RequestEventContacts(event.EventID).then((contactData) => {
-            let contacts = contactData['recordset'];
-            storage.get('user').then((user) => {
-              let fname = user.FirstName + ' ' + user.LastName[0] + '.';
-              request.StartWatchTimer(event.EventID, contacts, fname, event.EndDate, event.EventName, event.StartDate, event.StartLat, event.StartLon, event.EndLat, event.EndLon, event.Participants, event.Description).then(() => {
-                let date = new Date(endDate.setHours(endDate.getHours() + 7));
-                //set a 5 minute reminder
-                LocalNotifications.schedule({
-                  title: `${eventName}`,
-                  text: `${endDate}`,
-                  at: new Date(date.getTime() - 300 * 1000)
-                });
-                loading.dismiss();
-              }).catch(() => {
-                setTimeout(location.reload(), 2000);
-              })
-            });
-          });
+  waitToInsertActiveEvent(request, loading, storage, eventName, endDate: Date) {
+    request.RequestActiveEvent().then((data) => {
+      let event = data['recordset'][0];
+      request.RequestEventContacts(event.EventID).then((contactData) => {
+        let contacts = contactData['recordset'];
+        storage.get('user').then((user) => {
+          let fname = user.FirstName + ' ' + user.LastName[0] + '.';
+          request.StartWatchTimer(event.EventID, contacts, fname, event.EndDate, event.EventName, event.StartDate, event.StartLat,
+            event.StartLon, event.EndLat, event.EndLon, event.Participants, event.Description)
+          .then(() => {
+            loading.dismiss();
+          }).catch(() => {
+            setTimeout(location.reload(), 1000);
+          })
         });
       });
-    });
-  }
-
-  SetupWatch(loading, event, request, alertCtrl, navCtrl, loadingCtrl, storage, eventName, endDate: Date) {
-   
+    })
+      //}).catch(() => {
+      //  request.RequestActiveEvent().then((data2) => {
+      //    let event = data2['recordset'][0];
+      //    request.RequestEventContacts(event.EventID).then((contactData) => {
+      //      let contacts = contactData['recordset'];
+      //      storage.get('user').then((user) => {
+      //        let fname = user.FirstName + ' ' + user.LastName[0] + '.';
+      //        request.StartWatchTimer(event.EventID, contacts, fname, event.EndDate, event.EventName, event.StartDate, event.StartLat, event.StartLon, event.EndLat, event.EndLon, event.Participants, event.Description).then(() => {
+      //          let date = new Date(endDate.setHours(endDate.getHours() + 7));
+      //          //set a 5 minute reminder
+      //          //LocalNotifications.schedule({
+      //          //  title: `${eventName}`,
+      //          //  text: `${endDate}`,
+      //          //  at: new Date(date.getTime() - 300 * 1000)
+      //          //});
+      //          loading.dismiss();
+      //        }).catch(() => {
+      //          setTimeout(location.reload(), 2000);
+      //        })
+      //      });
+      //    });
+      //  });
+      //});
   }
 
   selectSearchResult(item) {

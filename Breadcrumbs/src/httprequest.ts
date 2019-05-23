@@ -493,8 +493,9 @@ export class httprequest {
 
   //Start a timer
   StartWatchTimer(eventID, contacts, name, endTime, EventName, EventStartDate, StartLat, StartLon, EndLat, EndLon, EventParticipants, EventDescription) {
-    var body = [];
-    var contacts_array = [];
+  return new Promise(resolve => {
+    let body = [];
+    let contacts_array = [];
     for (let c of contacts) {
       contacts_array.push({ 'fname': c.ContactFirstName, 'lname': c.ContactLastName, 'phone': c.ContactPhoneNumber, 'email': c.ContactEmailAddress });
     }
@@ -505,14 +506,11 @@ export class httprequest {
     });
     body.push(contacts_array);
     body.push(name);
-
-    return new Promise(resolve => {
       this.http.post(aws_tts_url + '/startwatch/', body)
         .subscribe(data => {
           location.reload();
         }, error => {
-            throw error;
-            //location.reload();
+            throw error; 
           });
       resolve();
     });
