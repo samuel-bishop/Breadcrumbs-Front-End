@@ -2,8 +2,8 @@
 <!-- Banner -->
 <!-- Active Event Division -->
 
-<ion-header>
-  <ion-navbar>
+<ion-header class="banner">
+  <ion-navbar transparent>
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
@@ -106,7 +106,7 @@
       </ion-col>
       <ion-col></ion-col>
       <ion-col style="text-align:right">
-        <button  (click)="favoriteEvent(CurrentEvent)" [disabled]="!isConnected" [class.favorite-event-button]="!CurrentEventIsFavorited" [class.favorite-event-logo]="CurrentEventIsFavorited" ion-button >
+        <button (click)="favoriteEvent(CurrentEvent)" [disabled]="!isConnected" [class.favorite-event-button]="!CurrentEventIsFavorited" [class.favorite-event-logo]="CurrentEventIsFavorited" ion-button>
           <ion-icon name="star" style="font-size:30px; left:40px"></ion-icon>
         </button>
       </ion-col>
@@ -120,7 +120,7 @@
   <<ion-row *ngIf="!CurrentEventExists && isConnected" style="margin-top:40px">
     <ion-col width-10></ion-col>
     <ion-col width-80>
-      <button ion-button class="add-event-button" (click)="addEvent()"> + Event   <ion-icon name="bicycle"></ion-icon> </button>
+      <button ion-button class="add-event-button" (click)="addEvent()"> + Contact   <ion-icon name="body"></ion-icon> </button>
     </ion-col>
     <ion-col width-10></ion-col>
   </ion-row>
@@ -130,7 +130,10 @@
   <button round ion-button [disabled]="!isConnected" class="button-float-right">
     <ion-icon (click)="viewFavoriteEvents()" style="font-size:60px" name="star"> </ion-icon>
   </button>
-  <button round ion-button [disabled]="!isConnected"  class="button-float-left">
+  <button round ion-button [disabled]="!isConnected" class="button-float-left">
     <ion-icon (click)="viewPastEvents()" style="font-size:60px" name="clock"> </ion-icon>
+  </button>
+  <button round ion-button class="button-float-middle">
+    <ion-icon (click)="editContacts()"  style="font-size:60px" name="body"> </ion-icon>
   </button>
 </ion-content>

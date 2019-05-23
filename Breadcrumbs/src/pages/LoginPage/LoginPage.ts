@@ -180,11 +180,11 @@ export class LoginPagePage {
   }
 
   forgotPassword() {
-    this.navCtrl.push(forgotPasswordPage);
+    this.navCtrl.push(forgotPasswordPage, { animate: false });
   }
 
   infoPrompt() {
-    this.navCtrl.push(infoPromptPage);
+    this.navCtrl.push(infoPromptPage, { animate: false });
   }
 
   validateUser() {

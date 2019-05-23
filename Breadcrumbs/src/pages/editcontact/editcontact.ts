@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, DateTime, LoadingController, AlertController, Alert } from 'ionic-angular';
+import { NavController, NavParams, DateTime, LoadingController, Platform, AlertController, Alert } from 'ionic-angular';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { httprequest } from '../../httprequest';
 import { Storage } from '@ionic/storage';
@@ -28,8 +28,14 @@ export class editcontactPage {
   contactEmailAddress: any;
   contactID: any;
   private editcontact: FormGroup;
-  constructor(public alertCtrl: AlertController, public navCtrl: NavController, public loadingCtrl: LoadingController, public navParams: NavParams, public request: httprequest, public formBuilder: FormBuilder, public storage: Storage) {
+  shouldHeight: any = document.body.clientHeight + 'px';
+  isMobile: boolean;
+  constructor(public alertCtrl: AlertController, public navCtrl: NavController, public loadingCtrl: LoadingController, public navParams: NavParams, public request: httprequest, public formBuilder: FormBuilder, public storage: Storage, public platform: Platform) {
     this.loadContacts();
+    if (platform.is('mobile')) {
+      this.isMobile = true;
+    }
+    else this.isMobile = false;
     this.editcontact = this.formBuilder.group({
       contactID: [''],
       firstName: ['', Validators.required],
@@ -129,5 +135,9 @@ export class editcontactPage {
 
   addNewContact() {
     this.navCtrl.push(addcontactPage, { animate: false });
+  }
+
+  goHome() {
+    this.navCtrl.push(HomePage, { animate: false });
   }
 }
