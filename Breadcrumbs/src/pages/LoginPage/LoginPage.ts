@@ -58,6 +58,10 @@ export class LoginPagePage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad LoginPagePage');
+      let alert = this.alertCtrl.create({
+        title: "Attention", subTitle: `Please ensure that your location is enabled before logging in`, buttons: ["Ok"]
+      });
+      alert.present();
   }
 
   signIn() {

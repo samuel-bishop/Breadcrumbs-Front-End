@@ -1,5 +1,5 @@
 import { Component, ElementRef, ViewChild, NgZone } from '@angular/core';
-import { NavController, NavParams, DateTime, LoadingController, AlertController, Alert, Select } from 'ionic-angular';
+import { NavController, NavParams, DateTime, LoadingController, AlertController, Platform, Alert, Select } from 'ionic-angular';
 import { Http, Headers, Request, RequestOptions } from '@angular/http';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { addcontactPage } from '../addcontact/addcontact';
@@ -45,6 +45,7 @@ export class addeventPage {
   eventDesc: any = "";
   eventPart: any = "";
   isVisible: boolean = false;
+  isMobile: boolean = false;
   data: any;
   activeEventName: any;
   GoogleAutocomplete: any;
@@ -57,8 +58,9 @@ export class addeventPage {
   @ViewChild('contactsList') select: Select;
   @ViewChild('AddEventMap') AddEventMapEl: ElementRef;
 
-  constructor(public alertCtrl: AlertController, public http: Http, private zone: NgZone, public loadingCtrl: LoadingController, public navCtrl: NavController, public navParams: NavParams, public request: httprequest, public formBuilder: FormBuilder, public storage: Storage, public geo: Geolocation) {
+  constructor(public alertCtrl: AlertController, public platform: Platform, public http: Http, private zone: NgZone, public loadingCtrl: LoadingController, public navCtrl: NavController, public navParams: NavParams, public request: httprequest, public formBuilder: FormBuilder, public storage: Storage, public geo: Geolocation) {
     //Initialize google AddEventMap and markers
+    if (this.platform.is('mobile')) {this.isMobile = true; }
     this.initMap();
     this.selectedItemsCount = 0;
     isStartLocation = false;
@@ -121,14 +123,23 @@ export class addeventPage {
       var alert = this.alertCtrl.create({ title: 'Error: Max of 3 Contacts Allowed', subTitle: 'Uncheck some contacts', buttons: ['ok'] });
       alert.present();
     }
+    else if (this.event.value.contactsList.length == 0) {
+      var alert = this.alertCtrl.create({ title: 'Error: No Contacts', subTitle: 'Select contacts', buttons: ['ok'] });
+      alert.present();
+    }
     else if (this.event.value.endDate < this.event.value.startDate) {
       var alert = this.alertCtrl.create({ title: 'Error: Time Conflict', subTitle: 'Please check that your dates are not conflicting (End Date should not be before Start Date)', buttons: ['ok'] });
       alert.present();
     }
-    else if (endLocMarker.getMap() === null) {
+    else if (endLocMarker == undefined || endLocMarker == null) {
       var alert = this.alertCtrl.create({ title: 'Error: Input Error', subTitle: 'Please select an end point on the AddEventMap', buttons: ['ok'] });
       alert.present();
     }
+    else if (endLocMarker.getMap() == null) {
+      var alert = this.alertCtrl.create({ title: 'Error: Input Error', subTitle: 'Please select an end point on the AddEventMap', buttons: ['ok'] });
+      alert.present();
+    }
+    
 
     else {
       let loading = this.loadingCtrl.create({
@@ -206,37 +217,14 @@ export class addeventPage {
           let fname = user.FirstName + ' ' + user.LastName[0] + '.';
           request.StartWatchTimer(event.EventID, contacts, fname, event.EndDate, event.EventName, event.StartDate, event.StartLat,
             event.StartLon, event.EndLat, event.EndLon, event.Participants, event.Description)
-          .then(() => {
-            loading.dismiss();
-          }).catch(() => {
-            setTimeout(location.reload(), 1000);
-          })
+            .then(() => {
+              loading.dismiss();
+            }).catch(() => {
+              setTimeout(location.reload(), 1000);
+            })
         });
       });
-    })
-      //}).catch(() => {
-      //  request.RequestActiveEvent().then((data2) => {
-      //    let event = data2['recordset'][0];
-      //    request.RequestEventContacts(event.EventID).then((contactData) => {
-      //      let contacts = contactData['recordset'];
-      //      storage.get('user').then((user) => {
-      //        let fname = user.FirstName + ' ' + user.LastName[0] + '.';
-      //        request.StartWatchTimer(event.EventID, contacts, fname, event.EndDate, event.EventName, event.StartDate, event.StartLat, event.StartLon, event.EndLat, event.EndLon, event.Participants, event.Description).then(() => {
-      //          let date = new Date(endDate.setHours(endDate.getHours() + 7));
-      //          //set a 5 minute reminder
-      //          //LocalNotifications.schedule({
-      //          //  title: `${eventName}`,
-      //          //  text: `${endDate}`,
-      //          //  at: new Date(date.getTime() - 300 * 1000)
-      //          //});
-      //          loading.dismiss();
-      //        }).catch(() => {
-      //          setTimeout(location.reload(), 2000);
-      //        })
-      //      });
-      //    });
-      //  });
-      //});
+    });
   }
 
   selectSearchResult(item) {
@@ -280,7 +268,7 @@ export class addeventPage {
       });
   }
 
-  initMap() {
+initMap() {
     this.storage.get('EditEvent').then((edit) => {
       if (edit == true) {
         this.storage.get('activeEvent').then((data) => {
@@ -290,13 +278,12 @@ export class addeventPage {
       }
       else {
         //Init Google Maps API objects
-
+        currentLat = 42.2587;
+        currentLng = -121.7836;
         this.geo.getCurrentPosition().then((position) => {
           currentLat = position.coords.latitude;
           currentLng = position.coords.longitude;
         }).catch((error) => {
-          currentLat = 42.2587;
-          currentLng = -121.7836;
           let alert = this.alertCtrl.create({
             title: "Attention", subTitle: `We can't access your location`, buttons: ["Ok"]
           });
