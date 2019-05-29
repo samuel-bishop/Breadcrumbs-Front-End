@@ -81,6 +81,10 @@ export class vieweventsPage {
 
   DeleteEvent(event) {
     this.request.DeleteEvent(event.EventID);
+    if (event.IsFavorite) {
+      this.request.FavoriteEvent(event.EventID);
+    }
+       
     this.inactiveEvents = this.arrayRemove(this.inactiveEvents, event);
     this.favoriteEvents = this.arrayRemove(this.favoriteEvents, event);
     this.storage.set('favoriteEvents', this.favoriteEvents);
