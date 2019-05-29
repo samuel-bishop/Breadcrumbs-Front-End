@@ -419,6 +419,29 @@ export class httprequest {
     })
   }
 
+
+  //Get a users id, passing in their email
+  GetEmail(email: string) {
+    return new Promise(resolve => {
+      var header = new Headers();
+      this.storage.get('auth').then((auth) => {
+        header.append('AuthToken', auth);
+        header.append('SessionID', 'getemail');
+        header.append('un-content', email);
+        const requestOpts = new RequestOptions({ headers: header });
+        this.http.get(aws_url + '/getData/', requestOpts)
+          .map(res => res.json())
+          .subscribe(data => {
+            this.data = data;
+            resolve(this.data);
+          },
+            (error) => {
+              throw error;
+            });
+      })
+    })
+  }
+
   //Get just a users id from their username
   GetUserID(username) {
     return new Promise(resolve => {
