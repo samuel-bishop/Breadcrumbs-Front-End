@@ -1,0 +1,19 @@
+<ion-header class="banner">
+  <ion-navbar transparent>
+    <h1 style="font-family:'Lucida Sans'; margin-right:auto; text-anchor:middle">Emergency Contacts</h1>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding [class.content-background]="!isMobile" [class.mobile-background]="isMobile" [style.background-size]="'100% ' + shouldHeight">
+  <ion-content class="block" padding [style.background-size]="'100% ' + shouldHeight">
+    <ion-row *ngFor="let contact of contacts">
+      <ion-card>
+        <ion-row>
+          <ion-col style="font-size:20px; font-weight: bold;">
+            {{contact.ContactName}}
+          </ion-col>
+        </ion-row>
+        </ion-card>
+        </ion-row>
+</ion-content>
+  </ion-content>
