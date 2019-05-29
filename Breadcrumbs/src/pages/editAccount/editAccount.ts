@@ -81,7 +81,7 @@ export class editAccountPage {
           handler: () => {
 
             this.request.GetEmail(this.accEmail).then((data) => {
-              if (data['recordset'][0].UserID != this.userid && this.accEmail != this.oldEmail) {
+              if (data['recordset'][0].UserID != this.userid && this.editAccount.value.emailAddress.toLowerCase() != this.oldEmail) {
                 var alert2 = this.alertCtrl.create({ title: 'Error', subTitle: 'This email already exists.', buttons: ['Ok'] });
                 alert2.present();
               }
@@ -91,7 +91,7 @@ export class editAccountPage {
                   "firstName": this.editAccount.value.firstName,
                   "lastName": this.editAccount.value.lastName,
                   "phoneNumber": this.editAccount.value.phoneNumber,
-                  "emailAddress": this.editAccount.value.emailAddress
+                  "emailAddress": this.editAccount.value.emailAddress.toLowerCase()
                 }
 
                 this.storage.get('user').then((user) => {
