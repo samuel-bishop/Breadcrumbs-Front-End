@@ -71,6 +71,22 @@ export class vieweventsPage {
     });
   }
 
+  Delete(event) {
+    let alert = this.alertCtrl.create({
+      title: "Attention", message: "Are you sure you want to delete this event, this cannot be undone", buttons: [{ text: 'Cancel' }, { text: 'Ok', handler: data => this.DeleteEvent(event) }],
+    });
+    alert.present();
+    console.log(alert);
+  }
+
+  DeleteEvent(event) {
+    this.request.DeleteEvent(event.EventID);
+    this.inactiveEvents = this.arrayRemove(this.inactiveEvents, event);
+    this.favoriteEvents = this.arrayRemove(this.favoriteEvents, event);
+    this.storage.set('favoriteEvents', this.favoriteEvents);
+    this.storage.set('inactiveEvents', this.inactiveEvents);
+  }
+
   favoriteEvent(event) {
     this.request.FavoriteEvent(event.EventID);
     event.IsFavorite = this.toggleBool(event.IsFavorite);
