@@ -37,9 +37,21 @@
     <!-- Side bar items -->
     <ion-list>
 
-      <button ion-item menuClose [disabled]="!isConnected"(click)="editAccount()" class="side-button">
+      <button ion-item menuClose [disabled]="!isConnected" (click)="editAccount()" class="side-button">
         <ion-icon name="finger-print"></ion-icon>
         Edit Account
+      </button>
+      <button ion-item menuClose [disabled]="!isConnected" (click)="editContacts()" class="side-button">
+        <ion-icon name="body"></ion-icon>
+        Manage Contacts
+      </button>
+      <button ion-item menuClose [disabled]="!isConnected" (click)="viewFavoriteEvents()" class="side-button">
+        <ion-icon name="star"></ion-icon>
+        Favorite Events
+      </button>
+      <button ion-item menuClose [disabled]="!isConnected" (click)="viewPastEvents()" class="side-button">
+        <ion-icon name="clock"></ion-icon>
+        Past Events
       </button>
 
       <button ion-item menuClose (click)="logout()" class="side-button" style="color:red">Logout</button>
@@ -99,6 +111,9 @@
     <ion-row>
       <ion-col>
         <button (click)="checkIn()" [disabled]="!isConnected" round ion-button class="end-event-button"> Check In  </button>
+        <button (click)="editEvent()" [disabled]="!isConnected" ion-button class="favorite-event-button" button>
+          <ion-icon name="create" style="font-size:30px; color:white"></ion-icon>
+        </button>
       </ion-col>
       <ion-col></ion-col>
       <ion-col style="text-align:right">

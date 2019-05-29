@@ -42,16 +42,5 @@ export class viewEventPage {
     this.storage.set('vieweventid', this.EventID);
   }
 
-  Delete() {
-    let alert = this.alertCtrl.create({
-      title: "Attention", message: "Are you sure you want to delete this event, this cannot be undone", buttons: [{ text: 'Cancel' }, { text: 'Ok', handler: data => this.DeleteEvent() }],
-    });
-    alert.present();
-    console.log(alert);
-  }
 
-  DeleteEvent() {
-    this.request.DeleteEvent(this.EventID);
-    location.reload();
-  }
 }

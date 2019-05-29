@@ -3,6 +3,7 @@ import { NavController, NavParams, AlertController } from 'ionic-angular';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { httprequest } from '../../httprequest';
 import { Storage } from '@ionic/storage';
+import { addeventPage } from '../addevent/addevent';
 
 /*
   Generated class for the addcontact page.
@@ -41,12 +42,12 @@ export class addcontactPage {
         "emailAddress": this.contact.value.emailAddress
       }
       this.storage.get('userID').then((userid) => {
-        this.request.InsertContact(userid, contactData);
-      }).then(() => {
-        this.navCtrl.popToRoot({ animate: false });
-      })
+        this.request.InsertContact(userid, contactData).then(() => {
+          this.navCtrl.popToRoot({ animate: false });
+        });
+      });
     });
-   }
+  }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad addcontactPage');

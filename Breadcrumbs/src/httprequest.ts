@@ -237,26 +237,29 @@ export class httprequest {
 
   //Insert a new contact for a user
   InsertContact(userid, contactData) {
-    var header = new Headers();
-    header.append("Accept", 'application/json');
-    header.append('Content-Type', 'application/json');
-    var body = {
-      'userid': userid,
-      'firstName': contactData.firstName,
-      'lastName': contactData.lastName,
-      'phoneNumber': contactData.phoneNumber,
-      'emailAddress': contactData.emailAddress
-    };
-    this.storage.get('auth').then((auth) => {
-      header.append('AuthToken', auth);
-      header.append('SessionID', 'newcontact');
-      const requestOpts = new RequestOptions({ headers: header });
-      this.http.post(aws_url + '/updateData/', body, requestOpts)
-        .subscribe(data => {
-          console.log(data['_body']);
-        }, error => {
-          throw error;
-        });
+    return new Promise(resolve => {
+      var header = new Headers();
+      header.append("Accept", 'application/json');
+      header.append('Content-Type', 'application/json');
+      var body = {
+        'userid': userid,
+        'firstName': contactData.firstName,
+        'lastName': contactData.lastName,
+        'phoneNumber': contactData.phoneNumber,
+        'emailAddress': contactData.emailAddress
+      };
+      this.storage.get('auth').then((auth) => {
+        header.append('AuthToken', auth);
+        header.append('SessionID', 'newcontact');
+        const requestOpts = new RequestOptions({ headers: header });
+        this.http.post(aws_url + '/updateData/', body, requestOpts)
+          .subscribe(data => {
+            console.log(data['_body']);
+            resolve();
+          }, error => {
+            throw error;
+          });
+      });
     });
   }
 
