@@ -71,8 +71,8 @@ export class addeventPage {
     //Creating Forms
     storage.get('userID').then((data) => { this.userid = data; });
     this.event = this.formBuilder.group({
-      name: ['', Validators.required],
-      description: ['', Validators.required],
+      name: ['',  Validators.pattern('^[A-Za-z0-9,. ]+$')],
+      description: ['', Validators.pattern('^[A-Za-z0-9,. ]+$')],
       startLat: [''],
       startLong: [''],
       endLat: [''],
@@ -80,7 +80,7 @@ export class addeventPage {
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
       contactsList: ['', Validators.required],
-      participants: ['']
+      participants: ['', Validators.pattern('^[A-Za-z0-9,. ]*$')]
     });
 
     this.storage.get('EditEvent').then((edit) => {
