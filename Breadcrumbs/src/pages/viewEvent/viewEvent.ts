@@ -2,8 +2,6 @@ import { Component } from '@angular/core';
 import { NavController, NavParams, LoadingController, AlertController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { httprequest } from '../../httprequest';
-import { Event } from '../../datastructs';
-import { HomePage } from '../home/home';
 
 @Component({
   selector: 'page-viewEvent',

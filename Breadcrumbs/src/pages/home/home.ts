@@ -11,7 +11,7 @@ import { Event } from '../../datastructs';
 import { LatLng, GoogleMap } from '@ionic-native/google-maps';
 import { viewEventPage } from '../viewEvent/viewEvent';
 import { editAccountPage } from '../editAccount/editAccount';
-import { LocalNotifications, Network } from 'ionic-native';
+import { LocalNotifications } from 'ionic-native';
 import { favoriteEventsPage } from '../favoriteEvents/favoriteEvents';
 
 

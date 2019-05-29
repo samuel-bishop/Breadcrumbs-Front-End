@@ -2,8 +2,6 @@ import { Component, ViewChild } from '@angular/core';
 import { NavController, NavParams, AlertController } from 'ionic-angular';
 import { httprequest } from '../../httprequest';
 import { Storage } from '@ionic/storage';
-import { addcontactPage } from '../addcontact/addcontact';
-import { HomePage } from '../home/home';
 /*
   Generated class for the Register page.
 
