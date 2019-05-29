@@ -5,15 +5,30 @@
 </ion-header>
 
 <ion-content padding [class.content-background]="!isMobile" [class.mobile-background]="isMobile" [style.background-size]="'100% ' + shouldHeight">
-  <ion-content class="block" padding [style.background-size]="'100% ' + shouldHeight">
-    <ion-row *ngFor="let contact of contacts">
-      <ion-card>
-        <ion-row>
-          <ion-col style="font-size:20px; font-weight: bold;">
-            {{contact.ContactName}}
-          </ion-col>
-        </ion-row>
-        </ion-card>
-        </ion-row>
+  <ion-row *ngFor="let data of contacts">
+    <ion-card class="cardconteudo">
+      {{data.ContactFirstName}}
+      {{data.ContactLastName}}
+
+
+
+      <button ion-button class="button-option" *ngIf="!isMobile">Edit</button>
+      <button ion-button class="button-option" *ngIf="!isMobile">Delete</button>
+      <button ion-button class="button-option" *ngIf="isMobile">
+        <ion-icon name="create"></ion-icon>
+      </button>
+      <button ion-button class="button-option" *ngIf="isMobile">
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-card>
+  </ion-row>
+  <ion-row>
+    <button ion-button *ngIf="!isMobile" (click)="addContact()">Add Contact</button>
+    <ion-fab *ngIf="isMobile" bottom right style="font-size:60px; height: 80px; margin-right:15px">
+      <button ion-fab (click)="addContact()">
+        <ion-icon name="add"></ion-icon>
+      </button>
+     </ion-fab>
+</ion-row>
+ 
 </ion-content>
-  </ion-content>

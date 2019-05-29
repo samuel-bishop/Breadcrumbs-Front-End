@@ -54,7 +54,7 @@ export class addcontactPage {
   }
 
   cancelClick() {
-    this.navCtrl.popToRoot({ animate: false });
+    this.navCtrl.pop({ animate: false });
   }
 
 }
