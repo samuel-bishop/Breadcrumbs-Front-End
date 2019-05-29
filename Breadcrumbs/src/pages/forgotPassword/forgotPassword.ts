@@ -2,6 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { NavController, NavParams, AlertController, Platform } from 'ionic-angular';
 import { httprequest } from '../../httprequest';
 import { LoginPagePage } from '../LoginPage/LoginPage';
+import { Validators, FormGroup, FormBuilder } from '@angular/forms';
 
 /*
   Generated class for the forgotPassword page.
@@ -16,7 +17,6 @@ import { LoginPagePage } from '../LoginPage/LoginPage';
 
 })
 
-
 export class forgotPasswordPage {
     //items for the input
   @ViewChild("email") email;
@@ -26,8 +26,13 @@ export class forgotPasswordPage {
   gotCode: boolean  =false;
   shouldHeight: any = document.body.clientHeight + 'px';
   isMobile: boolean;
-  constructor(public navCtrl: NavController, public navParams: NavParams, public request: httprequest, public alertCtrl: AlertController, private platform: Platform) {
-  if(platform.is('mobile')) {
+  private emailCheck: FormGroup;
+
+  constructor(public navCtrl: NavController, public navParams: NavParams, public request: httprequest, public alertCtrl: AlertController, private platform: Platform, public formBuilder: FormBuilder) {
+    this.emailCheck = this.formBuilder.group({
+      email: ['', Validators.pattern('^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$')],
+    });
+    if (platform.is('mobile')) {
   this.isMobile = true;
 }
     else this.isMobile = false;

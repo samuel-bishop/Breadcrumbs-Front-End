@@ -42,10 +42,6 @@ export class LoginPagePage {
   constructor(public navCtrl: NavController, public request: httprequest, public navParams: NavParams, public platform: Platform, public alertCtrl: AlertController, public storage: Storage, public loadingCtrl: LoadingController, public formBuilder: FormBuilder) {
     this.registration = this.formBuilder.group({
       username: ['', Validators.pattern('^[A-Za-z0-9_.]*$')],
-      password: ['',],
-      confirmpassword: ['',],
-      firstname: ['',],
-      lastname: ['',],
       email: ['', Validators.pattern('^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$')],
     });
     this.isConnected = false;
@@ -207,6 +203,15 @@ export class LoginPagePage {
 
   initialClick() {
     this.signIn();
+  }
+
+  Enter() {
+    if (this.isRegister) {
+      this.Register();
+    }
+    else {
+      this.initialClick();
+    }
   }
 
   forgotPassword() {
