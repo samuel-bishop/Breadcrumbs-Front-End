@@ -237,26 +237,29 @@ export class httprequest {
 
   //Insert a new contact for a user
   InsertContact(userid, contactData) {
-    var header = new Headers();
-    header.append("Accept", 'application/json');
-    header.append('Content-Type', 'application/json');
-    var body = {
-      'userid': userid,
-      'firstName': contactData.firstName,
-      'lastName': contactData.lastName,
-      'phoneNumber': contactData.phoneNumber,
-      'emailAddress': contactData.emailAddress
-    };
-    this.storage.get('auth').then((auth) => {
-      header.append('AuthToken', auth);
-      header.append('SessionID', 'newcontact');
-      const requestOpts = new RequestOptions({ headers: header });
-      this.http.post(aws_url + '/updateData/', body, requestOpts)
-        .subscribe(data => {
-          console.log(data['_body']);
-        }, error => {
-          throw error;
-        });
+    return new Promise(resolve => {
+      var header = new Headers();
+      header.append("Accept", 'application/json');
+      header.append('Content-Type', 'application/json');
+      var body = {
+        'userid': userid,
+        'firstName': contactData.firstName,
+        'lastName': contactData.lastName,
+        'phoneNumber': contactData.phoneNumber,
+        'emailAddress': contactData.emailAddress
+      };
+      this.storage.get('auth').then((auth) => {
+        header.append('AuthToken', auth);
+        header.append('SessionID', 'newcontact');
+        const requestOpts = new RequestOptions({ headers: header });
+        this.http.post(aws_url + '/updateData/', body, requestOpts)
+          .subscribe(data => {
+            console.log(data['_body']);
+            resolve();
+          }, error => {
+            throw error;
+          });
+      });
     });
   }
 
@@ -402,6 +405,29 @@ export class httprequest {
         header.append('AuthToken', auth);
         header.append('SessionID', 'getuser');
         header.append('un-content', user);
+        const requestOpts = new RequestOptions({ headers: header });
+        this.http.get(aws_url + '/getData/', requestOpts)
+          .map(res => res.json())
+          .subscribe(data => {
+            this.data = data;
+            resolve(this.data);
+          },
+            (error) => {
+              throw error;
+            });
+      })
+    })
+  }
+
+
+  //Get a users id, passing in their email
+  GetEmail(email: string) {
+    return new Promise(resolve => {
+      var header = new Headers();
+      this.storage.get('auth').then((auth) => {
+        header.append('AuthToken', auth);
+        header.append('SessionID', 'getemail');
+        header.append('un-content', email);
         const requestOpts = new RequestOptions({ headers: header });
         this.http.get(aws_url + '/getData/', requestOpts)
           .map(res => res.json())

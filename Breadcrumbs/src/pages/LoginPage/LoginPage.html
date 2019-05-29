@@ -4,103 +4,106 @@
   </ion-title>
 </ion-header>
 
+
 <ion-content padding [class.content-background]="!isMobile" [class.mobile-background]="isMobile" [style.background-size]="'100% ' + shouldHeight">
-  <!-- Row 1 -->
-  <ion-row>
-    <ion-col>
-      <!--1x1-->
-    </ion-col>
-    <ion-col>
-      <!--1x2-->
-      <ion-input class="login-forms" type="text" placeholder="Username" name="username" #username></ion-input>
-      <ion-input class="login-forms" type="password" placeholder="Password" name="password" #password></ion-input>
-      <ion-input *ngIf="isRegister" class="login-forms" type="password" placeholder="Confirm Password" name="passwordConfirm"></ion-input>
-    </ion-col>
-    <ion-col>
-      <!--1x3-->
-    </ion-col>
-  </ion-row>
+  <form [formGroup]="registration">
+    <!-- Row 1 -->
+    <ion-row>
+      <ion-col>
+        <!--1x1-->
+      </ion-col>
+      <ion-col>
+        <!--1x2-->
+        <ion-input class="login-forms" formControlName="username" type="text" placeholder="Username" name="username" #username></ion-input>
+        <ion-input class="login-forms" type="password" placeholder="Password" name="password" #password></ion-input>
+        <ion-input *ngIf="isRegister" class="login-forms" type="password" placeholder="Confirm Password" name="passwordConfirm"></ion-input>
+      </ion-col>
+      <ion-col>
+        <!--1x3-->
+      </ion-col>
+    </ion-row>
 
-  <!-- Row 2 -->
-  <ion-row>
-    <ion-col>
-      <!--3x1-->
-    </ion-col>
-    <ion-col>
-      <!--3x2-->
-      <ion-input *ngIf="isRegister" class="login-forms" type="text" placeholder="First Name" name="firstName" #firstName></ion-input>
-      <ion-input *ngIf="isRegister" class="login-forms" type="text" placeholder="Last Name" name="lastName" #lastName></ion-input>
+    <!-- Row 2 -->
+    <ion-row>
+      <ion-col>
+        <!--3x1-->
+      </ion-col>
+      <ion-col>
+        <!--3x2-->
+        <ion-input *ngIf="isRegister" class="login-forms" type="text" placeholder="First Name" name="firstName" #firstName></ion-input>
+        <ion-input *ngIf="isRegister" class="login-forms" type="text" placeholder="Last Name" name="lastName" #lastName></ion-input>
 
-    </ion-col>
-    <ion-col>
-      <!--3x3-->
-    </ion-col>
-  </ion-row>
+      </ion-col>
+      <ion-col>
+        <!--3x3-->
+      </ion-col>
+    </ion-row>
 
-  <!-- Row 3 -->
-  <ion-row>
-    <ion-col>
-      <!--3x1-->
-    </ion-col>
-    <ion-col>
-      <ion-input *ngIf="isRegister" class="login-forms" type="email" placeholder="Email" name="email" #email></ion-input>
-      <!--<ion-input *ngIf="isRegister" class="login-forms" type="number" placeholder="Phone Number" name="phonenumber" #mobile></ion-input>-->
-      <!--3x2-->
-    </ion-col>
-    <ion-col>
-      <!--3x3-->
-    </ion-col>
+    <!-- Row 3 -->
+    <ion-row>
+      <ion-col>
+        <!--3x1-->
+      </ion-col>
+      <ion-col>
+        <ion-input formControlName="email" *ngIf="isRegister" class="login-forms" type="email" placeholder="Email" name="email" #email></ion-input>
+        <!--<ion-input *ngIf="isRegister" class="login-forms" type="number" placeholder="Phone Number" name="phonenumber" #mobile></ion-input>-->
+        <!--3x2-->
+      </ion-col>
+      <ion-col>
+        <!--3x3-->
+      </ion-col>
 
-  </ion-row>
-  <!-- Row 4 -->
-  <ion-row>
-    <ion-col>
-      <!--4x1-->
-    </ion-col>
-    <ion-col>
-      <!--4x2-->
-    </ion-col>
-    <ion-col>
-      <!--4x3-->
-      <button *ngIf="isRegister" ion-button full (click)="Register()">Confirm</button>
-      <button *ngIf="!isRegister" ion-button full (click)="initialClick()">Sign In</button>
-      <button class="forgot-pwd" (click)="infoPrompt()">What is Breadcrumbs?</button>
-    </ion-col>
-    <ion-col>
-      <!--4x4-->
-      <button *ngIf="isRegister" ion-button full (click)="cancelRegister()">Cancel</button>
-      <button *ngIf="!isRegister" ion-button full (click)="signUp()">Register</button>
-      <button class="forgot-pwd" (click)="forgotPassword()">forgot password?</button>
-    </ion-col>
-    <ion-col>
-      <!--4x5-->
-    </ion-col>
-    <ion-col>
-      <!--4x6-->
-    </ion-col>
-  </ion-row>
-  <ion-row>
-    <ion-col>
-      <!--4x1-->
-    </ion-col>
-    <ion-col>
-      <!--4x2-->
-    </ion-col>
-    <ion-col>
-      <!--4x3-->
-    </ion-col>
-    <ion-col>
-      <!--4x4-->
-      
-    </ion-col>
-    <ion-col>
-      <!--4x5-->
-    </ion-col>
-    <ion-col>
-      <!--4x6-->
-    </ion-col>
-    <ion-col>
-      <!--4x7-->
-    </ion-col>
-  </ion-row>
+    </ion-row>
+    <!-- Row 4 -->
+    <ion-row>
+      <ion-col>
+        <!--4x1-->
+      </ion-col>
+      <ion-col>
+        <!--4x2-->
+      </ion-col>
+      <ion-col>
+        <!--4x3-->
+        <button *ngIf="isRegister" ion-button full [disabled]="!registration.valid" (click)="Register()">Confirm</button>
+        <button *ngIf="!isRegister" ion-button full (click)="initialClick()">Sign In</button>
+        <button class="forgot-pwd" (click)="infoPrompt()">What is Breadcrumbs?</button>
+      </ion-col>
+      <ion-col>
+        <!--4x4-->
+        <button *ngIf="isRegister" ion-button full (click)="cancelRegister()">Cancel</button>
+        <button *ngIf="!isRegister" ion-button full (click)="signUp()">Register</button>
+        <button class="forgot-pwd" (click)="forgotPassword()">forgot password?</button>
+      </ion-col>
+      <ion-col>
+        <!--4x5-->
+      </ion-col>
+      <ion-col>
+        <!--4x6-->
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <!--4x1-->
+      </ion-col>
+      <ion-col>
+        <!--4x2-->
+      </ion-col>
+      <ion-col>
+        <!--4x3-->
+      </ion-col>
+      <ion-col>
+        <!--4x4-->
+
+      </ion-col>
+      <ion-col>
+        <!--4x5-->
+      </ion-col>
+      <ion-col>
+        <!--4x6-->
+      </ion-col>
+      <ion-col>
+        <!--4x7-->
+      </ion-col>
+    </ion-row>
+    </form>
 </ion-content>

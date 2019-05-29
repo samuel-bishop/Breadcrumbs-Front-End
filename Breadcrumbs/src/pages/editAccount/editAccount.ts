@@ -23,6 +23,7 @@ export class editAccountPage {
   accFirstName: any;
   accLastName: any;
   accPhoneNumber: any;
+  oldEmail: any;
   accEmail: any;
   private editAccount: FormGroup;
   inactiveEvents: any;
@@ -55,6 +56,7 @@ export class editAccountPage {
       this.accFirstName = data['recordset'][0].FirstName;
       this.accLastName = data['recordset'][0].LastName;
       this.accEmail = data['recordset'][0].Email;
+      this.oldEmail = this.accEmail;
     }).then(() => {
       loading.dismiss(); //turn off loading page
     }).catch((data) => {
@@ -78,27 +80,35 @@ export class editAccountPage {
           text: 'Confirm',
           handler: () => {
 
-            let editAccountData = {
-              "userID": this.userid,
-              "firstName": this.editAccount.value.firstName,
-              "lastName": this.editAccount.value.lastName,
-              "phoneNumber": this.editAccount.value.phoneNumber,
-              "emailAddress": this.editAccount.value.emailAddress
-            }
+            this.request.GetEmail(this.accEmail).then((data) => {
+              if (data['recordset'][0].UserID != this.userid && this.editAccount.value.emailAddress.toLowerCase() != this.oldEmail) {
+                var alert2 = this.alertCtrl.create({ title: 'Error', subTitle: 'This email already exists.', buttons: ['Ok'] });
+                alert2.present();
+              }
+              else {
+                let editAccountData = {
+                  "userID": this.userid,
+                  "firstName": this.editAccount.value.firstName,
+                  "lastName": this.editAccount.value.lastName,
+                  "phoneNumber": this.editAccount.value.phoneNumber,
+                  "emailAddress": this.editAccount.value.emailAddress.toLowerCase()
+                }
 
-            this.storage.get('user').then((user) => {
-              this.storage.set('user', {
-                "UserName": user.UserName,
-                "FirstName": editAccountData.firstName,
-                "LastName": editAccountData.lastName,
-                "Email": editAccountData.emailAddress
-              });
-            });
-            
-            this.request.UpdateAccount(editAccountData);
-            this.navCtrl.pop({ animate: false });
-            var alert = this.alertCtrl.create({ title: 'Success!', subTitle: 'Account has been updated.', buttons: ['Radical!'] });
-            alert.present();
+                this.storage.get('user').then((user) => {
+                  this.storage.set('user', {
+                    "UserName": user.UserName,
+                    "FirstName": editAccountData.firstName,
+                    "LastName": editAccountData.lastName,
+                    "Email": editAccountData.emailAddress
+                  });
+                });
+
+                this.request.UpdateAccount(editAccountData);
+                this.navCtrl.pop({ animate: false });
+                var alert = this.alertCtrl.create({ title: 'Success!', subTitle: 'Account has been updated.', buttons: ['Radical!'] });
+                alert.present();
+              }
+            })
           }
         }]
     });

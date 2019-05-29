@@ -1,6 +1,6 @@
 import { Component, ElementRef, ViewChild, NgZone } from '@angular/core';
-import { NavController, NavParams, DateTime, LoadingController, AlertController, Platform, Alert, Select } from 'ionic-angular';
-import { Http, Headers, Request, RequestOptions } from '@angular/http';
+import { NavController, NavParams, LoadingController, AlertController, Platform, Select } from 'ionic-angular';
+import { Http } from '@angular/http';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { addcontactPage } from '../addcontact/addcontact';
 import { httprequest } from '../../httprequest';
@@ -11,8 +11,8 @@ import {
 } from '@ionic-native/google-maps';
 import { Event } from '../../datastructs';
 import { Geolocation } from '@ionic-native/geolocation';
-import { HomePage } from '../home/home';
 import { LocalNotifications } from 'ionic-native';
+import { editcontactPage } from '../editcontact/editcontact';
 
 declare var google;
 var AddEventMap;
@@ -88,7 +88,7 @@ export class addeventPage {
         this.storage.get('activeEvent').then((event) => {
           this.eventName = event.EventName;
           this.eventDesc = event.EventDesc;
-          this.eventPart = event.EventParticipants;
+          this.eventPart = event.EventParticipants;        
         });
       }
       else {
@@ -108,8 +108,13 @@ export class addeventPage {
       this.request.RequestContacts().then((data) => {
         this.isVisible = true;
         this.contacts = data['recordset'];
+        if (this.contacts.length == 0) {
+          this.navCtrl.push(addcontactPage);
+        }
         loading.dismiss();
-      });
+      }).catch(() => {
+          this.navCtrl.push(addcontactPage);
+        });
     });
   }
 
@@ -307,7 +312,7 @@ initMap() {
         startLocMarker = new google.maps.Marker({ position: event.EventStartLatLng, map: AddEventMap, label: 'S' });
         startLocMarker.setMap(AddEventMap);
         endLocMarker = new google.maps.Marker({ position: event.EventEndLatLng, map: AddEventMap, label: 'E' });
-        endLocMarker.setMap(endLocMarker);
+        endLocMarker.setMap(AddEventMap);
       })
     }
     else {

@@ -1,13 +1,11 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, NavParams, AlertController, LoadingController, Nav, Alert, Platform } from 'ionic-angular';
+import { NavController, NavParams, AlertController, LoadingController, Platform } from 'ionic-angular';
 import { HomePage } from '../home/home';
 import { httprequest } from '../../httprequest';
 import { Storage } from '@ionic/storage';
-import { BCWorker } from '../../worker';
-import { LatLng } from '@ionic-native/google-maps';
-import { Event } from '../../datastructs';
 import { forgotPasswordPage } from '../forgotPassword/forgotPassword';
-import { infoPromptPage } from '../infoPrompt/infoPrompt'
+import { infoPromptPage } from '../infoPrompt/infoPrompt';
+import { Validators, FormGroup, FormBuilder } from '@angular/forms';
 
 function GetEvents(worker, request, storage) {
   return new Promise(function (resolve, reject) {
@@ -16,6 +14,7 @@ function GetEvents(worker, request, storage) {
     resolve();
   });
 }
+
 
 @Component({
   selector: 'page-LoginPage',
@@ -33,11 +32,18 @@ export class LoginPagePage {
   isConnected: boolean;
   userID: any;
   validUser: any;
+
+  private registration: FormGroup;
+
   //userValidation: User; 
   data: string;
   shouldHeight: any = document.body.clientHeight + 'px';
   isMobile: boolean;
-  constructor(public navCtrl: NavController, public request: httprequest, public navParams: NavParams, public platform: Platform, public alertCtrl: AlertController, public storage: Storage, public loadingCtrl: LoadingController) {
+  constructor(public navCtrl: NavController, public request: httprequest, public navParams: NavParams, public platform: Platform, public alertCtrl: AlertController, public storage: Storage, public loadingCtrl: LoadingController, public formBuilder: FormBuilder) {
+    this.registration = this.formBuilder.group({
+      username: ['', Validators.pattern('^[A-Za-z0-9_.]*$')],
+      email: ['', Validators.pattern('^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$')],
+    });
     this.isConnected = false;
     this.request.CheckConnection().then((data) => {
       if (data != undefined) {
@@ -71,6 +77,13 @@ export class LoginPagePage {
       });
       alert.present();
     }
+    else if (this.username.length > 30)
+    {
+      let alert = this.alertCtrl.create({
+        title: "Attention", subTitle: "Username must be less than 30 characters.", buttons: ["Ok"]
+      });
+      alert.present();
+    }
     else if (this.password.value == "") {
         let alert = this.alertCtrl.create({
           title: "Attention", subTitle: "Password field is empty", buttons: ["Ok"]
@@ -78,7 +91,6 @@ export class LoginPagePage {
         alert.present();
     }
     else this.validateUser();
-
   }
 
   Register() {
@@ -91,7 +103,13 @@ export class LoginPagePage {
       }
       else {
         //check fields to see if they are valid
-        if (this.firstName.value == "") {
+        if (this.firstName.length > 100 || this.lastName.length > 100) {
+          let alert = this.alertCtrl.create({
+            title: "Attention", subTitle: "First and last name must be less than 100 characters.", buttons: ["Ok"]
+          });
+          alert.present();
+        }
+        else if (this.firstName.value == "") {
           let alert = this.alertCtrl.create({
             title: "Attention", subTitle: "First Name field is empty", buttons: ["Ok"]
           });
@@ -109,25 +127,31 @@ export class LoginPagePage {
               });
               alert.present();
             } else
-              //if (this.phonenumber.value == "") {
-              //  let alert = this.alertCtrl.create({
-              //    title: "Attention", subTitle: "Phone number field is empty", buttons: ["Ok"]
-              //  });
-              //  alert.present();
-              //} else
               if (this.username.value == "") {
                 let alert = this.alertCtrl.create({
                   title: "Attention", subTitle: "Username field is empty", buttons: ["Ok"]
                 });
                 alert.present();
               } else
-                if (this.password.value == "") {
+                if (this.username.value.length > 30) {
+                  let alert = this.alertCtrl.create({
+                    title: "Attention", subTitle: "Usernames are less than 30 characters.", buttons: ["Ok"]
+                  });
+                  alert.present();
+                }
+                else if (this.firstName.value.length > 100 || this.lastName.value.length > 100) {
+                  let alert = this.alertCtrl.create({
+                    title: "Attention", subTitle: "First and Last names are less than 100 characters.", buttons: ["Ok"]
+                  });
+                  alert.present();
+                }
+                else if (this.password.value == "") {
                   let alert = this.alertCtrl.create({
                     title: "Attention", subTitle: "Password field is empty", buttons: ["Ok"]
                   });
                   alert.present();
                 } else { //submit data if all feilds are valid 
-
+                  
                   let data2 = {
                     username: this.username.value,
                     password: this.password.value,
@@ -147,14 +171,12 @@ export class LoginPagePage {
                         title: "Attention", subTitle: "Something went wrong", buttons: ["ok"]
                       });
                       alert.present();
-
                     });
                   });
                 }
       }
       });
   }
-
 
   GetUser(loading) {
     this.request.GetAuth(this.username.value.toLowerCase()).then((auth) => {
@@ -181,6 +203,15 @@ export class LoginPagePage {
 
   initialClick() {
     this.signIn();
+  }
+
+  Enter() {
+    if (this.isRegister) {
+      this.Register();
+    }
+    else {
+      this.initialClick();
+    }
   }
 
   forgotPassword() {

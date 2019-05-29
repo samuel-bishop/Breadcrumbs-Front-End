@@ -3,7 +3,7 @@
 <!-- Active Event Division -->
 
 <ion-header class="banner">
-  <ion-navbar transparent>
+  <ion-navbar *ngIf="!isMobile" transparent>
     <button ion-button menuToggle>
       <ion-icon style="color:white" name="menu"></ion-icon>
     </button>
@@ -37,9 +37,21 @@
     <!-- Side bar items -->
     <ion-list>
 
-      <button ion-item menuClose [disabled]="!isConnected"(click)="editAccount()" class="side-button">
+      <button ion-item menuClose [disabled]="!isConnected" (click)="editAccount()" class="side-button">
         <ion-icon name="finger-print"></ion-icon>
         Edit Account
+      </button>
+      <button ion-item menuClose [disabled]="!isConnected" (click)="editContacts()" class="side-button">
+        <ion-icon name="body"></ion-icon>
+        Manage Contacts
+      </button>
+      <button ion-item menuClose [disabled]="!isConnected" (click)="viewFavoriteEvents()" class="side-button">
+        <ion-icon name="star"></ion-icon>
+        Favorite Events
+      </button>
+      <button ion-item menuClose [disabled]="!isConnected" (click)="viewPastEvents()" class="side-button">
+        <ion-icon name="clock"></ion-icon>
+        Past Events
       </button>
 
       <button ion-item menuClose (click)="logout()" class="side-button" style="color:red">Logout</button>
@@ -99,6 +111,9 @@
     <ion-row>
       <ion-col>
         <button (click)="checkIn()" [disabled]="!isConnected" round ion-button class="end-event-button"> Check In  </button>
+        <button (click)="editEvent()" [disabled]="!isConnected" ion-button class="favorite-event-button" button>
+          <ion-icon name="create" style="font-size:30px; color:white"></ion-icon>
+        </button>
       </ion-col>
       <ion-col></ion-col>
       <ion-col style="text-align:right">
@@ -117,19 +132,25 @@
   <!-- Floating Nav Buttons -->
   <ion-row>
     <ion-col>
-      <ion-fab bottom right style="font-size:60px; height: 80px" >
+      <ion-fab *ngIf="isMobile" bottom right style="font-size:60px; height: 80px; margin-right:15px" >
         <button ion-fab  [disabled]="!isConnected">
           <ion-icon name="settings"></ion-icon>
         </button>
         <ion-fab-list side="top" style="padding-bottom:30px">
-          <button round ion-button style="height: 60px; width: 100px; margin-bottom:20px" (click)="viewFavoriteEvents()">
-            <ion-icon  style="font-size:30px; padding-right:15px"  name="star"> </ion-icon>
+          <button round ion-button style="height: 60px; width: 130px; margin-bottom:20px" (click)="logout()">
+            <ion-icon style="font-size:30px; padding-right:30px" name="log-out"> </ion-icon>
           </button>
-          <button round ion-button style="height: 60px; width: 100px;  margin-bottom:20px" (click)="editContacts()">
-            <ion-icon   style="font-size:30px; padding-right:15px" name="body"> </ion-icon>
+          <button round ion-button style="height: 60px; width: 130px; margin-bottom:20px" (click)="editAccount()">
+            <ion-icon style="font-size:30px; padding-right:30px" name="finger-print"> </ion-icon>
           </button>
-          <button round ion-button style="height: 60px; width: 100px;  margin-bottom:20px" (click)="viewPastEvents()"  >
-            <ion-icon  style="font-size:30px; padding-right:15px" name="clock"> </ion-icon>
+          <button round ion-button style="height: 60px; width: 130px; margin-bottom:20px" (click)="viewFavoriteEvents()">
+            <ion-icon style="font-size:30px; padding-right:30px" name="star"> </ion-icon>
+          </button>
+          <button round ion-button style="height: 60px; width: 130px;  margin-bottom:20px" (click)="viewPastEvents()">
+            <ion-icon style="font-size:30px; padding-right:30px" name="clock"> </ion-icon>
+          </button>
+          <button round ion-button style="height: 60px; width: 130px;  margin-bottom:20px" (click)="editContacts()">
+            <ion-icon style="font-size:30px; padding-right:30px" name="body"> </ion-icon>
           </button>
         </ion-fab-list>
       </ion-fab>

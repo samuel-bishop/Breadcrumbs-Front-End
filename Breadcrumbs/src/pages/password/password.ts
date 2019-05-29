@@ -1,7 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { NavController, NavParams, AlertController } from 'ionic-angular';
 import { httprequest } from '../../httprequest';
-import { Storage } from '@ionic/storage';
 /*
   Generated class for the password page.
 

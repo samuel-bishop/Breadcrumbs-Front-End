@@ -5,6 +5,11 @@ page-infoPrompt {
     background-size: cover;
   }
 
+  ion-header ion-icon.back-button-icon.icon,
+  ion-header span.back-button-text.back-button-text-ios {
+    color: #ffffff;
+  }
+
   .mobile-background {
     background-color: lightblue;
     background-size: cover;
@@ -12,7 +17,7 @@ page-infoPrompt {
 
   .block {
     background-color: rgba(0,0,0,0.5);
-    background-size:contain;
+    background-size: contain;
   }
 
   .scroll-content {
