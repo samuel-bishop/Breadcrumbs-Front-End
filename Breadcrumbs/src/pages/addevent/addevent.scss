@@ -15,6 +15,11 @@ page-addevent {
     color: white;
   }
 
+  .bridge {
+    background-image: linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.4)),url(../assets/bridge.jpeg);
+    background-size: cover;
+  }
+
   .button {
     //box-shadow: inherit;
     //text-shadow: initial;

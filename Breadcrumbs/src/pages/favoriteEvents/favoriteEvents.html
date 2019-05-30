@@ -4,7 +4,7 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding [class.content-background]="!isMobile" [class.mobile-background]="isMobile" [style.background-size]="'100% ' + shouldHeight">
+<ion-content padding [class.content-background]="!isMobile" [class.bridge]="isMobile" [style.background-size]="'100% ' + shouldHeight">
   <ion-row *ngFor="let event of favoriteEvents">
     <ion-card class="event-card" style="font-size:24px">
       <ion-row>
