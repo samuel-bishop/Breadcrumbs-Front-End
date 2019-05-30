@@ -30,8 +30,13 @@ export class editcontactPage {
   private editcontact: FormGroup;
   shouldHeight: any = document.body.clientHeight + 'px';
   isMobile: boolean;
-  constructor(public alertCtrl: AlertController, public navCtrl: NavController, public loadingCtrl: LoadingController, public navParams: NavParams, public request: httprequest, public formBuilder: FormBuilder, public storage: Storage, public platform: Platform) {
-    this.loadContacts();
+  constructor(public alertCtrl: AlertController, public navCtrl: NavController, public loadingCtrl: LoadingController, public navParams: NavParams, public request: httprequest, public formBuilder: FormBuilder, public storage: Storage, public platform: Platform){
+    this.contactID = navParams.get('contactID');
+    this.contactFirstName = navParams.get('contactFN');
+    this.contactLastName = navParams.get('contactLN');
+    this.contactPhoneNumber = navParams.get('contactPN');
+    this.contactEmailAddress = navParams.get('contactEM');
+
     if (platform.is('mobile')) {
       this.isMobile = true;
     }
@@ -43,36 +48,6 @@ export class editcontactPage {
       phoneNumber: ['', Validators.required],
       emailAddress: ['']
     });
-  }
-
-  loadContacts() {
-    let loading = this.loadingCtrl.create({
-      content: 'Loading Contacts...'
-    });
-
-    loading.present();
-    this.request.RequestContacts().then((data) => {
-      this.contacts = data['recordset'];
-      this.contactID = data['recordset'][0].EmergencyContactID;
-      this.contactFirstName = data['recordset'][0].ContactFirstName;
-      this.contactLastName = data['recordset'][0].ContactLastName;
-      this.contactPhoneNumber = data['recordset'][0].ContactPhoneNumber;
-      this.contactEmailAddress = data['recordset'][0].ContactEmailAddress;
-    }).then(() => {
-      loading.dismiss();
-      }).catch((data) => {
-        this.navCtrl.pop({ animate: false });
-        this.navCtrl.push(addcontactPage, { animate: false });
-        loading.dismiss();
-    });
-  }
-
-  onSelectChange(selectedValue: any) {
-    this.contactID = selectedValue.EmergencyContactID;
-    this.contactFirstName = selectedValue.ContactFirstName;
-    this.contactLastName = selectedValue.ContactLastName;
-    this.contactPhoneNumber = selectedValue.ContactPhoneNumber;
-    this.contactEmailAddress = selectedValue.ContactEmailAddress;
   }
 
   editcontactForm() {
@@ -104,40 +79,5 @@ export class editcontactPage {
     });
     alert.present();
 
-  }
-
-  cancelClick() {
-    this.navCtrl.pop({animate: false});
-  }
-
-  deleteContact() {
-    var alert = this.alertCtrl.create({
-      title: 'Confirm Delete', subTitle: 'Are you sure you want to permanently delete this emergency contact?',
-      buttons:
-        [{
-          text: 'Cancel',
-          role: 'cancel',
-          handler: () => {
-          }
-        },
-        {
-          text: 'Confirm',
-          handler: () => {
-            this.request.DeleteContact(this.contactID);
-            this.navCtrl.pop({ animate: false });
-            var alert = this.alertCtrl.create({ title: 'Success!', subTitle: 'Contact has been deleted.', buttons: ['Radical!'] });
-            alert.present();
-          }
-        }]
-    });
-    alert.present();
-  }
-
-  addNewContact() {
-    this.navCtrl.push(addcontactPage, { animate: false });
-  }
-
-  goHome() {
-    this.navCtrl.push(HomePage, { animate: false });
   }
 }

@@ -3,7 +3,6 @@
 </ion-header>
 
 <ion-content padding [class.content-background]="!isMobile" [class.mobile-background]="isMobile" [style.background-size]="'100% ' + shouldHeight">
-  <ion-content class="block" padding [style.background-size]="'100% ' + shouldHeight">
     <form [formGroup]="contact" (ngSubmit)="contactForm()">
       <ion-row>
         <ion-col></ion-col>
@@ -42,5 +41,4 @@
         <ion-col></ion-col>
       </ion-row>
     </form>
-  </ion-content>
   </ion-content>

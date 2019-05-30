@@ -1,12 +1,10 @@
-  <ion-header>
-  <ion-navbar>
-    <ion-row class="past-events-card-header">
+<ion-header class="banner">
+  <ion-navbar transparent>
       <h1 style="font-family:'Lucida Sans'; margin-right:auto; text-anchor:middle">History</h1>
-    </ion-row>
   </ion-navbar>
 </ion-header>
 
-<ion-content>
+<ion-content padding [class.content-background]="!isMobile" [class.mobile-background]="isMobile" [style.background-size]="'100% ' + shouldHeight">
   <ion-row *ngFor="let event of inactiveEvents">
 
     <!-- Mobile Version -->

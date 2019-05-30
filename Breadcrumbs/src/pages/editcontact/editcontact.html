@@ -1,11 +1,10 @@
 <ion-header class="banner">
   <ion-navbar transparent>
-    <h1 style="font-family:'Lucida Sans'; margin-right:auto; text-anchor:middle">Contacts</h1>
+    <h1 style="font-family:'Lucida Sans'; margin-right:auto; text-anchor:middle">Edit Contact</h1>
 </ion-navbar>
 </ion-header>
 
 <ion-content padding [class.content-background]="!isMobile" [class.mobile-background]="isMobile" [style.background-size]="'100% ' + shouldHeight">
-  <ion-content class="block" padding [style.background-size]="'100% ' + shouldHeight" style="color:white">
     <form [formGroup]="editcontact" (ngSubmit)="editcontactForm()">
       <ion-row>
         <ion-col></ion-col>
@@ -13,13 +12,6 @@
 
           <ion-row>
             <ion-col>
-
-              <ion-item>
-                <ion-select id="contactSelection" name="contactID" [(ngModel)]="contact" style="color:white" (ionChange)="onSelectChange(contact)" multiple="false" formControlName="contactID" interface="action-sheet">
-                  <ion-option *ngFor="let contact of contacts; let i = index" [value]="contact" [selected]="i===0">{{contact.ContactFirstName}} {{contact.ContactLastName}}</ion-option>
-                </ion-select>
-              </ion-item>
-
               <ion-item>
                 <ion-label floating>First Name</ion-label>
                 <ion-input [(ngModel)]="contactFirstName" style="color:white" formControlName="firstName" type="text" inputmode="text"></ion-input>
@@ -43,13 +35,7 @@
               <ion-row>
                 <ion-col text-center>
                   <button ion-button type="submit" [disabled]="!editcontact.valid" style="width:85px; text-align:center; line-height:50%; align-content:center">Save</button>
-                </ion-col>
-                <ion-col text-center>
-                  <button ion-button type="button" (click)="deleteContact(i)" style="width:85px; text-align:center; line-height:50%; align-content:center">Delete</button>
-                </ion-col>
-                <ion-col text-center>
-                  <button ion-button type="button" (click)="addNewContact()" style="width:85px; text-align:center; line-height:50%; align-content:center">New</button>
-                </ion-col>
+                </ion-col>y
               </ion-row>
 
             </ion-col>
@@ -58,7 +44,4 @@
         <ion-col></ion-col>
       </ion-row>
     </form>
-
   </ion-content>
-
-</ion-content>

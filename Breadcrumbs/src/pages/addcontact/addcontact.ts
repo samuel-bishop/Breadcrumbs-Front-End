@@ -43,7 +43,7 @@ export class addcontactPage {
       }
       this.storage.get('userID').then((userid) => {
         this.request.InsertContact(userid, contactData).then(() => {
-          this.navCtrl.popToRoot({ animate: false });
+          this.navCtrl.pop({ animate: false });
         });
       });
     });
