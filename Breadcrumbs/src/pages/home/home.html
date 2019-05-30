@@ -16,7 +16,11 @@
     <!-- Profile card -->
     <ion-card color="primary" style=" text-align:center; margin: 0px; width: 305px;">
       <ion-row>
-        <ion-col></ion-col>
+        <ion-col>
+          <button *ngIf="!isMobile" ion-button menuToggle>
+            <ion-icon style="color:white" name="menu"></ion-icon>
+          </button>
+        </ion-col>
         <ion-col></ion-col>
         <ion-col>
           <ion-icon name="happy" style="font-size:40px; color:white"></ion-icon>
@@ -35,7 +39,6 @@
 
     <!-- Side bar items -->
     <ion-list>
-
       <button ion-item [disabled]="!isConnected" (click)="editAccount()" class="side-button">
         <ion-icon name="finger-print"></ion-icon>
         Edit Account
