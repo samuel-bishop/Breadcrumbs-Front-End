@@ -18,12 +18,12 @@ page-home {
   }
 
   .forest {
-    background-image: linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.4)),url(../../assets/rsz_1forest.png);
+    background-image: linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.4)),url(../../assets/rsz_canyon.jpg);
     background-size: cover;
   }
 
   .forest-mobile {
-    background-image: linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.4)),url(../assets/rsz_1forest.png);
+    background-image: linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.4)),url(../assets/rsz_canyon.jpg);
     background-size: cover;
   }
 
@@ -180,12 +180,14 @@ page-home {
   }
 
   .event-card {
+    //border: solid medium black;
+    //min-width: 300px;
+    background-color: rgba(0,0,0,0.5);
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
-    border: solid medium black;
-    min-width: 300px;
+    color: white;
   }
 
   .past-event-card {
@@ -198,7 +200,7 @@ page-home {
   }
 
   .banner {
-    background: rgba(57, 58, 61, 0.50);
+    background: #63365f;
     text-align: center;
     height: 70px;
     color: white
@@ -272,25 +274,13 @@ page-home {
   }
 
   .menu-inner, ion-item, ion-content {
-    background-color: rgba(1, 1, 1, 0.25) !important;
-  }
-
-  .breadcrumbs-sidebar-button {
-    background-color: transparent;
-    height: inherit;
-    width: 40px;
-    left: 5px;
-    top: -3px;
-    position: absolute;
-    color: black;
-    text-align: center;
-    font-size: larger;
+    background-color: transparent !important;
   }
 
   .side-button {
     font-family: 'Lucida Sans';
     font-size: larger;
-    background-color: transparent;
+    background-color: #63365f;
     color: white;
   }
 
