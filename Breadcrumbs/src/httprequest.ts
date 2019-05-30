@@ -131,11 +131,6 @@ export class httprequest {
 
   //Load contacts
   RequestContacts() {
-    //Check if the data has already be created
-    //if (this.data) {
-    //  return Promise.resolve(this.data);
-    //}
-    //Return a new promise
     return new Promise(resolve => { //Get the userid from storage
       this.storage.get('userID').then(userid => { //Create a GET call to the API servers contacts page
         let body = { 'userid': userid };
@@ -161,9 +156,6 @@ export class httprequest {
 
   //Retrieve all the favorite events from a user
   RequestFavoriteEvents() {
-    if (this.data) {
-      return Promise.resolve(this.data);
-    }
     return new Promise(resolve => {
       this.storage.get('userID').then((userid) => {
         //var body = { 'userID': userid };
@@ -581,9 +573,6 @@ export class httprequest {
   //Get a users account info (redundant)
   AccountInfo() {
     //Check if the data has already be created
-    if (this.data) {
-      return Promise.resolve(this.data);
-    }
     return new Promise(resolve => {
       var header = new Headers();
       this.storage.get('userID').then((userid) => {
