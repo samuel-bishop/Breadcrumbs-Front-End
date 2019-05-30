@@ -12,9 +12,9 @@
 </ion-header>
 
 <ion-menu *ngIf="!isMobile" [content]="sidebar" type="overlay">
-  <ion-content style="margin-top:10px">
+  <ion-content >
     <!-- Profile card -->
-    <ion-card color="primary" style=" text-align:center; margin-bottom: 20px">
+    <ion-card color="primary" style=" text-align:center; margin: 0px; width: 305px;">
       <ion-row>
         <ion-col></ion-col>
         <ion-col></ion-col>
@@ -36,7 +36,7 @@
     <!-- Side bar items -->
     <ion-list>
 
-      <button ion-item menuClose [disabled]="!isConnected" (click)="editAccount()" class="side-button">
+      <button ion-item [disabled]="!isConnected" (click)="editAccount()" class="side-button">
         <ion-icon name="finger-print"></ion-icon>
         Edit Account
       </button>
@@ -53,7 +53,10 @@
         Past Events
       </button>
 
-      <button ion-item menuClose (click)="logout()" class="side-button" style="color:red">Logout</button>
+      <button ion-item menuClose (click)="logout()" class="side-button">
+        <ion-icon name="log-out"> </ion-icon>
+        Logout
+      </button>
     </ion-list>
 
   </ion-content>

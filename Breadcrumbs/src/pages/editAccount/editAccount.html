@@ -30,7 +30,7 @@
     <ion-col></ion-col>
     <ion-col></ion-col>
     <ion-col>
-      <button ion-button type="button" (click)="editAccountForm()" style=" text-align:center; line-height:50%">Submit</button>
+      <button ion-button type="button" [disabled]="!editAccount.valid" (click)="editAccountForm()" style=" text-align:center; line-height:50%">Submit</button>
     </ion-col>
     <ion-col></ion-col>
     <ion-col></ion-col>
