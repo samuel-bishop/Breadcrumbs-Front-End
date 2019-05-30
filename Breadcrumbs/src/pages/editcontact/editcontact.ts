@@ -42,11 +42,10 @@ export class editcontactPage {
     }
     else this.isMobile = false;
     this.editcontact = this.formBuilder.group({
-      contactID: [''],
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      phoneNumber: ['', Validators.required],
-      emailAddress: ['']
+      firstName: ['', Validators.pattern('^[A-Za-z. ]+$')],
+      lastName: ['', Validators.pattern('^[A-Za-z. ]+$')],
+      phoneNumber: ['', Validators.pattern('^[A-Za-z. ]*^\\D?(\\d{3})\\D?\D?(\\d{3})\\D?(\\d{4})$')],
+      emailAddress: ['', Validators.pattern('^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$')],
     });
   }
 
@@ -70,11 +69,19 @@ export class editcontactPage {
                 "phoneNumber": this.editcontact.value.phoneNumber,
                 "emailAddress": this.editcontact.value.emailAddress
               }
-            this.request.UpdateContact(editcontactData);
-            this.navCtrl.pop({ animate: false });
-            var alert = this.alertCtrl.create({ title: 'Success!', subTitle: 'Contact has been updated.', buttons: ['Radical!'] });
-            alert.present();
+            if (editcontactData.firstName.length > 35 || editcontactData.lastName.length > 35) {
+              let alert = this.alertCtrl.create({
+                title: "Attention:", subTitle: 'Names must be less than 35 characters.', buttons: ["Ok"]
+              });
+              alert.present();
             }
+            else {
+              this.request.UpdateContact(editcontactData);
+              this.navCtrl.pop({ animate: false });
+              var alert = this.alertCtrl.create({ title: 'Success!', subTitle: 'Contact has been updated.', buttons: ['Radical!'] });
+              alert.present();
+            }
+          }
         }]
     });
     alert.present();

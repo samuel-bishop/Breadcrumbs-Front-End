@@ -35,10 +35,9 @@ export class editAccountPage {
     storage.get('userID').then((data) => { this.userid = data; console.log(this.userid); });
     this.getAccountInfo();
     this.editAccount = this.formBuilder.group({
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      phoneNumber: ['', Validators.required],
-      emailAddress: ['', Validators.required]
+      firstName: ['', Validators.pattern('^[A-Za-z. ]+$')],
+      lastName: ['', Validators.pattern('^[A-Za-z. ]+$')],
+      emailAddress: ['', Validators.pattern('^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$')],
     });
   }
 
@@ -81,9 +80,17 @@ export class editAccountPage {
           handler: () => {
 
             this.request.GetEmail(this.accEmail).then((data) => {
-              if (data['recordset'][0].UserID != this.userid && this.editAccount.value.emailAddress.toLowerCase() != this.oldEmail) {
-                var alert2 = this.alertCtrl.create({ title: 'Error', subTitle: 'This email already exists.', buttons: ['Ok'] });
-                alert2.present();
+              if (data['recordset'][0] != undefined && data['recordset'][0] != null) {
+                if (data['recordset'][0].UserID != this.userid && this.editAccount.value.emailAddress.toLowerCase() != this.oldEmail) {
+                  var alert2 = this.alertCtrl.create({ title: 'Error', subTitle: 'This email already exists.', buttons: ['Ok'] });
+                  alert2.present();
+                }
+              }
+              if (this.editAccount.value.firstName.length > 35 || this.editAccount.value.lastName.length > 35) {          
+                let alert = this.alertCtrl.create({
+                  title: "Attention:", subTitle: 'Names must be less than 35 characters.', buttons: ["Ok"]
+                });
+                alert.present();
               }
               else {
                 let editAccountData = {
