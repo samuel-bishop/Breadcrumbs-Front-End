@@ -132,9 +132,9 @@ export class httprequest {
   //Load contacts
   RequestContacts() {
     //Check if the data has already be created
-    if (this.data) {
-      return Promise.resolve(this.data);
-    }
+    //if (this.data) {
+    //  return Promise.resolve(this.data);
+    //}
     //Return a new promise
     return new Promise(resolve => { //Get the userid from storage
       this.storage.get('userID').then(userid => { //Create a GET call to the API servers contacts page

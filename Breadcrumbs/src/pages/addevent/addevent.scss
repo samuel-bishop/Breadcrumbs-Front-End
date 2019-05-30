@@ -1,17 +1,39 @@
 page-addevent {
 
+  .content-background {
+    background-image: linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.4)),url(../../assets/rsz_1forest.png);
+    background-size: cover;
+  }
+
+  .mobile-background {
+    background-color: linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.4)),url(../assets/rsz_1forest.png);
+    background-size: cover;
+  }
+
+  ion-searchbar {
+    background-color: black;
+    color: white;
+  }
+
   .button {
-    box-shadow: inherit;
-    text-shadow: initial;
+    //box-shadow: inherit;
+    //text-shadow: initial;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
-    border: solid medium grey;
-    background-color: white;
-    color: black;
-    width: 90px;
+    //border: solid medium grey;
+    //background-color: white;
+    //color: black;
+    //width: 90px;
     font-family: 'Lucida Sans'
+  }
+
+  .banner {
+    background: rgba(57, 58, 61, 0.50);
+    text-align: center;
+    height: 70px;
+    color: white
   }
 
   .addcontact-button {
@@ -25,7 +47,7 @@ page-addevent {
     background-color: white;
     color: black;
     width: 90px;
-    text-align:right;
+    text-align: right;
     font-family: 'Lucida Sans'
   }
 
@@ -43,6 +65,10 @@ page-addevent {
     padding-left: 10px;
   }
 
+  ion-header ion-icon.back-button-icon.icon,
+  ion-header span.back-button-text.back-button-text-ios {
+    color: white;
+  }
 
   #AddEventMap {
     height: 60%;
@@ -52,8 +78,24 @@ page-addevent {
     padding: 0px;
   }
 
+  ion-input {
+    color: white;
+  }
+
+  ion-datetime {
+    color: white;
+  }
+
   #searchbar {
     border: thick;
     border-color: black;
+  }
+
+  .item-md {
+    background: transparent;
+  }
+
+  .item-ios {
+    background: transparent;
   }
 }

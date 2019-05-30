@@ -271,6 +271,10 @@ page-home {
     background-color: lightblue;
   }
 
+  .menu-inner, ion-item, ion-content {
+    background-color: rgba(1, 1, 1, 0.25) !important;
+  }
+
   .breadcrumbs-sidebar-button {
     background-color: transparent;
     height: inherit;
@@ -286,6 +290,8 @@ page-home {
   .side-button {
     font-family: 'Lucida Sans';
     font-size: larger;
+    background-color: transparent;
+    color: white;
   }
 
   #map {

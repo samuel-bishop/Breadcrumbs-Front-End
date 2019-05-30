@@ -1,0 +1,46 @@
+<ion-header class="banner">
+  <ion-navbar transparent>
+    <h1 style="font-family:'Lucida Sans'; margin-right:auto; text-anchor:middle">Emergency Contacts</h1>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding [class.content-background]="!isMobile" [class.mobile-background]="isMobile" [style.background-size]="'100% ' + shouldHeight">
+  <ion-row *ngFor="let data of contacts">
+    <ion-col></ion-col>
+    <ion-col></ion-col>
+    <ion-card class="cardconteudo">
+      <ion-row>
+        <ion-col width>
+          <h2 style="color: white; font-family:'Lucida Sans';">
+            {{data.ContactFirstName}}
+            {{data.ContactLastName}}
+          </h2>
+          <
+        </ion-col>
+        <ion-col>
+          <button ion-button class="button-option" *ngIf="!isMobile" (click)="editContact(data.EmergencyContactID, data.ContactFirstName, data.ContactLastName, data.ContactPhoneNumber, data.ContactEmailAddress)">Edit</button>
+          <button ion-button class="button-option" *ngIf="!isMobile" (click)="deleteContact(data.EmergencyContactID)">Delete</button>
+          <button ion-button class="button-option" *ngIf="isMobile" (click)="editContact(data.EmergencyContactID, data.ContactFirstName, data.ContactLastName, data.ContactPhoneNumber, data.ContactEmailAddress)">
+            <ion-icon name="create"></ion-icon>
+          </button>
+          <button ion-button class="button-option" *ngIf="isMobile" (click)="deleteContact(data.EmergencyContactID)">
+            <ion-icon name="close"></ion-icon>
+          </button>
+        </ion-col>
+      </ion-row>
+    </ion-card>
+    <ion-col></ion-col>
+    <ion-col></ion-col>
+  </ion-row>
+  <ion-row>
+    <button ion-button *ngIf="!isMobile" (click)="addContact()">Add Contact</button>
+    <ion-fab *ngIf="isMobile" bottom right style="font-size:60px; height: 80px; margin-right:15px">
+      <button ion-fab (click)="addContact()">
+        <ion-icon name="add"></ion-icon>
+      </button>
+    </ion-fab>
+  </ion-row>
+  <ion-col></ion-col>
+  <ion-col></ion-col>
+
+</ion-content>

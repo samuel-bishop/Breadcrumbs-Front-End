@@ -1,13 +1,10 @@
-<ion-header>
-
-  <ion-navbar>
+<ion-header class="banner">
+  <ion-navbar transparent>
     <h1 style="font-family:'Lucida Sans'; margin-right:auto; text-anchor:middle">Edit Account</h1>
   </ion-navbar>
-
 </ion-header>
 
-
-<ion-content padding>
+<ion-content padding [class.content-background]="!isMobile" [class.mobile-background]="isMobile" [style.background-size]="'100% ' + shouldHeight">
   <form [formGroup]="editAccount" (ngSubmit)="editAccountForm()">
     <ion-row>
       <ion-col>
@@ -34,12 +31,6 @@
     <ion-col></ion-col>
     <ion-col>
       <button ion-button type="button" (click)="editAccountForm()" style=" text-align:center; line-height:50%">Submit</button>
-    </ion-col>
-    <ion-col>
-      <button ion-button type="button" (click)="disableUser()" style=" text-align:center; line-height:50%; ">Disable</button>
-    </ion-col>
-    <ion-col>
-      <button ion-button type="button" (click)="cancelClick()" style=" text-align:center; line-height:50%; ">Cancel</button>
     </ion-col>
     <ion-col></ion-col>
     <ion-col></ion-col>

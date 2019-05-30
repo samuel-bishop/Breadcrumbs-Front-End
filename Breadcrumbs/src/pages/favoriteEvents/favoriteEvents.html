@@ -1,10 +1,10 @@
-<ion-header>
-  <ion-navbar>
+<ion-header class="banner">
+  <ion-navbar transparent>
     <h1 style="font-family:'Lucida Sans'; margin-right:auto; text-anchor:middle">Favorites</h1>
   </ion-navbar>
 </ion-header>
 
-<ion-content>
+<ion-content padding [class.content-background]="!isMobile" [class.mobile-background]="isMobile" [style.background-size]="'100% ' + shouldHeight">
   <ion-row *ngFor="let event of favoriteEvents">
     <ion-card class="event-card" style="font-size:24px">
       <ion-row>

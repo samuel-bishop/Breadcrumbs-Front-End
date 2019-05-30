@@ -1,12 +1,16 @@
 page-viewevents {
 
-
   .center {
     text-align: center;
   }
 
-  .forest {
+  .content-background {
     background-image: linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.4)),url(../../assets/rsz_1forest.png);
+    background-size: cover;
+  }
+
+  .mobile-background {
+    background-image: linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.4)),url(../assets/rsz_1forest.png);
     background-size: cover;
   }
 
@@ -51,14 +55,6 @@ page-viewevents {
     font-size: 20px;
     font-family: 'Lucida Sans';
     text-align: center;
-  }
-
-  .past-event-card-header {
-    font-size: 20px;
-    font-family: 'Lucida Sans';
-    text-align: center;
-    text-anchor: middle;
-    padding-top: -52px;
   }
 
   .ionic-logo {
@@ -142,28 +138,37 @@ page-viewevents {
   }
 
   .event-card {
+    //border: solid medium black;
+    //min-width: 300px;
+    background-color: rgba(0,0,0,0.5);
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
-    border: solid medium black;
-    min-width: 300px;
+    color: white;
   }
 
   .past-event-card {
+    //border: solid medium black;
+    //min-width: 300px;
+    background-color: rgba(0,0,0,0.5);
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
-    border: solid medium black;
-    min-width: 300px;
+    color: white;
   }
 
   .banner {
     background: rgba(57, 58, 61, 0.50);
     text-align: center;
-    height: 40px;
+    height: 70px;
     color: white
+  }
+
+  ion-header ion-icon.back-button-icon.icon,
+  ion-header span.back-button-text.back-button-text-ios {
+    color: white;
   }
 
   .end-event-button {

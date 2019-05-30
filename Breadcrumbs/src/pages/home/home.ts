@@ -13,7 +13,7 @@ import { viewEventPage } from '../viewEvent/viewEvent';
 import { editAccountPage } from '../editAccount/editAccount';
 import { LocalNotifications } from 'ionic-native';
 import { favoriteEventsPage } from '../favoriteEvents/favoriteEvents';
-
+import { contactlistPage } from '../contactlist/contactlist';
 
 @Component({
   selector: 'page-home',
@@ -315,7 +315,7 @@ export class HomePage {
   }
 
   editContacts() {
-    this.navCtrl.push(editcontactPage, {}, { animate: false });
+    this.navCtrl.push(contactlistPage, {}, { animate: false });
   }
 
   viewEvent(event) {

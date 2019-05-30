@@ -1,9 +1,6 @@
 <ion-header class="banner">
-  <ion-navbar transparent>
-    <h1 style="font-family:'Lucida Sans'; margin-right:auto; text-anchor:middle">What is Breadcrumbs?</h1>
-  </ion-navbar>
+  <ion-title> <label style="color:white">What is Breadcrumbs? </label>  </ion-title>
 </ion-header>
-
 <ion-content padding [class.content-background]="!isMobile" [class.mobile-background]="isMobile" [style.background-size]="'100% ' + shouldHeight">
   <ion-content class="block" padding [style.background-size]="'100% ' + shouldHeight">
 
@@ -19,6 +16,15 @@
       If you receive an alert, you're an emergancy contact. This means that your contact could be in trouble. 
     </h4>
 
+    <ion-row>
+      <ion-col></ion-col>
+      <ion-col></ion-col>
+      <ion-col>
+        <button ion-button full (click)="login()">Back</button>
+      </ion-col>
+      <ion-col></ion-col>
+      <ion-col></ion-col>
+    </ion-row>
     <ion-row>
       <ion-col></ion-col>
       <ion-img class="logo-logo" width="200" height="200" src="../../assets/icon.png"></ion-img>

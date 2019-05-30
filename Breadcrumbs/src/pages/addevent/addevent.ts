@@ -189,7 +189,7 @@ export class addeventPage {
             at: new Date(date.getTime() - 300 * 1000)
           });
 
-        //wait for the event to insert fully before scheduling a watch
+        // wait for the event to insert fully before scheduling a watch
         setTimeout(function (request, loading, storage) {
           request.RequestActiveEvent().then((data) => {
             let event = data['recordset'][0];
@@ -197,8 +197,8 @@ export class addeventPage {
               let contacts = contactData['recordset'];
               storage.get('user').then((user) => {
                 let fname = user.FirstName + ' ' + user.LastName[0] + '.';
-                request.StartWatchTimer(event.EventID, contacts, fname, event.EndDate, event.EventName, event.StartDate, event.StartLat,
-                  event.StartLon, event.EndLat, event.EndLon, event.Participants, event.Description)
+                request.StartWatchTimer(event.EventID, contacts, fname, event.EndDate, event.EventName, event.EventStartDate, event.StartLat,
+                  event.StartLon, event.EndLat, event.EndLon, event.EventParticipants, event.EventDescription)
                   .then(() => {
                     loading.dismiss();
                     location.reload();
