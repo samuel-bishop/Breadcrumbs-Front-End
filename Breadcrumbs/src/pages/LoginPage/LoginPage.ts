@@ -7,20 +7,12 @@ import { forgotPasswordPage } from '../forgotPassword/forgotPassword';
 import { infoPromptPage } from '../infoPrompt/infoPrompt';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
 
-function GetEvents(worker, request, storage) {
-  return new Promise(function (resolve, reject) {
-    worker.PullActiveEvent(request, storage);
-    worker.PullInactiveEvents(request, storage);
-    resolve();
-  });
-}
-
-
 @Component({
   selector: 'page-LoginPage',
   templateUrl: 'LoginPage.html',
   providers: [httprequest]
 })
+
 export class LoginPagePage {
   @ViewChild("firstName") firstName;
   @ViewChild("lastName") lastName;
@@ -28,21 +20,22 @@ export class LoginPagePage {
   @ViewChild("mobile") phonenumber;
   @ViewChild("username") username;
   @ViewChild("password") password;
+
   isRegister: boolean = false;
   isConnected: boolean;
   userID: any;
   validUser: any;
-
   private registration: FormGroup;
-
-  //userValidation: User; 
   data: string;
   shouldHeight: any = document.body.clientHeight + 'px';
   isMobile: boolean;
+
   constructor(public navCtrl: NavController, public request: httprequest, public navParams: NavParams, public platform: Platform, public alertCtrl: AlertController, public storage: Storage, public loadingCtrl: LoadingController, public formBuilder: FormBuilder) {
     this.registration = this.formBuilder.group({
       username: ['', Validators.pattern('^[A-Za-z0-9_.]*$')],
       email: ['', Validators.pattern('^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$')],
+      firstname: ['', Validators.pattern('^[A-Za-z. ]*$')],
+      lastname: ['', Validators.pattern('^[A-Za-z. ]*$')]
     });
     this.isConnected = false;
     this.request.CheckConnection().then((data) => {
@@ -63,7 +56,6 @@ export class LoginPagePage {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad LoginPagePage');
       let alert = this.alertCtrl.create({
         title: "Attention", subTitle: `Please ensure that your location is enabled before logging in`, buttons: ["Ok"]
       });
@@ -103,9 +95,9 @@ export class LoginPagePage {
       }
       else {
         //check fields to see if they are valid
-        if (this.firstName.length > 100 || this.lastName.length > 100) {
+        if (this.firstName.length > 35 || this.lastName.length > 35) {
           let alert = this.alertCtrl.create({
-            title: "Attention", subTitle: "First and last name must be less than 100 characters.", buttons: ["Ok"]
+            title: "Attention", subTitle: "First and last name must be less than 35 characters.", buttons: ["Ok"]
           });
           alert.present();
         }
@@ -264,6 +256,3 @@ export class LoginPagePage {
     });
   }
 }
-
-
-
