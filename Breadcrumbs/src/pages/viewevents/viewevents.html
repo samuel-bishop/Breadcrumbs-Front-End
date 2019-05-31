@@ -4,7 +4,7 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding [class.content-background]="!isMobile" [class.mobile-background]="isMobile" [style.background-size]="'100% ' + shouldHeight">
+<ion-content padding [class.content-background]="!isMobile" [class.bridge]="isMobile" [style.background-size]="'100% ' + shouldHeight">
   <ion-row *ngFor="let event of inactiveEvents">
 
     <!-- Mobile Version -->
@@ -20,7 +20,7 @@
       <ion-row>
         <ion-col>
           <button (click)="favoriteEvent(event)" [class.favorite-event-button]="!event.IsFavorite" [class.favorite-event-logo]="event.IsFavorite" ion-button>
-            <ion-icon name="star" style="font-size:30px; left:40px"></ion-icon>
+            <ion-icon name="star" style="font-size:30px; left:40px;"></ion-icon>
           </button>
         </ion-col>
         <ion-col>

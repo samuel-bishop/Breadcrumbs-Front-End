@@ -5,6 +5,7 @@ import { httprequest } from '../../httprequest';
 import { Storage } from '@ionic/storage';
 import { addcontactPage } from '../addcontact/addcontact';
 import { HomePage } from '../home/home';
+import { contactlistPage } from '../contactlist/contactlist';
 
 //TODO: Get select options to update on edit and delete.
 
@@ -78,8 +79,8 @@ export class editcontactPage {
             else {
               this.request.UpdateContact(editcontactData);
               this.navCtrl.pop({ animate: false });
-              var alert = this.alertCtrl.create({ title: 'Success!', subTitle: 'Contact has been updated.', buttons: ['Radical!'] });
-              alert.present();
+              this.navCtrl.pop({ animate: false });
+              this.navCtrl.push(contactlistPage);
             }
           }
         }]

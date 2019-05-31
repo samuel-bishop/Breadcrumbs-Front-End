@@ -4,7 +4,7 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding [class.content-background]="!isMobile" [class.mobile-background]="isMobile" [style.background-size]="'100% ' + shouldHeight">
+<ion-content padding [class.content-background]="!isMobile" [class.bridge]="isMobile" [style.background-size]="'100% ' + shouldHeight">
   <form [formGroup]="editAccount" (ngSubmit)="editAccountForm()">
     <ion-row>
       <ion-col>
@@ -27,13 +27,9 @@
   </form>
 
   <ion-row>
-    <ion-col></ion-col>
-    <ion-col></ion-col>
     <ion-col>
-      <button ion-button type="button" [disabled]="!editAccount.valid" (click)="editAccountForm()" style=" text-align:center; line-height:50%">Submit</button>
+        <button ion-button item-left type="button" [disabled]="!editAccount.valid" (click)="editAccountForm()" style=" text-align:center; line-height:50%">Submit</button>
     </ion-col>
-    <ion-col></ion-col>
-    <ion-col></ion-col>
   </ion-row>
 
 </ion-content>

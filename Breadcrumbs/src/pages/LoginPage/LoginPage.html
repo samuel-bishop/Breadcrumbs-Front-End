@@ -56,30 +56,22 @@
     </ion-row>
     <!-- Row 4 -->
     <ion-row>
-      <ion-col>
-        <!--4x1-->
-      </ion-col>
-      <ion-col>
-        <!--4x2-->
-      </ion-col>
-      <ion-col>
+      <ion-col size="5"></ion-col>
+      <ion-col size="1">
         <!--4x3-->
-        <button *ngIf="isRegister" ion-button full [disabled]="!registration.valid" (click)="Register()">Confirm</button>
-        <button *ngIf="!isRegister" ion-button full (click)="initialClick()">Sign In</button>
-        <button class="forgot-pwd" (click)="infoPrompt()">What is Breadcrumbs?</button>
+        <ion-item no-lines>
+          <button item-right *ngIf="isRegister" style="width:150px; text-align:right" ion-button full [disabled]="!registration.valid" (click)="Register()">Confirm</button>
+          <button item-right *ngIf="!isRegister" style="width:150px; text-align:right;" ion-button full (click)="initialClick()">Sign In</button>
+        </ion-item>
       </ion-col>
-      <ion-col>
+      <ion-col size="1">
         <!--4x4-->
-        <button *ngIf="isRegister" ion-button full (click)="cancelRegister()">Cancel</button>
-        <button *ngIf="!isRegister" ion-button full (click)="signUp()">Register</button>
-        <button class="forgot-pwd" (click)="forgotPassword()">forgot password?</button>
+        <ion-item no-lines>
+          <button *ngIf="isRegister" item-left style="width:150px; text-align:right" ion-button full (click)="cancelRegister()">Cancel</button>
+          <button *ngIf="!isRegister" item-left style="width:150px; text-align:right" ion-button full (click)="signUp()">Register</button>
+        </ion-item>
       </ion-col>
-      <ion-col>
-        <!--4x5-->
-      </ion-col>
-      <ion-col>
-        <!--4x6-->
-      </ion-col>
+      <ion-col size="5"> </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
@@ -87,22 +79,19 @@
       </ion-col>
       <ion-col>
         <!--4x2-->
+        <ion-item no-lines>
+          <button class="forgot-pwd" item-right (click)="infoPrompt()">What is Breadcrumbs?</button>
+        </ion-item>
       </ion-col>
       <ion-col>
-        <!--4x3-->
+        <ion-item no-lines>
+          <button style="margin-left: 10px" class="forgot-pwd" item-left (click)="forgotPassword()">Forgot Password?</button>
+        </ion-item>
+          <!--4x3-->
       </ion-col>
       <ion-col>
         <!--4x4-->
 
-      </ion-col>
-      <ion-col>
-        <!--4x5-->
-      </ion-col>
-      <ion-col>
-        <!--4x6-->
-      </ion-col>
-      <ion-col>
-        <!--4x7-->
       </ion-col>
     </ion-row>
     </form>
