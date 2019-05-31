@@ -28,7 +28,7 @@ page-home {
   }
 
   .bridge {
-    background-image: linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.4)),url(../assets/bridge.jpeg);
+    background-image: linear-gradient(rgba(0,0,0,0.3),rgba(0,0,0,0.4)),url(../assets/bridge.jpeg);
     background-size: cover;
   }
 
@@ -274,7 +274,7 @@ page-home {
   }
 
   .menu-inner, ion-item, ion-content {
-    background-color: transparent !important;
+    background-color: transparent;
   }
 
   .side-button {

@@ -7,7 +7,6 @@
 <ion-content padding [class.content-background]="!isMobile" [class.bridge]="isMobile" [style.background-size]="'100% ' + shouldHeight">
     <form [formGroup]="editcontact" (ngSubmit)="editcontactForm()">
       <ion-row>
-        <ion-col></ion-col>
         <ion-col>
 
           <ion-row>
@@ -35,13 +34,11 @@
               <ion-row>
                 <ion-col text-center>
                   <button ion-button type="submit" [disabled]="!editcontact.valid" style="width:85px; text-align:center; line-height:50%; align-content:center">Save</button>
-                </ion-col>y
+                </ion-col>
               </ion-row>
-
             </ion-col>
           </ion-row>
         </ion-col>
-        <ion-col></ion-col>
       </ion-row>
     </form>
   </ion-content>

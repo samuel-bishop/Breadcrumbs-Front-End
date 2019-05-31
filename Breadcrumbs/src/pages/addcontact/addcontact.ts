@@ -3,6 +3,7 @@ import { NavController, NavParams, AlertController } from 'ionic-angular';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { httprequest } from '../../httprequest';
 import { Storage } from '@ionic/storage';
+import { contactlistPage } from '../contactlist/contactlist';
 
 @Component({
   selector: 'page-addcontact',
@@ -46,6 +47,8 @@ export class addcontactPage {
         this.storage.get('userID').then((userid) => {
           this.request.InsertContact(userid, contactData).then(() => {
             this.navCtrl.pop({ animate: false });
+            this.navCtrl.pop({ animate: false });
+            this.navCtrl.push(contactlistPage);
           });
         });
       }

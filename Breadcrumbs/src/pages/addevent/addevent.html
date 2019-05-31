@@ -1,22 +1,22 @@
 <ion-header class="banner">
   <ion-toolbar transparent>
     <ion-row>
-      <ion-col width-20>
-        <ion-navbar transparent></ion-navbar>
+      <ion-col width-20 style="font-size:30px; font-family:'Lucida Sans'">
+        <ion-navbar transparent>Add Event</ion-navbar>
       </ion-col>
       <ion-col width-80>
-        <ion-searchbar [(ngModel)]="autocomplete.input" (ionInput)="updateSearchResults()" placeholder="Search for a place"></ion-searchbar>
+        <ion-searchbar style="background-color:white" [(ngModel)]="autocomplete.input" (ionInput)="updateSearchResults()" placeholder="Search for a place"></ion-searchbar>
       </ion-col>
     </ion-row>
   </ion-toolbar>
   <ion-list [hidden]="autocompleteItems.length == 0">
-    <ion-item *ngFor="let item of autocompleteItems" tappable (click)="selectSearchResult(item)">
+    <ion-item *ngFor="let item of autocompleteItems" style="background-color:black; color:white" tappable (click)="selectSearchResult(item)">
       {{ item.description }}
     </ion-item>
   </ion-list>
 </ion-header>
 
-<ion-content padding [class.content-background]="!isMobile" [class.bridge]="isMobile" [style.background-size]="'100% ' + shouldHeight">
+<ion-content style=" padding-bottom: 0 !important;" [class.content-background]="!isMobile" [class.bridge]="isMobile" [style.background-size]="'100% ' + shouldHeight">
   <div #AddEventMap id="AddEventMap" transparent></div>
   <form [formGroup]="event" (ngSubmit)="AddEvent()">
     <ion-row>
@@ -41,7 +41,7 @@
     <ion-row>
       <ion-item>
         <ion-label color="black">Contact(s)</ion-label>
-        <ion-select #contactsList [(ngModel)]="contact" id="contactsList" multiple="true" formControlName="contactsList">
+        <ion-select #contactsList [(ngModel)]="contact" style="color:white" id="contactsList" multiple="true" formControlName="contactsList">
           <ion-option *ngFor="let contact of contacts" [value]="contact"> {{contact.ContactFirstName}} {{contact.ContactLastName}}</ion-option>
         </ion-select>
       </ion-item>

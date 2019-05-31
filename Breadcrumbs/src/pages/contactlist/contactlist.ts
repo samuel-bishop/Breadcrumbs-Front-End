@@ -21,8 +21,7 @@ export class contactlistPage {
    // this.GetContacts();
   }
 
-    ionViewDidLoad() {
-      console.log('ionViewDidLoad contactlistPage');
+    ionViewWillLoad() {
       this.GetContacts();
     }
 
@@ -80,6 +79,7 @@ export class contactlistPage {
       contactEM: cEM,
       animate: false
     });
+
   }
 
   arrayRemove(arr, contactID) {
